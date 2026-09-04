@@ -1,4 +1,4 @@
-import { MetaCategory, Region, UserRole } from '@prisma/client';
+import { ImageSource, MetaCategory, Region, UserRole } from '@prisma/client';
 import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -16,7 +16,10 @@ import {
   Min,
 } from 'class-validator';
 
+import { IMAGE_CONTENT_TYPES } from '../storage/object-key.js';
+
 const CATEGORIES = Object.values(MetaCategory);
+const IMAGE_SOURCES = Object.values(ImageSource);
 const REGIONS = Object.values(Region);
 const ROLES = Object.values(UserRole);
 
@@ -57,6 +60,10 @@ export class MetaListQuery extends PageQuery {
   @Transform(({ obj }) => parseBooleanParam((obj as Record<string, unknown>).isPublished))
   @IsBoolean()
   isPublished?: boolean;
+
+  @IsOptional()
+  @IsIn(IMAGE_SOURCES)
+  imageSource?: ImageSource;
 }
 
 /** Query strings carry booleans as text, and only "true"/"false" mean anything. */
@@ -103,6 +110,10 @@ export class UpsertMetaDto {
   @IsString()
   @Length(1, 300)
   imageKey?: string;
+
+  @IsOptional()
+  @IsIn(IMAGE_SOURCES)
+  imageSource?: ImageSource;
 
   @IsInt()
   @Min(1)
@@ -208,8 +219,9 @@ export class SignUploadDto {
   @Length(1, 200)
   filename!: string;
 
-  @IsString()
-  @Length(3, 100)
+  @IsIn(IMAGE_CONTENT_TYPES, {
+    message: `contentType must be one of: ${IMAGE_CONTENT_TYPES.join(', ')}`,
+  })
   contentType!: string;
 
   @IsInt()

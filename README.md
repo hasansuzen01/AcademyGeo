@@ -61,6 +61,34 @@ anyone without it gets a 404 rather than a locked door.
 Card pictures are uploaded straight to R2 from the browser; the API only signs
 the request, so no image ever passes through it.
 
+## Real pictures
+
+Cards carry an `imageSource`. A `PHOTO` is a real photograph and fills the card
+frame the way a game screen does. An `ILLUSTRATION` is one of the seeded
+diagrams standing in for a photograph, letterboxed so no detail is cropped.
+
+The 32 seeded cards all start as diagrams. Uploading a picture in the card
+editor marks that card a photograph; the admin overview counts how many are
+still waiting, and the card list filters on it.
+
+## Blog, pages and search engines
+
+`/admin/posts` writes blog posts with a rich text editor. A post belongs to one
+language rather than being a translation pair, so an author writes for one
+audience at a time. The body is cleaned by the API before it is stored, so what
+reaches a reader is what a browser can safely render.
+
+`/admin/pages` holds the standing pages the footer links to. They are seeded in
+both languages: about, privacy, cookies and terms.
+
+`/admin/seo` carries the site-wide settings: default titles, the crawling rule,
+a hand-written robots.txt, and the verification and measurement ids. Nothing is
+loaded into a visitor's browser while a measurement field is empty.
+
+`/robots.txt` and `/sitemap.xml` are built per request from those settings.
+Outside production everything is closed to crawlers, so a staging copy never
+competes with the real site for the same searches.
+
 ## Development
 
 ```bash

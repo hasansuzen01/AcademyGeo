@@ -23,6 +23,9 @@ const ALLOWED_TYPES = new Map([
   ['image/avif', 'avif'],
 ]);
 
+/** The same list, for the upload DTO to reject anything else with a 400. */
+export const IMAGE_CONTENT_TYPES = [...ALLOWED_TYPES.keys()];
+
 export function buildObjectKey({ prefix, filename, contentType, name }: ObjectKeyInput): string {
   const extension = ALLOWED_TYPES.get(contentType);
   if (!extension) {

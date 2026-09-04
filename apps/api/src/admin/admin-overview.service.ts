@@ -29,6 +29,7 @@ export class AdminOverviewService {
     const [
       metas,
       publishedMetas,
+      illustratedMetas,
       countries,
       decks,
       users,
@@ -40,6 +41,8 @@ export class AdminOverviewService {
     ] = await Promise.all([
       this.prisma.meta.count(),
       this.prisma.meta.count({ where: { isPublished: true } }),
+      // Cards still showing a seeded diagram, waiting for a real photograph.
+      this.prisma.meta.count({ where: { imageSource: 'ILLUSTRATION' } }),
       this.prisma.country.count(),
       this.prisma.deck.count(),
       this.prisma.user.count(),
@@ -76,6 +79,7 @@ export class AdminOverviewService {
         metas,
         publishedMetas,
         draftMetas: metas - publishedMetas,
+        illustratedMetas,
         countries,
         decks,
         users,

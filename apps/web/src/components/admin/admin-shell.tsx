@@ -1,6 +1,16 @@
 'use client';
 
-import { ClipboardList, Flag, Layers, LayoutDashboard, Map, Users } from 'lucide-react';
+import {
+  ClipboardList,
+  FileText,
+  Flag,
+  Layers,
+  LayoutDashboard,
+  Map,
+  PenLine,
+  Search,
+  Users,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -15,6 +25,9 @@ const SECTIONS = [
   { href: '/admin/metas', key: 'metas', icon: Map },
   { href: '/admin/decks', key: 'decks', icon: Layers },
   { href: '/admin/countries', key: 'countries', icon: Flag },
+  { href: '/admin/posts', key: 'posts', icon: PenLine },
+  { href: '/admin/pages', key: 'pages', icon: FileText },
+  { href: '/admin/seo', key: 'seo', icon: Search },
   { href: '/admin/users', key: 'users', icon: Users },
   { href: '/admin/audit', key: 'audit', icon: ClipboardList },
 ] as const;

@@ -4,6 +4,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 
 import { COUNTRIES, METAS } from './catalogue.ts';
+import { FOOTER_PAGES } from './footer-pages.ts';
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
@@ -40,7 +41,17 @@ async function main(): Promise<void> {
     });
   }
 
-  console.log(`Seeded ${COUNTRIES.length} countries and ${METAS.length} metas`);
+  for (const page of FOOTER_PAGES) {
+    await prisma.page.upsert({
+      where: { locale_slug: { locale: page.locale, slug: page.slug } },
+      create: page,
+      update: page,
+    });
+  }
+
+  console.log(
+    `Seeded ${COUNTRIES.length} countries, ${METAS.length} metas and ${FOOTER_PAGES.length} footer pages`,
+  );
 }
 
 await main()

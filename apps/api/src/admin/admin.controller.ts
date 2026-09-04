@@ -69,7 +69,7 @@ export class AdminController {
     return this.metas.create(user.id, dto);
   }
 
-  @Patch('metas/:id')
+  @Put('metas/:id')
   updateMeta(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,
@@ -100,7 +100,7 @@ export class AdminController {
     return this.decks.create(user.id, dto);
   }
 
-  @Patch('decks/:id')
+  @Put('decks/:id')
   updateDeck(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,
@@ -135,7 +135,7 @@ export class AdminController {
     return this.countries.createCountry(user.id, dto);
   }
 
-  @Patch('countries/:code')
+  @Put('countries/:code')
   updateCountry(
     @CurrentUser() user: AuthenticatedUser,
     @Param('code') code: string,
@@ -192,10 +192,5 @@ export class AdminController {
       filename: dto.filename,
       contentType: dto.contentType,
     });
-  }
-
-  @Get('storage')
-  storageStatus() {
-    return { configured: this.storage.isConfigured, maxUploadBytes: MAX_UPLOAD_BYTES };
   }
 }

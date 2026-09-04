@@ -2,11 +2,12 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { toNodeHandler } from 'better-auth/node';
-import express from 'express';
+import express, { type Express } from 'express';
 
 import { AppModule } from './app.module.js';
-import { AUTH_BASE_PATH, type Auth } from './auth/auth.js';
+import { type Auth } from './auth/auth.js';
 import { AUTH } from './auth/auth.tokens.js';
+import { mountAuthHandler } from './auth/mount-auth.js';
 
 async function bootstrap() {
   // Better Auth reads the raw request body itself, so Nest's parser is mounted
@@ -21,7 +22,8 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.use(AUTH_BASE_PATH + '/*splat', toNodeHandler(app.get<Auth>(AUTH)));
+  const server = app.getHttpAdapter().getInstance() as Express;
+  mountAuthHandler(server, toNodeHandler(app.get<Auth>(AUTH)));
   app.use(express.json({ limit: '256kb' }));
 
   app.setGlobalPrefix('api');

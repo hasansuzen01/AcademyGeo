@@ -3,6 +3,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 
 import type { PrismaService } from '../prisma/prisma.service.js';
+import { USER_ADDITIONAL_FIELDS, parseAdminEmails, resolveInitialRole } from './admin-bootstrap.js';
 
 export type Auth = ReturnType<typeof createAuth>;
 
@@ -11,12 +12,7 @@ export const AUTH_BASE_PATH = '/api/auth';
 export function createAuth(prisma: PrismaService, config: ConfigService) {
   const webUrl = config.get<string>('WEB_URL') ?? 'http://localhost:3000';
   const cookieDomain = config.get<string>('AUTH_COOKIE_DOMAIN');
-  const adminEmails = new Set(
-    (config.get<string>('ADMIN_EMAILS') ?? '')
-      .split(',')
-      .map((email) => email.trim().toLowerCase())
-      .filter(Boolean),
-  );
+  const adminEmails = parseAdminEmails(config.get<string>('ADMIN_EMAILS'));
 
   return betterAuth({
     appName: 'AcademyGeo',
@@ -32,16 +28,16 @@ export function createAuth(prisma: PrismaService, config: ConfigService) {
         clientSecret: required(config, 'GOOGLE_CLIENT_SECRET'),
       },
     },
+    // Without this the role column is invisible to the adapter and the hook
+    // below writes into nothing.
+    user: { additionalFields: USER_ADDITIONAL_FIELDS },
     databaseHooks: {
       user: {
         create: {
           // Bootstraps the first admin. Everyone after that is promoted from
           // the admin panel, or with `npm run admin:grant`.
           before: async (user) => ({
-            data: {
-              ...user,
-              role: adminEmails.has(user.email.toLowerCase()) ? 'ADMIN' : 'USER',
-            },
+            data: { ...user, role: resolveInitialRole(user.email, adminEmails) },
           }),
         },
       },

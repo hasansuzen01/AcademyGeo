@@ -15,9 +15,10 @@ import {
   deleteAdminMeta,
   fetchAdminCountries,
   fetchAdminMeta,
-  fetchStorageStatus,
   updateAdminMeta,
 } from '@/lib/admin-api';
+import { type ImageSource, imageSourceAfterPicture } from '@/lib/card-image';
+import { useStorageReady } from '@/lib/use-storage-ready';
 
 import { ImageField } from './image-field';
 import { Badge, Button, Field, Input, Panel, Select, Textarea } from './ui';
@@ -32,6 +33,7 @@ const BLANK: MetaInput = {
   descriptionTr: '',
   imageUrl: '',
   imageKey: null,
+  imageSource: 'ILLUSTRATION',
   difficulty: 2,
   isPublished: false,
 };
@@ -44,7 +46,7 @@ export function MetaEditor({ metaId }: { metaId?: string }) {
   const [form, setForm] = useState<MetaInput>(BLANK);
   const [detail, setDetail] = useState<AdminMetaDetail | null>(null);
   const [countries, setCountries] = useState<AdminCountry[]>([]);
-  const [storageReady, setStorageReady] = useState(false);
+  const storageReady = useStorageReady();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(Boolean(metaId));
@@ -57,9 +59,6 @@ export function MetaEditor({ metaId }: { metaId?: string }) {
           current.countryCode ? current : { ...current, countryCode: list[0]?.code ?? '' },
         );
       })
-      .catch(() => undefined);
-    fetchStorageStatus()
-      .then((status) => setStorageReady(status.configured))
       .catch(() => undefined);
   }, []);
 
@@ -79,6 +78,7 @@ export function MetaEditor({ metaId }: { metaId?: string }) {
           descriptionTr: meta.descriptionTr,
           imageUrl: meta.imageUrl,
           imageKey: meta.imageKey,
+          imageSource: meta.imageSource,
           difficulty: meta.difficulty,
           isPublished: meta.isPublished,
         });
@@ -195,7 +195,7 @@ export function MetaEditor({ metaId }: { metaId?: string }) {
           </Panel>
 
           <Panel title={t('sectionImage')}>
-            <div className="px-5 py-5">
+            <div className="space-y-4 px-5 py-5">
               <ImageField
                 value={form.imageUrl}
                 prefix="metas"
@@ -203,8 +203,19 @@ export function MetaEditor({ metaId }: { metaId?: string }) {
                 onChange={({ url, key }) => {
                   set('imageUrl', url);
                   set('imageKey', key);
+                  set('imageSource', imageSourceAfterPicture(form.imageSource, key));
                 }}
               />
+
+              <Field label={t('imageSource')} hint={t('imageSourceHint')}>
+                <Select
+                  value={form.imageSource}
+                  onChange={(event) => set('imageSource', event.target.value as ImageSource)}
+                >
+                  <option value="PHOTO">{t('imageSourcePhoto')}</option>
+                  <option value="ILLUSTRATION">{t('imageSourceIllustration')}</option>
+                </Select>
+              </Field>
             </div>
           </Panel>
 

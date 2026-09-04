@@ -14,6 +14,8 @@ import {
   fetchAdminMetas,
 } from '@/lib/admin-api';
 
+import { needsRealPhoto } from '@/lib/card-image';
+
 import { Badge, EmptyRow, Input, Pagination, Panel, Select, TableShell, Td, Th } from './ui';
 
 const PAGE_SIZE = 20;
@@ -28,6 +30,7 @@ export function MetasView() {
   const [category, setCategory] = useState('');
   const [countryCode, setCountryCode] = useState('');
   const [published, setPublished] = useState('');
+  const [imageSource, setImageSource] = useState('');
   const [skip, setSkip] = useState(0);
 
   const [countries, setCountries] = useState<AdminCountry[]>([]);
@@ -50,6 +53,7 @@ export function MetasView() {
         category: category || undefined,
         countryCode: countryCode || undefined,
         isPublished: published === '' ? undefined : published === 'true',
+        imageSource: imageSource || undefined,
         take: PAGE_SIZE,
         skip,
       });
@@ -61,7 +65,7 @@ export function MetasView() {
     } finally {
       setLoading(false);
     }
-  }, [category, countryCode, published, search, skip]);
+  }, [category, countryCode, published, imageSource, search, skip]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => void load(), 200);
@@ -116,6 +120,15 @@ export function MetasView() {
           <option value="true">{t('published')}</option>
           <option value="false">{t('draft')}</option>
         </Select>
+        <Select
+          value={imageSource}
+          onChange={(event) => changeFilter(() => setImageSource(event.target.value))}
+          className="w-40"
+        >
+          <option value="">{t('filterAll')}</option>
+          <option value="PHOTO">{t('filterPhoto')}</option>
+          <option value="ILLUSTRATION">{t('filterIllustration')}</option>
+        </Select>
         <Link href="/admin/metas/new" className="inline-flex items-center gap-2 btn btn-go">
           <Plus className="size-4" aria-hidden />
           {t('create')}
@@ -158,9 +171,12 @@ export function MetasView() {
               <Td className="font-mono tabular-nums">{meta.difficulty}</Td>
               <Td className="font-mono tabular-nums text-muted">{meta._count?.logs ?? 0}</Td>
               <Td>
-                <Badge tone={meta.isPublished ? 'good' : 'warn'}>
-                  {meta.isPublished ? t('published') : t('draft')}
-                </Badge>
+                <div className="flex flex-wrap gap-1.5">
+                  <Badge tone={meta.isPublished ? 'good' : 'warn'}>
+                    {meta.isPublished ? t('published') : t('draft')}
+                  </Badge>
+                  {needsRealPhoto(meta.imageSource) && <Badge tone="warn">{t('needsPhoto')}</Badge>}
+                </div>
               </Td>
             </tr>
           ))}

@@ -1,3 +1,5 @@
+import type { ImageSource } from './card-image';
+
 import { apiFetch } from './api';
 
 export type MetaCategory =
@@ -61,6 +63,7 @@ export interface AdminMeta {
   descriptionTr: string;
   imageUrl: string;
   imageKey: string | null;
+  imageSource: ImageSource;
   difficulty: number;
   isPublished: boolean;
   createdAt: string;
@@ -124,6 +127,7 @@ export interface AdminOverview {
     metas: number;
     publishedMetas: number;
     draftMetas: number;
+    illustratedMetas: number;
     countries: number;
     decks: number;
     users: number;
@@ -177,6 +181,7 @@ export const fetchAdminMetas = (params: {
   category?: string;
   countryCode?: string;
   isPublished?: boolean;
+  imageSource?: string;
   take?: number;
   skip?: number;
 }) => apiFetch<Page<AdminMeta>>(`/admin/metas${query(params)}`);
@@ -196,7 +201,7 @@ export const createAdminMeta = (body: MetaInput) =>
 
 export const updateAdminMeta = (id: string, body: MetaInput) =>
   apiFetch<AdminMeta>(`/admin/metas/${id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     body: JSON.stringify(body),
   });
 
@@ -226,7 +231,7 @@ export const createAdminDeck = (body: DeckInput) =>
 
 export const updateAdminDeck = (id: string, body: DeckInput) =>
   apiFetch<AdminDeck>(`/admin/decks/${id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     body: JSON.stringify(body),
   });
 
@@ -249,7 +254,7 @@ export const createAdminCountry = (body: Omit<AdminCountry, '_count'>) =>
 
 export const updateAdminCountry = (code: string, body: Omit<AdminCountry, '_count'>) =>
   apiFetch<AdminCountry>(`/admin/countries/${code}`, {
-    method: 'PATCH',
+    method: 'PUT',
     body: JSON.stringify(body),
   });
 
@@ -273,7 +278,7 @@ export const fetchAuditLog = (params: { take?: number; skip?: number }) =>
   apiFetch<Page<AuditEntry>>(`/admin/audit${query(params)}`);
 
 export const fetchStorageStatus = () =>
-  apiFetch<{ configured: boolean; maxUploadBytes: number }>('/admin/storage');
+  apiFetch<{ configured: boolean; maxUploadBytes: number }>('/storage');
 
 export const fetchProfile = () => apiFetch<Profile>('/profile');
 
@@ -312,3 +317,147 @@ export async function uploadImage(
 
   return { url: ticket.publicUrl, key: ticket.key };
 }
+
+// -- Blog, footer pages and search engine settings ---------------------------
+
+export type ContentStatus = 'DRAFT' | 'PUBLISHED';
+
+export interface AdminPost {
+  id: string;
+  locale: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  coverImageUrl: string | null;
+  readingTime: number;
+  publishedAt: string | null;
+  status: ContentStatus;
+  updatedAt: string;
+  viewCount: number;
+}
+
+export interface AdminPostDetail extends AdminPost {
+  content: string;
+  coverImageKey: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  keywords: string;
+  canonicalUrl: string | null;
+  robotsMeta: string;
+  ogImageUrl: string | null;
+  wordCount: number;
+  author: { id: string; name: string; email: string } | null;
+}
+
+export type PostInput = {
+  locale: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  coverImageUrl: string;
+  coverImageKey: string;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string;
+  canonicalUrl: string;
+  robotsMeta: string;
+  ogImageUrl: string;
+  status: ContentStatus;
+};
+
+export const fetchAdminPosts = (params: {
+  locale?: string;
+  status?: string;
+  search?: string;
+  take?: number;
+  skip?: number;
+}) => apiFetch<Page<AdminPost>>(`/admin/posts${query(params)}`);
+
+export const fetchAdminPost = (id: string) => apiFetch<AdminPostDetail>(`/admin/posts/${id}`);
+
+export const createAdminPost = (body: PostInput) =>
+  apiFetch<AdminPostDetail>('/admin/posts', { method: 'POST', body: JSON.stringify(body) });
+
+export const updateAdminPost = (id: string, body: PostInput) =>
+  apiFetch<AdminPostDetail>(`/admin/posts/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+
+export const deleteAdminPost = (id: string) =>
+  apiFetch<{ id: string }>(`/admin/posts/${id}`, { method: 'DELETE' });
+
+export interface AdminPage {
+  id: string;
+  locale: string;
+  slug: string;
+  title: string;
+  status: ContentStatus;
+  includeInSitemap: boolean;
+  footerOrder: number;
+  updatedAt: string;
+}
+
+export interface AdminPageDetail extends AdminPage {
+  excerpt: string;
+  content: string;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  canonicalUrl: string | null;
+  robotsMeta: string;
+}
+
+export type PageInput = {
+  locale: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  metaTitle: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  robotsMeta: string;
+  status: ContentStatus;
+  includeInSitemap: boolean;
+  footerOrder: number;
+};
+
+export const fetchAdminPages = (params: { locale?: string; status?: string } = {}) =>
+  apiFetch<Page<AdminPage>>(`/admin/pages${query(params)}`);
+
+export const fetchAdminPage = (id: string) => apiFetch<AdminPageDetail>(`/admin/pages/${id}`);
+
+export const createAdminPage = (body: PageInput) =>
+  apiFetch<AdminPageDetail>('/admin/pages', { method: 'POST', body: JSON.stringify(body) });
+
+export const updateAdminPage = (id: string, body: PageInput) =>
+  apiFetch<AdminPageDetail>(`/admin/pages/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+
+export const deleteAdminPage = (id: string) =>
+  apiFetch<{ id: string }>(`/admin/pages/${id}`, { method: 'DELETE' });
+
+export interface SeoSettings {
+  siteName: string;
+  siteUrl: string;
+  siteDescription: string;
+  defaultMetaTitle: string;
+  defaultMetaDescription: string;
+  defaultKeywords: string;
+  defaultOgImageUrl: string | null;
+  robotsTxt: string | null;
+  defaultRobotsMeta: string;
+  blockIndexingOutsideProduction: boolean;
+  sitemapEnabled: boolean;
+  googleSiteVerification: string | null;
+  googleAnalyticsId: string | null;
+  googleTagManagerId: string | null;
+  bingSiteVerification: string | null;
+  twitterSite: string | null;
+  organisationName: string;
+  organisationLogo: string | null;
+  contactEmail: string | null;
+  updatedAt: string;
+}
+
+export const fetchSeoSettings = () => apiFetch<SeoSettings>('/admin/seo');
+
+export const updateSeoSettings = (body: Partial<SeoSettings>) =>
+  apiFetch<SeoSettings>('/admin/seo', { method: 'PUT', body: JSON.stringify(body) });

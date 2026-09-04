@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Link } from '@/i18n/navigation';
 import { type Country, type DashboardStats, fetchCountries, fetchDashboard } from '@/lib/api';
 import { buildActivityWindow } from '@/lib/activity-window';
 import { useSession } from '@/lib/auth-client';
 import { cn } from '@/lib/cn';
+import { useLoad } from '@/lib/use-load';
 
 import { SignInPrompt } from './sign-in-prompt';
 
@@ -25,19 +26,17 @@ export function DashboardView() {
   const [failed, setFailed] = useState(false);
 
   const load = useCallback(async () => {
-    setFailed(false);
     try {
       const [dashboard, countryList] = await Promise.all([fetchDashboard(), fetchCountries()]);
       setStats(dashboard);
       setCountries(countryList);
+      setFailed(false);
     } catch {
       setFailed(true);
     }
   }, []);
 
-  useEffect(() => {
-    if (!sessionPending && userId) void load();
-  }, [load, sessionPending, userId]);
+  useLoad(load, !sessionPending && Boolean(userId));
 
   if (sessionPending) return null;
   if (!session?.user) return <SignInPrompt reason="progress" />;

@@ -80,6 +80,7 @@ export class ReviewService {
           metaId: meta.id,
           category: meta.category,
           imageUrl: meta.imageUrl,
+          imageSource: meta.imageSource,
           difficulty: meta.difficulty,
           choices: choiceCodes.flatMap((code) => {
             const country = byCode.get(code);

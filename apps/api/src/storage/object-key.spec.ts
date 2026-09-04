@@ -1,6 +1,21 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildObjectKey } from './object-key.js';
+import { IMAGE_CONTENT_TYPES, buildObjectKey } from './object-key.js';
+
+describe('IMAGE_CONTENT_TYPES', () => {
+  // The upload DTO validates against this list so an unsupported picture comes
+  // back as a 400 naming the accepted formats. It used to reach buildObjectKey
+  // and surface as an unexplained 500.
+  it('lists the formats the key builder can file', () => {
+    for (const contentType of IMAGE_CONTENT_TYPES) {
+      expect(() => buildObjectKey({ prefix: 'metas', filename: 'x', contentType })).not.toThrow();
+    }
+  });
+
+  it('leaves out SVG, which can carry script on the media domain', () => {
+    expect(IMAGE_CONTENT_TYPES).not.toContain('image/svg+xml');
+  });
+});
 
 describe('buildObjectKey', () => {
   it('refuses a content type that is not an allowed image', () => {

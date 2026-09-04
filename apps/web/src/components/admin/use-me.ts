@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useSession } from '@/lib/auth-client';
 import { type Me, fetchMe } from '@/lib/admin-api';
+import { useLoad } from '@/lib/use-load';
 
-type Status = 'loading' | 'anonymous' | 'ready';
+import { resolveMeStatus } from './me-status';
 
 /**
  * The signed-in account with its role. The role comes from the API rather than
@@ -16,26 +17,26 @@ export function useMe() {
   const userId = session?.user?.id;
 
   const [me, setMe] = useState<Me | null>(null);
-  const [status, setStatus] = useState<Status>('loading');
+  const [failed, setFailed] = useState(false);
 
   const load = useCallback(async () => {
     try {
       setMe(await fetchMe());
-      setStatus('ready');
+      setFailed(false);
     } catch {
       setMe(null);
-      setStatus('anonymous');
+      setFailed(true);
     }
   }, []);
 
-  useEffect(() => {
-    if (isPending) return;
-    if (!userId) {
-      setStatus('anonymous');
-      return;
-    }
-    void load();
-  }, [isPending, load, userId]);
+  useLoad(load, !isPending && Boolean(userId));
+
+  const status = resolveMeStatus({
+    sessionPending: isPending,
+    signedIn: Boolean(userId),
+    me,
+    failed,
+  });
 
   return { me, status, reload: load };
 }

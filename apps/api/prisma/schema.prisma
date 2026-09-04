@@ -16,14 +16,14 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String   @id @default(cuid())
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String   @unique
+  emailVerified Boolean  @default(false)
   image         String?
-  role          UserRole  @default(USER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role          UserRole @default(USER)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   accounts      Account[]
   sessions      Session[]
@@ -31,6 +31,7 @@ model User {
   reviewLogs    ReviewLog[]
   dailyActivity DailyActivity[]
   authoredMetas Meta[]          @relation("MetaAuthor")
+  posts         Post[]          @relation("PostAuthor")
   auditLogs     AuditLog[]
 }
 
@@ -51,6 +52,9 @@ model Session {
 
 model Account {
   id                    String    @id @default(cuid())
+  // Who vouched for the account, e.g. https://accounts.google.com. Two
+  // providers can hand out the same account id, so identity is the pair.
+  issuer                String
   accountId             String
   providerId            String
   userId                String
@@ -66,7 +70,7 @@ model Account {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([providerId, accountId])
+  @@unique([issuer, accountId])
   @@index([userId])
 }
 
@@ -92,6 +96,13 @@ enum Region {
   NORTH_AMERICA
   SOUTH_AMERICA
   OCEANIA
+}
+
+/// Whether the card shows a real photograph or a seeded diagram standing in
+/// for one. Photographs fill the card frame; diagrams are letterboxed.
+enum ImageSource {
+  PHOTO
+  ILLUSTRATION
 }
 
 enum MetaCategory {
@@ -128,6 +139,7 @@ model Meta {
   imageUrl      String
   /// R2 object key when the picture was uploaded rather than generated.
   imageKey      String?
+  imageSource   ImageSource  @default(ILLUSTRATION)
   /// Unpublished metas stay out of practice sessions.
   isPublished   Boolean      @default(true)
   /// 1 = obvious at a glance, 5 = only recognisable to experienced players.
@@ -145,6 +157,7 @@ model Meta {
   @@index([countryCode])
   @@index([category])
   @@index([isPublished])
+  @@index([imageSource])
 }
 
 /// A named set of metas: a themed collection or a time-boxed event.
@@ -237,14 +250,134 @@ model ReviewLog {
 }
 
 model DailyActivity {
-  id        String   @id @default(cuid())
-  userId    String
-  day       DateTime @db.Date
-  reviews   Int      @default(0)
-  correct   Int      @default(0)
+  id      String   @id @default(cuid())
+  userId  String
+  day     DateTime @db.Date
+  reviews Int      @default(0)
+  correct Int      @default(0)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, day])
   @@index([userId, day])
+}
+
+// ---------------------------------------------------------------------------
+// Blog, footer pages and search-engine settings
+// ---------------------------------------------------------------------------
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+/// A blog post in one language. Posts are not translations of each other: an
+/// author writes for one audience at a time, and forcing a pair would leave
+/// half-written stubs in the other language.
+model Post {
+  id      String @id @default(cuid())
+  /// "en" or "tr". Readers only ever see posts in the locale they browse in.
+  locale  String
+  slug    String
+  title   String
+  excerpt String @default("")
+  /// Sanitised HTML from the editor.
+  content String
+
+  coverImageUrl String?
+  coverImageKey String?
+
+  metaTitle       String?
+  metaDescription String?
+  keywords        String  @default("")
+  canonicalUrl    String?
+  robotsMeta      String  @default("index,follow")
+
+  ogImageUrl String?
+
+  /// Counted when the post is saved: the list response carries no body, so it
+  /// cannot be worked out at read time.
+  wordCount   Int @default(0)
+  readingTime Int @default(1)
+
+  status      ContentStatus @default(DRAFT)
+  /// First time it went live. Written once, so editing a post later does not
+  /// move its publication date to today.
+  publishedAt DateTime?
+  viewCount   Int           @default(0)
+
+  authorId String?
+  author   User?   @relation("PostAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([locale, slug])
+  @@index([locale, status, publishedAt])
+  @@index([authorId])
+}
+
+/// A standing page reached from the footer: about, privacy, cookies, terms.
+/// Same search-engine fields as a post, but it lives at its own address rather
+/// than in a feed.
+model Page {
+  id      String @id @default(cuid())
+  locale  String
+  slug    String
+  title   String
+  excerpt String @default("")
+  content String
+
+  metaTitle       String?
+  metaDescription String?
+  canonicalUrl    String?
+  robotsMeta      String  @default("index,follow")
+
+  status           ContentStatus @default(PUBLISHED)
+  /// Published is not the same as worth indexing, so this is its own switch.
+  includeInSitemap Boolean       @default(true)
+  /// Position in the footer. Pages with no place there sort last.
+  footerOrder      Int           @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([locale, slug])
+  @@index([locale, status])
+}
+
+/// Site-wide search-engine settings. One row, so "which settings apply" has a
+/// single answer; the service creates it with defaults on first read.
+model SiteSeo {
+  id String @id @default("site")
+
+  siteName        String @default("AcademyGeo")
+  siteUrl         String @default("http://localhost:3000")
+  siteDescription String @default("")
+
+  defaultMetaTitle       String  @default("")
+  defaultMetaDescription String  @default("")
+  defaultKeywords        String  @default("")
+  defaultOgImageUrl      String?
+
+  /// Hand-written robots.txt. Replaces the generated default when filled in.
+  robotsTxt                      String?
+  defaultRobotsMeta              String  @default("index,follow")
+  /// Keep every environment that is not production out of the index.
+  blockIndexingOutsideProduction Boolean @default(true)
+  sitemapEnabled                 Boolean @default(true)
+
+  googleSiteVerification String?
+  googleAnalyticsId      String?
+  googleTagManagerId     String?
+  bingSiteVerification   String?
+
+  twitterSite String?
+
+  /// Drawn as JSON-LD so search engines can show the project as an entity.
+  organisationName String  @default("AcademyGeo")
+  organisationLogo String?
+  contactEmail     String?
+
+  updatedAt DateTime @updatedAt
 }

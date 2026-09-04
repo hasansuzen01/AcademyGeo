@@ -3,11 +3,12 @@
 import { motion } from 'framer-motion';
 import { PartyPopper } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Link } from '@/i18n/navigation';
 import { type AnswerResult, type QueueCard, fetchQueue, submitAnswer } from '@/lib/api';
 import { useSession } from '@/lib/auth-client';
+import { useLoad } from '@/lib/use-load';
 
 import { Flashcard } from './flashcard';
 import { SessionProgress } from './session-progress';
@@ -31,8 +32,9 @@ export function PlaySession() {
   const [pending, setPending] = useState(false);
   const [score, setScore] = useState(0);
 
+  // Leaves `phase` alone on the way in: it already starts at 'loading', and
+  // the buttons that re-run a finished session set it themselves.
   const load = useCallback(async () => {
-    setPhase('loading');
     try {
       const queue = await fetchQueue();
       setCards(queue.cards);
@@ -48,9 +50,13 @@ export function PlaySession() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!sessionPending && userId) void load();
-  }, [load, sessionPending, userId]);
+  useLoad(load, !sessionPending && Boolean(userId));
+
+  /** Re-runs a finished or failed session, showing the spinner while it loads. */
+  function restart() {
+    setPhase('loading');
+    void load();
+  }
 
   async function guess(countryCode: string) {
     const card = cards[index];
@@ -98,7 +104,7 @@ export function PlaySession() {
     return (
       <Shell>
         <p>{errors('loadSession')}</p>
-        <button type="button" onClick={() => void load()} className="btn btn-quiet mt-5">
+        <button type="button" onClick={() => restart()} className="btn btn-quiet mt-5">
           {errors('retry')}
         </button>
       </Shell>
@@ -142,7 +148,7 @@ export function PlaySession() {
         </p>
 
         <div className="mt-8 flex flex-col gap-3">
-          <button type="button" onClick={() => void load()} className="btn btn-go">
+          <button type="button" onClick={() => restart()} className="btn btn-go">
             {t('summaryAgain')}
           </button>
           <Link href="/dashboard" className="btn btn-quiet">

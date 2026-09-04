@@ -54,6 +54,17 @@ services:
       CORS_ORIGIN: http://localhost:${WEB_PORT:-3000}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN:-}
+      # Whoever signs in with one of these addresses becomes an admin. Without
+      # it a fresh container has no admin and nobody can reach /admin.
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+      # Uploads go straight from the browser to R2; the API only signs them.
+      # Leave blank and the upload endpoint says storage is not configured.
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:-}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:-}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:-}
+      R2_BUCKET: ${R2_BUCKET:-}
+      R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL:-}
     ports:
       - '${API_PORT:-3001}:3001'
 

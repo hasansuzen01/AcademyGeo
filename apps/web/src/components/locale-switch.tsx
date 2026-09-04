@@ -9,6 +9,11 @@ import { cn } from '@/lib/cn';
 
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
+/** Remembers the choice so the country-based default does not override it. */
+function rememberLocale(locale: string) {
+  document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`;
+}
+
 export function LocaleSwitch() {
   const active = useLocale();
   const pathname = usePathname();
@@ -16,8 +21,7 @@ export function LocaleSwitch() {
   const [pending, startTransition] = useTransition();
 
   function choose(locale: string) {
-    // Remember the choice so the country-based default does not override it.
-    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`;
+    rememberLocale(locale);
     startTransition(() => router.replace(pathname, { locale: locale as (typeof locales)[number] }));
   }
 

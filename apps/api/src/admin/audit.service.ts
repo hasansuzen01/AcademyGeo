@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 export interface AuditEntry {
   actorId: string;
   action: 'create' | 'update' | 'delete' | 'publish' | 'unpublish' | 'reorder' | 'grant' | 'revoke';
-  entity: 'meta' | 'country' | 'deck' | 'user';
+  entity: 'meta' | 'country' | 'deck' | 'user' | 'post' | 'page' | 'seo';
   entityId: string;
   summary: string;
 }

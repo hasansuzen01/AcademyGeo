@@ -20,6 +20,7 @@ export class AdminMetasService {
       category: query.category,
       countryCode: query.countryCode,
       isPublished: query.isPublished,
+      imageSource: query.imageSource,
       ...(query.search
         ? {
             OR: [

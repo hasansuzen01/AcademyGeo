@@ -6,7 +6,9 @@ import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 import type { AnswerResult, QueueCard } from '@/lib/api';
+import { imageFitClass } from '@/lib/card-image';
 import { cn } from '@/lib/cn';
+import { useElementHeight } from '@/lib/use-element-height';
 
 import { RoadTimer } from './road-timer';
 
@@ -41,8 +43,12 @@ export function Flashcard({
   const categories = useTranslations('categories');
   const locale = useLocale();
 
+  // The answer bar is pinned to the bottom, so the page reserves exactly its
+  // height. A long explanation makes it taller than any fixed guess.
+  const [barRef, barHeight] = useElementHeight<HTMLDivElement>();
+
   return (
-    <div className="pb-40">
+    <div style={{ paddingBottom: barHeight + 24 }}>
       <div className="card-raised overflow-hidden">
         <div className="flex items-center justify-between gap-3 border-b-2 border-line px-5 py-3">
           <span className="rounded-full bg-canvas px-3 py-1 text-xs font-900 text-muted">
@@ -66,7 +72,7 @@ export function Flashcard({
                 alt=""
                 fill
                 sizes="(max-width: 768px) 100vw, 640px"
-                className="object-contain"
+                className={imageFitClass(card.imageSource)}
                 priority={index === 0}
               />
             </motion.div>
@@ -110,9 +116,10 @@ export function Flashcard({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            ref={barRef}
             className={cn(
-              'fixed inset-x-0 bottom-0 z-30 border-t-2',
-              result.correct ? 'border-go/40 bg-go/10' : 'border-stop/40 bg-stop/10',
+              'fixed inset-x-0 bottom-0 z-30 border-t-2 shadow-[0_-8px_24px_rgba(23,40,45,0.08)]',
+              result.correct ? 'border-go bg-go-wash' : 'border-stop bg-stop-wash',
             )}
           >
             <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center">

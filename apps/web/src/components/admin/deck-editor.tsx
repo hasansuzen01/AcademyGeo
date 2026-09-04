@@ -14,10 +14,10 @@ import {
   deleteAdminDeck,
   fetchAdminDeck,
   fetchAdminMetas,
-  fetchStorageStatus,
   setDeckMetas,
   updateAdminDeck,
 } from '@/lib/admin-api';
+import { useStorageReady } from '@/lib/use-storage-ready';
 
 import { ImageField } from './image-field';
 import { Button, Field, Input, Panel, Textarea } from './ui';
@@ -44,16 +44,10 @@ export function DeckEditor({ deckId }: { deckId?: string }) {
   const [selected, setSelected] = useState<AdminMeta[]>([]);
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<AdminMeta[]>([]);
-  const [storageReady, setStorageReady] = useState(false);
+  const storageReady = useStorageReady();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(Boolean(deckId));
-
-  useEffect(() => {
-    fetchStorageStatus()
-      .then((status) => setStorageReady(status.configured))
-      .catch(() => undefined);
-  }, []);
 
   useEffect(() => {
     if (!deckId) return;

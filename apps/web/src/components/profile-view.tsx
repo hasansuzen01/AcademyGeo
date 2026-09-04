@@ -7,8 +7,9 @@ import { ImageField } from '@/components/admin/image-field';
 import { Badge, Button, Field, Input, Panel } from '@/components/admin/ui';
 import { SignInPrompt } from '@/components/sign-in-prompt';
 import { Link } from '@/i18n/navigation';
-import { type Profile, fetchProfile, fetchStorageStatus, updateProfile } from '@/lib/admin-api';
+import { type Profile, fetchProfile, updateProfile } from '@/lib/admin-api';
 import { useSession } from '@/lib/auth-client';
+import { useStorageReady } from '@/lib/use-storage-ready';
 
 export function ProfileView() {
   const t = useTranslations('profile');
@@ -19,7 +20,7 @@ export function ProfileView() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
-  const [storageReady, setStorageReady] = useState(false);
+  const storageReady = useStorageReady();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,15 +36,6 @@ export function ProfileView() {
       })
       .catch(() => setError(errors('generic')));
   }, [errors, isPending, userId]);
-
-  useEffect(() => {
-    if (!userId) return;
-    // Avatar uploads use the same bucket, so the profile page needs to know
-    // whether storage exists before offering the file picker.
-    fetchStorageStatus()
-      .then((status) => setStorageReady(status.configured))
-      .catch(() => setStorageReady(false));
-  }, [userId]);
 
   if (isPending) return null;
   if (!userId) return <SignInPrompt reason="progress" />;

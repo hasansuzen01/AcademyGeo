@@ -2,7 +2,7 @@
 
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import {
   type AdminCountry,
@@ -13,6 +13,7 @@ import {
   fetchAdminCountries,
   updateAdminCountry,
 } from '@/lib/admin-api';
+import { useLoad } from '@/lib/use-load';
 
 import { Badge, Button, EmptyRow, Field, Input, Panel, Select, TableShell, Td, Th } from './ui';
 
@@ -39,9 +40,7 @@ export function CountriesView() {
     }
   }, [errors]);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  useLoad(load);
 
   async function save() {
     setSaving(true);
