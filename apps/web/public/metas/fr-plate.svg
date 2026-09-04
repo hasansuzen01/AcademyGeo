@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img">
+  <rect width="640" height="400" rx="28" fill="#eef3f0"/>
+  <rect x="56" y="116" width="528" height="212" rx="16" fill="#f8fafc" stroke="#0f172a" stroke-width="6"/>
+  <path d="M 60 160 v -28 a 12 12 0 0 1 12 -12 h 496 a 12 12 0 0 1 12 12 v 28 z" fill="#1e40af"/>
+  <text x="320" y="147" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="3" text-anchor="middle">ILE-DE-FRANCE 75</text>
+  <path d="M 60 164 h 62 v 160 h -50 a 12 12 0 0 1 -12 -12 z" fill="#1e40af"/>
+  <circle cx="90" cy="212" r="18" fill="none" stroke="#facc15" stroke-width="3"/>
+  <text x="90" y="302" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" text-anchor="middle">F</text>
+  <text x="351" y="258" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="700" letter-spacing="4" text-anchor="middle">AB-123-CD</text>
+</svg>

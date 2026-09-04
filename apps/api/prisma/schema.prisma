@@ -1,0 +1,250 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Better Auth tables. Field names are fixed by the Better Auth Prisma adapter.
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  reviewCards   ReviewCard[]
+  reviewLogs    ReviewLog[]
+  dailyActivity DailyActivity[]
+  authoredMetas Meta[]          @relation("MetaAuthor")
+  auditLogs     AuditLog[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+// ---------------------------------------------------------------------------
+// Learning content
+// ---------------------------------------------------------------------------
+
+enum Region {
+  EUROPE
+  ASIA
+  AFRICA
+  NORTH_AMERICA
+  SOUTH_AMERICA
+  OCEANIA
+}
+
+enum MetaCategory {
+  PLATE
+  BOLLARD
+  ROAD_LINE
+  VEGETATION
+  ARCHITECTURE
+  LANGUAGE
+  CAMERA
+  VEHICLE
+  INFRASTRUCTURE
+}
+
+model Country {
+  code   String @id
+  nameEn String
+  nameTr String
+  region Region
+
+  metas Meta[]
+}
+
+model Meta {
+  id            String       @id @default(cuid())
+  /// Stable human key. Also the filename of a generated illustration.
+  slug          String       @unique
+  countryCode   String
+  category      MetaCategory
+  titleEn       String
+  titleTr       String
+  descriptionEn String
+  descriptionTr String
+  imageUrl      String
+  /// R2 object key when the picture was uploaded rather than generated.
+  imageKey      String?
+  /// Unpublished metas stay out of practice sessions.
+  isPublished   Boolean      @default(true)
+  /// 1 = obvious at a glance, 5 = only recognisable to experienced players.
+  difficulty    Int          @default(2)
+  createdById   String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  country   Country      @relation(fields: [countryCode], references: [code], onDelete: Cascade)
+  createdBy User?        @relation("MetaAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  cards     ReviewCard[]
+  logs      ReviewLog[]
+  decks     DeckMeta[]
+
+  @@index([countryCode])
+  @@index([category])
+  @@index([isPublished])
+}
+
+/// A named set of metas: a themed collection or a time-boxed event.
+model Deck {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  nameEn        String
+  nameTr        String
+  descriptionEn String    @default("")
+  descriptionTr String    @default("")
+  coverImageUrl String?
+  coverImageKey String?
+  isPublished   Boolean   @default(false)
+  /// Set both to run the deck as an event with a window.
+  startsAt      DateTime?
+  endsAt        DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  metas DeckMeta[]
+
+  @@index([isPublished])
+}
+
+model DeckMeta {
+  deckId   String
+  metaId   String
+  position Int    @default(0)
+
+  deck Deck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  meta Meta @relation(fields: [metaId], references: [id], onDelete: Cascade)
+
+  @@id([deckId, metaId])
+  @@index([deckId, position])
+}
+
+/// Every write an admin makes, so changes to the deck can be traced.
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String
+  summary   String
+  createdAt DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([entity, entityId])
+}
+
+// ---------------------------------------------------------------------------
+// Spaced repetition
+// ---------------------------------------------------------------------------
+
+model ReviewCard {
+  id             String    @id @default(cuid())
+  userId         String
+  metaId         String
+  repetitions    Int       @default(0)
+  intervalDays   Int       @default(0)
+  easeFactor     Float     @default(2.5)
+  lapses         Int       @default(0)
+  dueAt          DateTime  @default(now())
+  lastReviewedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meta Meta @relation(fields: [metaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, metaId])
+  @@index([userId, dueAt])
+}
+
+model ReviewLog {
+  id                 String   @id @default(cuid())
+  userId             String
+  metaId             String
+  guessedCountryCode String
+  correct            Boolean
+  responseMs         Int
+  grade              Int
+  createdAt          DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meta Meta @relation(fields: [metaId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, correct])
+}
+
+model DailyActivity {
+  id        String   @id @default(cuid())
+  userId    String
+  day       DateTime @db.Date
+  reviews   Int      @default(0)
+  correct   Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, day])
+  @@index([userId, day])
+}

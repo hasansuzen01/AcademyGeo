@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    // These scripts run through Node's type stripping, which requires the
+    // explicit .ts extension that tsc rejects by default.
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": []
+}

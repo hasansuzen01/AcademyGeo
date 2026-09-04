@@ -1,0 +1,157 @@
+@import 'tailwindcss';
+
+/*
+  AcademyGeo is a game, so the interface is built like one: bright ground,
+  chunky pressable shapes, and one road-marking motif reused wherever
+  something measures progress. Colours come off the road itself, centre-line
+  yellow and verge green, rather than a generic app palette.
+*/
+@theme {
+  --color-canvas: #f4f7f5;
+  --color-paper: #ffffff;
+  --color-ink: #17282d;
+  --color-muted: #6d838b;
+  --color-line: #e4ebe7;
+  --color-edge: #d2ddd6;
+
+  --color-go: #4cc15e;
+  --color-go-deep: #35a047;
+  --color-paint: #ffc93c;
+  --color-paint-deep: #e0a500;
+  --color-stop: #ff5a4e;
+  --color-stop-deep: #d93a2e;
+  --color-sky: #35a7ff;
+
+  --font-display: var(--font-nunito), 'Trebuchet MS', sans-serif;
+  --font-sans: var(--font-nunito), system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', monospace;
+
+  --radius-card: 20px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-paint);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-sky);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* The signature: every pressable thing sits on a thick bottom edge and
+     compresses when pushed, the way a physical button would. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 16px;
+    border-bottom-width: 4px;
+    border-bottom-style: solid;
+    padding: 0.75rem 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    transition:
+      transform 80ms ease,
+      border-bottom-width 80ms ease,
+      background-color 120ms ease;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-go {
+    background-color: var(--color-go);
+    border-bottom-color: var(--color-go-deep);
+    color: #ffffff;
+  }
+
+  .btn-paint {
+    background-color: var(--color-paint);
+    border-bottom-color: var(--color-paint-deep);
+    color: var(--color-ink);
+  }
+
+  .btn-stop {
+    background-color: var(--color-stop);
+    border-bottom-color: var(--color-stop-deep);
+    color: #ffffff;
+  }
+
+  .btn-quiet {
+    background-color: var(--color-paper);
+    border: 2px solid var(--color-edge);
+    border-bottom-width: 4px;
+    color: var(--color-muted);
+  }
+
+  .btn-quiet:hover:not(:disabled) {
+    background-color: var(--color-canvas);
+  }
+
+  /* Cards and panels carry the same thick bottom edge so the whole surface
+     reads as one physical set of pieces. */
+  .card {
+    background-color: var(--color-paper);
+    border: 2px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  .card-raised {
+    background-color: var(--color-paper);
+    border: 2px solid var(--color-line);
+    border-bottom-width: 4px;
+    border-radius: var(--radius-card);
+  }
+
+  /* A painted centre line. Used for session progress and the streak strip. */
+  .centre-line {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--color-paint) 0 26px,
+      transparent 26px 46px
+    );
+  }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

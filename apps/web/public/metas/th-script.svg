@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img">
+  <rect width="640" height="400" rx="28" fill="#eef3f0"/>
+  <rect x="312" y="270" width="16" height="130" fill="#9fb0b6"/>
+  <rect x="90" y="80" width="460" height="190" rx="8" fill="#15803d" stroke="#f8fafc" stroke-width="6"/>
+  <text x="320" y="193" fill="#f8fafc" font-family="Inter, Noto Sans, Arial, sans-serif" font-size="52" font-weight="600" text-anchor="middle">กรุงเทพฯ 45</text>
+</svg>
