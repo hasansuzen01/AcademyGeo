@@ -8,6 +8,7 @@ import { useCallback, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { type AnswerResult, type QueueCard, fetchQueue, submitAnswer } from '@/lib/api';
 import { useSession } from '@/lib/auth-client';
+import { playEffect } from '@/lib/sound';
 import { useLoad } from '@/lib/use-load';
 
 import { Flashcard } from './flashcard';
@@ -74,6 +75,7 @@ export function PlaySession({ deckSlug }: { deckSlug?: string } = {}) {
         responseMs: answered - startedAt,
       });
       setResult(answer);
+      playEffect(answer.correct ? 'correct' : 'wrong');
       if (answer.correct) setScore((current) => current + 1);
     } catch {
       setGuessedCode(null);
@@ -86,6 +88,7 @@ export function PlaySession({ deckSlug }: { deckSlug?: string } = {}) {
 
   function next() {
     if (index + 1 >= cards.length) {
+      playEffect('finish');
       setPhase('done');
       return;
     }
@@ -163,8 +166,8 @@ export function PlaySession({ deckSlug }: { deckSlug?: string } = {}) {
   if (!card) return null;
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-6">
+    <div>
+      <div className="mx-auto mb-6 max-w-3xl">
         <SessionProgress done={index + (result ? 1 : 0)} total={cards.length} />
       </div>
 

@@ -14,7 +14,9 @@
     "streak": "Day streak",
     "atlas": "Atlas",
     "leaderboard": "Board",
-    "collections": "Collections"
+    "collections": "Collections",
+    "soundOn": "Turn sound on",
+    "soundOff": "Turn sound off"
   },
   "landing": {
     "eyebrow": "Static clue training",
@@ -78,7 +80,10 @@
     "summaryDashboard": "See your progress",
     "filterAll": "All clues",
     "elapsed": "Elapsed",
-    "summaryPerfect": "Clean sweep"
+    "summaryPerfect": "Clean sweep",
+    "coveredTitle": "Picture gone",
+    "coveredBody": "Answer from what you saw.",
+    "versus": "VS"
   },
   "dashboard": {
     "title": "Progress",
@@ -617,6 +622,16 @@
         "name": "Weak spots",
         "rule": "15 cards",
         "blurb": "Built from the countries you actually get wrong. The more you miss Norway, the more Norway you get."
+      },
+      "DUEL": {
+        "name": "Duel",
+        "rule": "20 cards, two answers",
+        "blurb": "One picture, two countries, and they are the two you keep mixing up. No time to reason it through, which is the point."
+      },
+      "FLASH": {
+        "name": "Flash",
+        "rule": "15 cards, from memory",
+        "blurb": "The picture is taken away before you answer, and the look you get shortens with every card you win."
       }
     },
     "hud": {
@@ -660,12 +675,21 @@
       "DAILY": "Daily",
       "RUSH": "Rush",
       "SURVIVAL": "Survival",
-      "DRILL": "Weak spots"
+      "DRILL": "Weak spots",
+      "DUEL": "Duel",
+      "FLASH": "Flash"
     },
     "windows": {
       "all": "All time",
       "week": "This week"
-    }
+    },
+    "global": "Everyone",
+    "level": "Level {level}",
+    "levelAndXp": "Level {level} · {xp} XP",
+    "yourRank": "You are {rank} of {total}.",
+    "playerCount": "{total} players",
+    "previous": "Back",
+    "next": "Next"
   },
   "atlas": {
     "title": "Atlas",
@@ -688,7 +712,14 @@
     "drivingSide": {
       "LEFT": "The left",
       "RIGHT": "The right"
-    }
+    },
+    "mapLabel": "World map. Countries with clues can be opened.",
+    "mapHint": "Pick a country off the map, or search for one below. Scroll over the map to zoom, drag to move.",
+    "mapNoClues": "nothing written up yet",
+    "listTitle": "Or search the list",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Show the whole map"
   },
   "progress": {
     "level": "Level",

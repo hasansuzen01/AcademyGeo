@@ -49,6 +49,8 @@ export function AtlasBrowser({ countries }: { countries: AtlasCountry[] }) {
 
   return (
     <div>
+      <h2 className="mb-3 font-display text-lg font-900 tracking-tight">{t('listTitle')}</h2>
+
       <div className="relative mb-4">
         <Search className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted" aria-hidden />
         <input

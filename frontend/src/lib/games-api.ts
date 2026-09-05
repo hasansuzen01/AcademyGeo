@@ -1,7 +1,14 @@
 import { type QueueCard, apiFetch } from './api';
 
 /** Practice is played through /review; these are the scored runs. */
-export const SCORED_MODES = ['RUSH', 'SURVIVAL', 'DAILY', 'DRILL'] as const;
+export const SCORED_MODES = [
+  'DAILY',
+  'RUSH',
+  'SURVIVAL',
+  'DUEL',
+  'FLASH',
+  'DRILL',
+] as const;
 export type ScoredMode = (typeof SCORED_MODES)[number];
 
 export type PlayMode = 'PRACTICE' | ScoredMode;
@@ -92,6 +99,22 @@ export interface Leaderboard {
 
 export type LeaderboardWindow = 'all' | 'week';
 
+export interface GlobalEntry {
+  rank: number;
+  userId: string;
+  name: string;
+  image: string | null;
+  xp: number;
+  level: number;
+}
+
+/** One table for the whole site, ranked on experience. */
+export interface GlobalBoard {
+  entries: GlobalEntry[];
+  total: number;
+  you: GlobalEntry | null;
+}
+
 export function startRun(body: {
   mode: ScoredMode;
   category?: string;
@@ -129,4 +152,8 @@ export function fetchDailyStatus() {
 
 export function fetchLeaderboard(mode: ScoredMode, window: LeaderboardWindow) {
   return apiFetch<Leaderboard>(`/games/leaderboard?mode=${mode}&window=${window}`);
+}
+
+export function fetchGlobalRanking(skip: number, take: number) {
+  return apiFetch<GlobalBoard>(`/games/ranking?skip=${skip}&take=${take}`);
 }

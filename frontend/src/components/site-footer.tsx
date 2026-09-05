@@ -18,7 +18,7 @@ export async function SiteFooter({ locale }: { locale: string }) {
 
   return (
     <footer className="mt-20 border-t-2 border-line bg-paper">
-      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-5 py-10">
+      <div className="page-shell flex flex-col gap-6 px-5 py-10">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="font-display text-lg font-900 tracking-tight">{site.siteName}</p>

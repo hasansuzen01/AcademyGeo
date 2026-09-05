@@ -1,6 +1,15 @@
 'use client';
 
-import { Brain, CalendarDays, ChevronRight, Crosshair, Heart, Timer } from 'lucide-react';
+import {
+  Brain,
+  CalendarDays,
+  ChevronRight,
+  Crosshair,
+  Heart,
+  Swords,
+  Timer,
+  Zap,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 
@@ -16,6 +25,8 @@ interface ModeCard {
   icon: React.ReactNode;
   /** The stripe down the left edge, so the modes are told apart at a glance. */
   accent: string;
+  /** The same colour again behind the icon, at a weight text can sit on. */
+  tint: string;
 }
 
 const MODES: ModeCard[] = [
@@ -24,30 +35,49 @@ const MODES: ModeCard[] = [
     href: '/play/practice',
     icon: <Brain className="size-6" aria-hidden />,
     accent: 'bg-go',
+    tint: 'bg-go/15 text-go-deep',
   },
   {
     mode: 'DAILY',
     href: '/play/daily',
     icon: <CalendarDays className="size-6" aria-hidden />,
     accent: 'bg-paint',
+    tint: 'bg-paint/25 text-paint-deep',
   },
   {
     mode: 'RUSH',
     href: '/play/rush',
     icon: <Timer className="size-6" aria-hidden />,
     accent: 'bg-sky',
+    tint: 'bg-sky/15 text-sky',
   },
   {
     mode: 'SURVIVAL',
     href: '/play/survival',
     icon: <Heart className="size-6" aria-hidden />,
     accent: 'bg-stop',
+    tint: 'bg-stop/15 text-stop-deep',
+  },
+  {
+    mode: 'DUEL',
+    href: '/play/duel',
+    icon: <Swords className="size-6" aria-hidden />,
+    accent: 'bg-paint-deep',
+    tint: 'bg-paint-deep/15 text-paint-deep',
+  },
+  {
+    mode: 'FLASH',
+    href: '/play/flash',
+    icon: <Zap className="size-6" aria-hidden />,
+    accent: 'bg-go-deep',
+    tint: 'bg-go-deep/15 text-go-deep',
   },
   {
     mode: 'DRILL',
     href: '/play/drill',
     icon: <Crosshair className="size-6" aria-hidden />,
     accent: 'bg-ink',
+    tint: 'bg-ink/10 text-ink',
   },
 ];
 
@@ -72,9 +102,9 @@ export function ModeHub() {
           <Link
             key={card.mode}
             href={card.href}
+            style={{ animationDelay: `${index * 45}ms` }}
             className={cn(
-              'card-raised group relative flex gap-4 overflow-hidden p-5 transition-transform',
-              'hover:-translate-y-0.5 focus-visible:-translate-y-0.5',
+              'card-raised card-lift rise-in relative flex gap-4 overflow-hidden p-5',
               // The first card is the one most people want, so it spans the
               // row on a wide screen instead of sharing it.
               index === 0 && 'sm:col-span-2',
@@ -82,7 +112,12 @@ export function ModeHub() {
           >
             <span className={cn('absolute inset-y-0 left-0 w-1.5', card.accent)} aria-hidden />
 
-            <span className="mt-0.5 flex size-12 shrink-0 items-center justify-center rounded-2xl bg-canvas text-ink">
+            <span
+              className={cn(
+                'mt-0.5 flex size-12 shrink-0 items-center justify-center rounded-2xl',
+                card.tint,
+              )}
+            >
               {card.icon}
             </span>
 
@@ -111,7 +146,7 @@ export function ModeHub() {
 
       <Link
         href="/collections"
-        className="card group flex items-center justify-between gap-4 p-5 sm:col-span-2"
+        className="card card-lift flex items-center justify-between gap-4 p-5 sm:col-span-2"
       >
         <span>
           <span className="block font-display font-900 tracking-tight text-ink">

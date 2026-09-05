@@ -1,16 +1,21 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, X } from 'lucide-react';
+import { Check, EyeOff, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 import type { QueueCard } from '@/lib/api';
 import { imageFitClass } from '@/lib/card-image';
 import { cn } from '@/lib/cn';
+import { playEffect } from '@/lib/sound';
 import { useElementHeight } from '@/lib/use-element-height';
 
 import { RoadTimer } from './road-timer';
+
+/** Two answers means a duel, which is laid out as a stand-off rather than a list. */
+const DUEL_CHOICES = 2;
 
 /** What every mode knows about an answer once it has been graded. */
 export interface CardResult {
@@ -66,66 +71,118 @@ export function Flashcard({
   // height. A long explanation makes it taller than any fixed guess.
   const [barRef, barHeight] = useElementHeight<HTMLDivElement>();
 
+  const covered = useCover(card.metaId, card.revealMs, result !== null);
+  const isDuel = card.choices.length === DUEL_CHOICES;
+  const name = (choice: QueueCard['choices'][number]) =>
+    locale === 'tr' ? choice.nameTr : choice.nameEn;
+
   return (
     <div style={{ paddingBottom: barHeight + 24 }}>
-      <div className="card-raised overflow-hidden">
-        <div className="flex items-center justify-between gap-3 border-b-2 border-line px-5 py-3">
-          <span className="rounded-full bg-canvas px-3 py-1 text-xs font-900 text-muted">
-            {categories(card.category)}
-          </span>
-          <RoadTimer startedAt={startedAt} frozenAt={answeredAt ?? undefined} />
-        </div>
+      <div className="lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start lg:gap-8">
+        <div className="card-raised overflow-hidden">
+          <div className="flex items-center justify-between gap-3 border-b-2 border-line px-5 py-3">
+            <span className="rounded-full bg-canvas px-3 py-1 text-xs font-900 text-muted">
+              {categories(card.category)}
+            </span>
+            <RoadTimer startedAt={startedAt} frozenAt={answeredAt ?? undefined} />
+          </div>
 
-        <div className="relative aspect-[8/5] w-full bg-canvas">
-          <AnimatePresence initial={false} mode="wait">
-            <motion.div
-              key={card.metaId}
-              initial={{ opacity: 0, scale: 0.96, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0"
-            >
-              <Image
-                src={card.imageUrl}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 640px"
-                className={imageFitClass(card.imageSource)}
-                priority={index === 0}
-              />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
+          <div className="relative aspect-[8/5] w-full overflow-hidden bg-canvas">
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                key={card.metaId}
+                initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={card.imageUrl}
+                  alt=""
+                  fill
+                  sizes="(max-width: 768px) 100vw, 640px"
+                  className={imageFitClass(card.imageSource)}
+                  priority={index === 0}
+                />
+              </motion.div>
+            </AnimatePresence>
 
-      <h2 className="mt-7 mb-4 text-center font-display text-2xl font-900 tracking-tight">
-        {t('prompt')}
-      </h2>
+            {card.revealMs !== null && !covered && !result && (
+              <RevealBar key={card.metaId} revealMs={card.revealMs} />
+            )}
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {card.choices.map((choice) => {
-          const isAnswer = result?.country.code === choice.code;
-          const isGuess = guessedCode === choice.code;
-
-          return (
-            <button
-              key={choice.code}
-              type="button"
-              disabled={pending || result !== null}
-              onClick={() => onGuess(choice.code)}
-              className={cn(
-                'btn btn-quiet justify-start px-5 py-4 text-base text-ink',
-                !result && 'hover:border-sky',
-                result && isAnswer && 'border-go bg-go/15 font-900 text-go-deep',
-                result && isGuess && !isAnswer && 'border-stop bg-stop/15 font-900 text-stop-deep',
-                result && !isAnswer && !isGuess && 'opacity-40',
+            <AnimatePresence>
+              {covered && (
+                <motion.div
+                  initial={{ y: '-100%' }}
+                  animate={{ y: 0 }}
+                  exit={{ y: '-100%' }}
+                  transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-ink text-paper"
+                >
+                  <EyeOff className="size-8" aria-hidden />
+                  <p className="font-display text-sm font-900">{t('coveredTitle')}</p>
+                  <p className="text-xs opacity-70">{t('coveredBody')}</p>
+                </motion.div>
               )}
-            >
-              {locale === 'tr' ? choice.nameTr : choice.nameEn}
-            </button>
-          );
-        })}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="mt-7 mb-4 text-center font-display text-2xl font-900 tracking-tight lg:mt-0">
+            {t('prompt')}
+          </h2>
+
+          {isDuel ? (
+            <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {card.choices.map((choice, side) => (
+                <motion.button
+                  key={`${card.metaId}-${choice.code}`}
+                  type="button"
+                  initial={{ opacity: 0, x: side === 0 ? -40 : 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: side * 0.06 }}
+                  disabled={pending || result !== null}
+                  onClick={() => onGuess(choice.code)}
+                  className={cn(
+                    'btn btn-quiet min-h-28 flex-col justify-center px-5 py-6 text-center',
+                    'font-display text-xl font-900 text-ink',
+                    !result && 'hover:bg-canvas',
+                    choiceTone(result, choice.code, guessedCode),
+                  )}
+                >
+                  {name(choice)}
+                </motion.button>
+              ))}
+
+              <span
+                aria-hidden
+                className="pointer-events-none absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-line bg-paper px-3 py-1 font-display text-xs font-900 text-muted sm:block"
+              >
+                {t('versus')}
+              </span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {card.choices.map((choice) => (
+                <button
+                  key={choice.code}
+                  type="button"
+                  disabled={pending || result !== null}
+                  onClick={() => onGuess(choice.code)}
+                  className={cn(
+                    'btn btn-quiet justify-start px-5 py-4 text-base text-ink',
+                    choiceTone(result, choice.code, guessedCode),
+                  )}
+                >
+                  {name(choice)}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <AnimatePresence>
@@ -141,7 +198,7 @@ export function Flashcard({
               result.correct ? 'border-go bg-go-wash' : 'border-stop bg-stop-wash',
             )}
           >
-            <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center">
+            <div className="page-shell flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center">
               <span
                 className={cn(
                   'flex size-11 shrink-0 items-center justify-center rounded-full',
@@ -191,9 +248,57 @@ export function Flashcard({
         )}
       </AnimatePresence>
 
-      {showCounter && (
-        <p className="sr-only">{t('cardCounter', { current: index + 1, total })}</p>
-      )}
+      {showCounter && <p className="sr-only">{t('cardCounter', { current: index + 1, total })}</p>}
+    </div>
+  );
+}
+
+/**
+ * How an answer button reads once the answer is in: the right one turns green,
+ * the one that was picked instead turns red, and the rest step back.
+ */
+function choiceTone(result: CardResult | null, code: string, guessedCode: string | null): string {
+  if (!result) return 'hover:border-sky';
+  if (result.country.code === code) return 'border-go bg-go/15 font-900 text-go-deep';
+  if (guessedCode === code) return 'border-stop bg-stop/15 font-900 text-stop-deep';
+
+  return 'opacity-40';
+}
+
+/**
+ * Whether the picture has been taken away.
+ *
+ * It comes back once the answer is in, because the point of covering it was to
+ * make the player commit, not to stop them learning from what they missed.
+ */
+function useCover(cardKey: string, revealMs: number | null, answered: boolean): boolean {
+  // Which card the cover belongs to, rather than a plain boolean: a new card
+  // is uncovered because its key does not match, with nothing to reset.
+  const [coveredCard, setCoveredCard] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (revealMs === null) return;
+
+    const id = window.setTimeout(() => {
+      playEffect('cover');
+      setCoveredCard(cardKey);
+    }, revealMs);
+    return () => window.clearTimeout(id);
+  }, [cardKey, revealMs]);
+
+  return coveredCard === cardKey && !answered;
+}
+
+/** The strip across the picture that runs out as the look runs out. */
+function RevealBar({ revealMs }: { revealMs: number }) {
+  return (
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-ink/15">
+      <motion.div
+        className="h-full bg-paint"
+        initial={{ width: '100%' }}
+        animate={{ width: '0%' }}
+        transition={{ duration: revealMs / 1000, ease: 'linear' }}
+      />
     </div>
   );
 }

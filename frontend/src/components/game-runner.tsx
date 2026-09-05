@@ -12,6 +12,7 @@ import {
   fetchActiveRun,
   startRun,
 } from '@/lib/games-api';
+import { playEffect } from '@/lib/sound';
 import { useLoad } from '@/lib/use-load';
 
 import { Flashcard } from './flashcard';
@@ -93,10 +94,12 @@ export function GameRunner({ mode, deckSlug }: { mode: ScoredMode; deckSlug?: st
       // The clock can stop between the click and the request landing. There is
       // nothing to show for that answer, so the run just ends.
       if (!graded.graded) {
+        playEffect('finish');
         setPhase('done');
         return;
       }
 
+      playEffect(soundFor(graded.graded.correct, graded.run.streak));
       setAnswer(graded.graded);
       setLastCard(graded.finished);
     } catch {
@@ -110,6 +113,7 @@ export function GameRunner({ mode, deckSlug }: { mode: ScoredMode; deckSlug?: st
 
   function next() {
     if (!run || run.finished) {
+      playEffect('finish');
       setPhase('done');
       return;
     }
@@ -122,6 +126,7 @@ export function GameRunner({ mode, deckSlug }: { mode: ScoredMode; deckSlug?: st
 
   /** The clock ran out with no answer on screen: bank the run and show it. */
   const timeUp = useCallback(async () => {
+    playEffect('finish');
     const finished = await fetchActiveRun().catch(() => null);
     setRun((current) => finished ?? current);
     setPhase('done');
@@ -146,7 +151,7 @@ export function GameRunner({ mode, deckSlug }: { mode: ScoredMode; deckSlug?: st
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div>
       <RunHud run={run} />
 
       {run.endsAt && <TimeGuard endsAt={run.endsAt} onExpired={timeUp} />}
@@ -177,6 +182,15 @@ export function GameRunner({ mode, deckSlug }: { mode: ScoredMode; deckSlug?: st
       />
     </div>
   );
+}
+
+/** Every fifth answer in a row gets a brighter noise than the one before it. */
+const STREAK_CHIME_EVERY = 5;
+
+function soundFor(correct: boolean, streak: number): 'correct' | 'wrong' | 'streak' {
+  if (!correct) return 'wrong';
+
+  return streak > 0 && streak % STREAK_CHIME_EVERY === 0 ? 'streak' : 'correct';
 }
 
 /**

@@ -36,7 +36,12 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
     throw new ApiError(detail ?? `Request failed: ${path}`, response.status);
   }
 
-  return (await response.json()) as T;
+  // An endpoint with nothing to return answers with no body at all, and
+  // reading that as JSON throws "Unexpected end of JSON input". Asking for the
+  // text first turns "nothing" into null, which is what the caller expects.
+  const body = await response.text();
+
+  return (body === '' ? null : JSON.parse(body)) as T;
 }
 
 export interface QueueCard {
@@ -45,6 +50,8 @@ export interface QueueCard {
   imageUrl: string;
   imageSource: ImageSource;
   difficulty: number;
+  /** How long the picture stays up before it is covered. Null means it stays. */
+  revealMs: number | null;
   choices: Array<{ code: string; nameEn: string; nameTr: string }>;
 }
 

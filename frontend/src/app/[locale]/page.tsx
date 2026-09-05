@@ -32,8 +32,8 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <section className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-14 pb-16 lg:grid-cols-[1.05fr_auto] lg:items-center lg:pt-20">
-        <div>
+      <section className="page-shell grid gap-12 px-5 pt-14 pb-16 lg:grid-cols-[1.05fr_auto] lg:items-center lg:pt-20">
+        <div className="rise-in">
           <span className="inline-flex items-center rounded-full bg-paint/25 px-3 py-1 text-xs font-900 tracking-wide text-paint-deep uppercase">
             {t('eyebrow')}
           </span>
@@ -64,13 +64,13 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           </dl>
         </div>
 
-        <div className="flex justify-center lg:justify-end">
+        <div className="rise-in flex justify-center lg:justify-end" style={{ animationDelay: '120ms' }}>
           <LandingDemo />
         </div>
       </section>
 
       <section id="how" className="border-y-2 border-line bg-paper py-16">
-        <div className="mx-auto w-full max-w-6xl px-5">
+        <div className="page-shell px-5">
           <h2 className="font-display text-3xl font-900 tracking-tight">{t('howTitle')}</h2>
 
           {/* The three steps sit on a painted centre line: the order matters, and
@@ -98,7 +98,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 py-16">
+      <section className="page-shell px-5 py-16">
         <h2 className="font-display text-3xl font-900 tracking-tight">{t('catalogueTitle')}</h2>
         <p className="mt-3 max-w-xl leading-relaxed text-muted">{t('catalogueBody')}</p>
 
@@ -122,13 +122,13 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       </section>
 
       <section className="border-t-2 border-line bg-paper py-16">
-        <div className="mx-auto w-full max-w-6xl px-5">
+        <div className="page-shell px-5">
           <h2 className="font-display text-3xl font-900 tracking-tight">{t('modesTitle')}</h2>
           <p className="mt-3 max-w-xl leading-relaxed text-muted">{t('modesBody')}</p>
 
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {MODES.map((mode) => (
-              <li key={mode} className="card px-4 py-4">
+              <li key={mode} className="card card-lift px-4 py-4">
                 <p className="eyebrow">{games(`modes.${mode}.rule`)}</p>
                 <h3 className="mt-1 font-display text-lg font-900 tracking-tight">
                   {games(`modes.${mode}.name`)}
@@ -143,7 +143,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       </section>
 
       <footer className="border-t-2 border-line bg-paper py-10">
-        <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-5">
+        <div className="page-shell flex items-center gap-4 px-5">
           <span className="centre-line h-2 w-14 rounded-full" />
           <p className="text-sm font-700 text-muted">{t('footer')}</p>
         </div>

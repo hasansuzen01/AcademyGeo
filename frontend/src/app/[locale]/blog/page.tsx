@@ -35,14 +35,14 @@ export default async function BlogIndex({ params }: { params: Promise<{ locale: 
   ]);
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-14">
+    <div className="page-shell px-5 py-14">
       <h1 className="font-display text-4xl font-900 tracking-tight">{t('title')}</h1>
-      <p className="mt-3 text-muted">{t('intro')}</p>
+      <p className="mt-3 max-w-2xl text-muted">{t('intro')}</p>
 
       {posts.length === 0 ? (
         <p className="card-raised mt-10 px-6 py-12 text-center text-muted">{t('empty')}</p>
       ) : (
-        <ul className="mt-10 space-y-5">
+        <ul className="mt-10 grid gap-5 lg:grid-cols-2">
           {posts.map((post) => (
             <li key={post.id}>
               <Link

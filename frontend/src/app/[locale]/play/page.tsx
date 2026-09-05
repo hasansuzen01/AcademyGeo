@@ -8,7 +8,7 @@ export default async function PlayPage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations('games');
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-5 py-12">
+    <div className="page-shell px-5 py-12">
       <header className="mb-8">
         <h1 className="font-display text-3xl font-800 tracking-tight sm:text-4xl">
           {t('hub.title')}

@@ -14,7 +14,7 @@ export default async function PracticePage({
   const t = await getTranslations('play');
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-12">
+    <div className="page-shell px-5 py-12">
       <h1 className="mb-8 text-center font-display text-3xl font-800 tracking-tight">
         {t('title')}
       </h1>

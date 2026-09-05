@@ -8,7 +8,14 @@ const CATEGORIES = Object.values(MetaCategory);
 const REGIONS = Object.values(Region);
 
 /** Practice is played through /review; only these are scored runs. */
-export const SCORED_MODES = ['RUSH', 'SURVIVAL', 'DAILY', 'DRILL'] as const;
+export const SCORED_MODES = [
+  'DAILY',
+  'RUSH',
+  'SURVIVAL',
+  'DUEL',
+  'FLASH',
+  'DRILL',
+] as const;
 export type ScoredMode = (typeof SCORED_MODES)[number];
 
 /** Matches the slug shape the admin panel writes. */
@@ -64,4 +71,17 @@ export class LeaderboardQuery {
 
 export function isScoredMode(mode: GameMode): mode is ScoredMode {
   return (SCORED_MODES as readonly string[]).includes(mode);
+}
+
+export class GlobalBoardQuery {
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  skip?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  take?: number;
 }

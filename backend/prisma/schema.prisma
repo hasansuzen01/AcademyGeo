@@ -54,6 +54,8 @@ model User {
   auditLogs     AuditLog[]
 
   @@index([status])
+  /// The site-wide ranking orders every active account by this.
+  @@index([xp])
 }
 
 model Session {
@@ -324,6 +326,8 @@ enum GameMode {
   SURVIVAL
   DAILY
   DRILL
+  DUEL
+  FLASH
 }
 
 /// One scored run. The server deals the cards and keeps the score, so a

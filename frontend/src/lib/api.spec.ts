@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ApiError, apiFetch } from './api';
 
-function answerWith(body: string, init?: ResponseInit) {
+// 204 is only legal with a null body, which is exactly what it means.
+function answerWith(body: string | null, init?: ResponseInit) {
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => new Response(body, init)),
@@ -29,7 +30,7 @@ describe('apiFetch', () => {
   });
 
   it('reads a 204 as null', async () => {
-    answerWith('', { status: 204 });
+    answerWith(null, { status: 204 });
 
     await expect(apiFetch('/games/active')).resolves.toBeNull();
   });

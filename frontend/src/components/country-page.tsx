@@ -38,7 +38,7 @@ export async function CountryPage({ country }: { country: AtlasCountryDetail }) 
   ].flatMap((fact) => (fact ? [fact] : []));
 
   return (
-    <article className="mx-auto w-full max-w-4xl px-5 py-12">
+    <article className="page-shell px-5 py-12">
       <Link href="/atlas" className="text-sm font-800 text-muted hover:text-ink">
         {t('backToIndex')}
       </Link>

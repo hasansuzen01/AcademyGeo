@@ -3,11 +3,13 @@ import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import type { AuthenticatedUser } from '../auth/session.guard.js';
 import { SessionGuard } from '../auth/session.guard.js';
-import { LeaderboardQuery, RunAnswerDto, StartRunDto } from './dto.js';
+import { GlobalBoardQuery, LeaderboardQuery, RunAnswerDto, StartRunDto } from './dto.js';
 import { GamesService } from './games.service.js';
 import { LeaderboardService } from './leaderboard.service.js';
 
 const HISTORY_SIZE = 20;
+/** How many players a page of the site-wide ranking holds. */
+const BOARD_PAGE_SIZE = 25;
 
 @Controller('games')
 @UseGuards(SessionGuard)
@@ -45,5 +47,10 @@ export class GamesController {
   @Get('leaderboard')
   board(@CurrentUser() user: AuthenticatedUser, @Query() query: LeaderboardQuery) {
     return this.leaderboard.getBoard(query.mode, query.window ?? 'all', user.id);
+  }
+
+  @Get('ranking')
+  ranking(@CurrentUser() user: AuthenticatedUser, @Query() query: GlobalBoardQuery) {
+    return this.leaderboard.getGlobalBoard(user.id, query.take ?? BOARD_PAGE_SIZE, query.skip ?? 0);
   }
 }

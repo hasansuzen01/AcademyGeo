@@ -29,7 +29,7 @@ export default async function ModePage({
   const t = await getTranslations('games');
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-12">
+    <div className="page-shell px-5 py-12">
       <header className="mx-auto mb-8 max-w-2xl text-center">
         <h1 className="font-display text-3xl font-800 tracking-tight">
           {t(`modes.${scoredMode}.name`)}

@@ -3,6 +3,9 @@ import { type Locale, routing } from './routing';
 /** Country codes whose visitors get the Turkish interface. */
 const TURKISH_COUNTRIES = new Set(['TR']);
 
+/** Everyone the platform can place somewhere else reads the English one. */
+const ELSEWHERE: Locale = 'en';
+
 const GEO_HEADERS = [
   'x-vercel-ip-country',
   'cf-ipcountry',
@@ -11,13 +14,16 @@ const GEO_HEADERS = [
 ] as const;
 
 /**
- * Picks the interface language from the visitor's country. Hosting platforms
- * put the resolved country in a header; when none is present the app falls
- * back to DEFAULT_COUNTRY and finally to English.
+ * Picks the interface language from the visitor's country.
+ *
+ * Turkish unless the visitor is somewhere else: hosting platforms put the
+ * resolved country in a header, and a visitor with no header at all is more
+ * likely to be here than anywhere in particular.
  */
 export function localeForCountry(country: string | null | undefined): Locale {
   if (!country) return routing.defaultLocale;
-  return TURKISH_COUNTRIES.has(country.toUpperCase()) ? 'tr' : routing.defaultLocale;
+
+  return TURKISH_COUNTRIES.has(country.toUpperCase()) ? 'tr' : ELSEWHERE;
 }
 
 export function countryFromHeaders(headers: Headers): string | null {

@@ -189,6 +189,27 @@ describe('Scored runs', () => {
     await expect(games.start(userId, { mode: 'DAILY' })).rejects.toThrow();
   });
 
+  // React re-runs an effect in development, so opening the daily fires two
+  // start requests at once. Both used to pass the "not played today" check and
+  // both tried to insert, which broke the unique index on (userId, day).
+  it('deals one daily challenge when two requests arrive at once', async () => {
+    const other = await prisma.user.create({
+      data: { name: 'Race tester', email: `race-${Date.now()}@example.test` },
+    });
+
+    try {
+      const [first, second] = await Promise.all([
+        games.start(other.id, { mode: 'DAILY' }),
+        games.start(other.id, { mode: 'DAILY' }),
+      ]);
+
+      expect(first.runId).toBe(second.runId);
+      expect(await prisma.gameRun.count({ where: { userId: other.id } })).toBe(1);
+    } finally {
+      await prisma.user.delete({ where: { id: other.id } }).catch(() => undefined);
+    }
+  });
+
   it('records the same answer against the spaced repetition schedule', async () => {
     const run = await games.start(userId, { mode: 'RUSH' });
     const metaId = run.card!.metaId;

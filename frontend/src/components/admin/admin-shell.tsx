@@ -38,12 +38,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const { me, status } = useMe();
 
   if (status === 'loading') {
-    return <div className="mx-auto h-64 w-full max-w-6xl animate-pulse px-5 py-12" />;
+    return <div className="page-shell h-64 animate-pulse px-5 py-12" />;
   }
 
   if (status === 'anonymous') {
     return (
-      <div className="mx-auto w-full max-w-6xl px-5 py-16">
+      <div className="page-shell px-5 py-16">
         <SignInPrompt reason="progress" />
       </div>
     );
@@ -59,7 +59,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl gap-8 px-5 py-10 lg:flex">
+    <div className="page-shell gap-8 px-5 py-10 lg:flex">
       <aside className="lg:w-56 lg:shrink-0">
         <p className="eyebrow">{t('title')}</p>
         <nav className="mt-4 flex gap-1 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">

@@ -14,7 +14,9 @@
     "streak": "Günlük seri",
     "atlas": "Atlas",
     "leaderboard": "Sıralama",
-    "collections": "Koleksiyonlar"
+    "collections": "Koleksiyonlar",
+    "soundOn": "Sesi aç",
+    "soundOff": "Sesi kapat"
   },
   "landing": {
     "eyebrow": "Statik ipucu antrenmanı",
@@ -78,7 +80,10 @@
     "summaryDashboard": "İlerlemeni gör",
     "filterAll": "Tüm ipuçları",
     "elapsed": "Geçen süre",
-    "summaryPerfect": "Tam isabet"
+    "summaryPerfect": "Tam isabet",
+    "coveredTitle": "Görsel kapandı",
+    "coveredBody": "Gördüğün kadarıyla cevapla.",
+    "versus": "VS"
   },
   "dashboard": {
     "title": "İlerleme",
@@ -617,6 +622,16 @@
         "name": "Zayıf noktalar",
         "rule": "15 kart",
         "blurb": "Gerçekten yanlış bildiğin ülkelerden kurulur. Norveç’i ne kadar çok kaçırırsan o kadar çok Norveç gelir."
+      },
+      "DUEL": {
+        "name": "Düello",
+        "rule": "20 kart, iki seçenek",
+        "blurb": "Tek görsel, iki ülke ve bunlar senin sürekli karıştırdığın ikili. Düşünecek zaman yok, zaten amaç da bu."
+      },
+      "FLASH": {
+        "name": "Şimşek",
+        "rule": "15 kart, ezberden",
+        "blurb": "Görsel sen cevaplamadan kapanıyor ve kazandığın her kartla bakma süren biraz daha kısalıyor."
       }
     },
     "hud": {
@@ -660,12 +675,21 @@
       "DAILY": "Günlük",
       "RUSH": "Hız",
       "SURVIVAL": "Hayatta kalma",
-      "DRILL": "Zayıf noktalar"
+      "DRILL": "Zayıf noktalar",
+      "DUEL": "Düello",
+      "FLASH": "Şimşek"
     },
     "windows": {
       "all": "Tüm zamanlar",
       "week": "Bu hafta"
-    }
+    },
+    "global": "Herkes",
+    "level": "Seviye {level}",
+    "levelAndXp": "Seviye {level} · {xp} XP",
+    "yourRank": "{total} oyuncu içinde {rank}. sıradasın.",
+    "playerCount": "{total} oyuncu",
+    "previous": "Geri",
+    "next": "İleri"
   },
   "atlas": {
     "title": "Atlas",
@@ -688,7 +712,14 @@
     "drivingSide": {
       "LEFT": "Solda",
       "RIGHT": "Sağda"
-    }
+    },
+    "mapLabel": "Dünya haritası. İpucu olan ülkeler açılabilir.",
+    "mapHint": "Haritadan bir ülke seç ya da aşağıdan ara. Haritanın üstünde tekerlek yakınlaştırır, sürüklemek gezdirir.",
+    "mapNoClues": "henüz yazılmış bir şey yok",
+    "listTitle": "Ya da listeden ara",
+    "zoomIn": "Yakınlaştır",
+    "zoomOut": "Uzaklaştır",
+    "zoomReset": "Haritanın tamamını göster"
   },
   "progress": {
     "level": "Seviye",

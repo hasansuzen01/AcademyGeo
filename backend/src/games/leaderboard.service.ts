@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import type { GameMode } from '@prisma/client';
+import { type GameMode, Prisma } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service.js';
+import { describeLevel } from '../progress/levels.js';
 import { RedisService } from '../redis/redis.service.js';
 import type { LeaderboardWindow, ScoredMode } from './dto.js';
 import { rankRows } from './leaderboard.js';
@@ -9,6 +10,37 @@ import { rankRows } from './leaderboard.js';
 const BOARD_SIZE = 50;
 const CACHE_TTL_SECONDS = 60;
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Every active player with their place in the site-wide table. RANK gives ties
+ * the same place and skips the ones they took, so a rank always counts the
+ * players above it.
+ */
+const RANKED_USERS = Prisma.sql`
+  SELECT u.id, u.name, u.image, u.xp,
+         RANK() OVER (ORDER BY u.xp DESC)::int AS rank
+  FROM "User" u
+  WHERE u.status = 'ACTIVE'
+`;
+
+interface RankedUserRow {
+  id: string;
+  name: string;
+  image: string | null;
+  xp: number;
+  rank: number;
+}
+
+function toGlobalEntry(row: RankedUserRow): GlobalEntry {
+  return {
+    rank: row.rank,
+    userId: row.id,
+    name: row.name,
+    image: row.image,
+    xp: row.xp,
+    level: describeLevel(row.xp).level,
+  };
+}
 
 interface BestRow {
   userId: string;
@@ -29,6 +61,26 @@ export interface LeaderboardEntry {
   correct: number;
   answered: number;
   playedAt: string;
+}
+
+export interface GlobalEntry {
+  rank: number;
+  userId: string;
+  name: string;
+  image: string | null;
+  xp: number;
+  level: number;
+}
+
+/**
+ * One table for the whole site, ranked on experience. Every mode feeds it, so
+ * nobody can climb it by picking the mode that suits them, and every player
+ * has a place on it from their first answer.
+ */
+export interface GlobalBoard {
+  entries: GlobalEntry[];
+  total: number;
+  you: GlobalEntry | null;
 }
 
 export interface Leaderboard {
@@ -69,6 +121,34 @@ export class LeaderboardService {
       entries,
       you: viewerId ? await this.standing(mode, since, viewerId, entries) : null,
     };
+  }
+
+  /** The whole site, a page at a time, so anyone can find their own line. */
+  async getGlobalBoard(
+    viewerId: string | null,
+    take: number,
+    skip: number,
+  ): Promise<GlobalBoard> {
+    const [rows, total, you] = await Promise.all([
+      this.prisma.$queryRaw<RankedUserRow[]>`
+          SELECT * FROM (${RANKED_USERS}) ranked
+          ORDER BY rank, name
+          LIMIT ${take} OFFSET ${skip}
+        `,
+      this.prisma.user.count({ where: { status: 'ACTIVE' } }),
+      viewerId ? this.globalStanding(viewerId) : Promise.resolve(null),
+    ]);
+
+    return { entries: rows.map(toGlobalEntry), total, you };
+  }
+
+  /** The viewer's own line, wherever it falls in the table. */
+  private async globalStanding(viewerId: string): Promise<GlobalEntry | null> {
+    const rows = await this.prisma.$queryRaw<RankedUserRow[]>`
+        SELECT * FROM (${RANKED_USERS}) ranked WHERE id = ${viewerId}
+      `;
+
+    return rows[0] ? toGlobalEntry(rows[0]) : null;
   }
 
   private async topEntries(mode: ScoredMode, since: Date): Promise<LeaderboardEntry[]> {

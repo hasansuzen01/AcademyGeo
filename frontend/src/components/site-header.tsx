@@ -12,6 +12,7 @@ import { signOut } from '@/lib/auth-client';
 import { cn } from '@/lib/cn';
 
 import { LocaleSwitch } from './locale-switch';
+import { SoundToggle } from './sound-toggle';
 
 export function SiteHeader() {
   const t = useTranslations('nav');
@@ -41,7 +42,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b-2 border-line bg-paper/95 backdrop-blur-md">
-      <div className="mx-auto flex h-[68px] w-full max-w-7xl items-center gap-3 px-4 sm:gap-5 sm:px-5">
+      <div className="page-shell flex h-[68px] items-center gap-3 px-4 sm:gap-5 sm:px-5">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <span className="centre-line h-2 w-11 rounded-full" />
           <span className="hidden font-display text-lg font-900 tracking-tight sm:inline">
@@ -78,6 +79,7 @@ export function SiteHeader() {
             </span>
           )}
 
+          <SoundToggle />
           <LocaleSwitch />
 
           {status === 'ready' ? (

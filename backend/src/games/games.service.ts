@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import type { GameRun } from '@prisma/client';
 
+import { shuffle } from '../common/shuffle.js';
 import { toUtcDay } from '../common/utc-day.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ProgressService } from '../progress/progress.service.js';
@@ -9,7 +10,9 @@ import { type CardView, toCardView } from '../review/card-view.js';
 import { pickDailyMetaIds } from './daily.js';
 import type { ScoredMode, StartRunDto } from './dto.js';
 import { pickDrillMetaIds } from './drill.js';
-import { rulesFor } from './modes.js';
+import { type ConfusionMap, pickDuelOpponent } from './duel.js';
+import { revealWindowMs } from './flash.js';
+import { DUEL_CHOICES, rulesFor } from './modes.js';
 import { type RunState, advanceRun } from './run.js';
 
 /** How deep a hand the open-ended modes are dealt before the clock or the
@@ -97,9 +100,21 @@ export class GamesService {
       throw new BadRequestException('No cards are published for that filter yet');
     }
 
-    const run = await this.prisma.gameRun.create({
-      data: { userId, mode: dto.mode, metaIds, day, deckId: await this.deckIdFor(dto) },
-    });
+    const data = { userId, mode: dto.mode, metaIds, deckId: await this.deckIdFor(dto) };
+
+    // Opening the daily fires two start requests in development, because React
+    // re-runs the effect, and two tabs would do the same in production. Both
+    // pass the check above, so the database settles it: the second insert hits
+    // the unique index and comes back as the row the first one wrote.
+    const run = day
+      ? await this.prisma.gameRun.upsert({
+          where: { userId_day: { userId, day } },
+          create: { ...data, day },
+          // A real field, so Prisma writes INSERT ... ON CONFLICT rather than
+          // reading first and racing all over again.
+          update: { servedAt: new Date() },
+        })
+      : await this.prisma.gameRun.create({ data });
 
     return this.view(run);
   }
@@ -253,18 +268,60 @@ export class GamesService {
         rules.timeLimitMs === null
           ? null
           : new Date(run.startedAt.getTime() + rules.timeLimitMs).toISOString(),
-      card: finished || !metaId ? null : await this.cardFor(metaId),
+      card: finished || !metaId ? null : await this.cardFor(run, metaId),
       finished,
     };
   }
 
-  private async cardFor(metaId: string): Promise<CardView | null> {
+  /**
+   * The card as this mode presents it: two answers in a duel, a shrinking
+   * window in flash, four answers and all the time in the world elsewhere.
+   */
+  private async cardFor(run: GameRun, metaId: string): Promise<CardView | null> {
+    const rules = rulesFor(run.mode);
     const [meta, countries] = await Promise.all([
       this.prisma.meta.findUnique({ where: { id: metaId }, include: { country: true } }),
       this.prisma.country.findMany(),
     ]);
+    if (!meta) return null;
 
-    return meta ? toCardView(meta, countries) : null;
+    const revealMs = rules.hidesPicture ? revealWindowMs(run.streak) : null;
+
+    if (rules.choices !== DUEL_CHOICES) {
+      return toCardView(meta, countries, { choiceCount: rules.choices, revealMs });
+    }
+
+    const opponent = pickDuelOpponent(meta.country, countries, await this.confusions(run.userId));
+
+    return toCardView(meta, countries, {
+      choiceCount: rules.choices,
+      choiceCodes: opponent ? [meta.countryCode, opponent] : undefined,
+      revealMs,
+    });
+  }
+
+  /** Which country this player has been mistaking each country for. */
+  private async confusions(userId: string): Promise<ConfusionMap> {
+    const rows = await this.prisma.$queryRaw<
+      Array<{ actual: string; guessed: string; misses: number }>
+    >`
+        SELECT m."countryCode" AS actual,
+               l."guessedCountryCode" AS guessed,
+               COUNT(*)::int AS misses
+        FROM "ReviewLog" l
+        JOIN "Meta" m ON m.id = l."metaId"
+        WHERE l."userId" = ${userId} AND l.correct = false
+        GROUP BY 1, 2
+        ORDER BY misses DESC
+        LIMIT ${WEAKNESS_SAMPLE}
+      `;
+
+    const map: ConfusionMap = {};
+    for (const row of rows) {
+      map[row.actual] = { ...map[row.actual], [row.guessed]: row.misses };
+    }
+
+    return map;
   }
 
   /** Whether the run can still take an answer, whatever it was left doing. */
@@ -338,15 +395,16 @@ export class GamesService {
 
     // Survival ramps: the easy cards go first, so the run gets harder as the
     // player's remaining lives get more expensive.
+    const ramps = dto.mode === 'SURVIVAL';
     const metas = await this.prisma.meta.findMany({
       where,
       select: { id: true },
-      orderBy: dto.mode === 'SURVIVAL' ? { difficulty: 'asc' } : undefined,
-      take: OPEN_HAND_SIZE,
+      orderBy: ramps ? { difficulty: 'asc' } : undefined,
+      take: ramps ? OPEN_HAND_SIZE : Math.max(OPEN_HAND_SIZE, rulesFor(dto.mode).cardCount ?? 0),
     });
     const ids = metas.map((meta) => meta.id);
 
-    return dto.mode === 'SURVIVAL' ? ids : shuffle(ids);
+    return ramps ? ids : shuffle(ids).slice(0, rulesFor(dto.mode).cardCount ?? ids.length);
   }
 
   /** The collection a run was started from, when it was started from one. */
@@ -390,13 +448,4 @@ function toRunState(run: GameRun): RunState {
     startedAt: run.startedAt.getTime(),
     endedFor: null,
   };
-}
-
-function shuffle(items: string[]): string[] {
-  const copy = [...items];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
 }

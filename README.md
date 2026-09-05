@@ -56,6 +56,8 @@ keeps the score, so a leaderboard row can only be earned by playing.
 | Daily challenge | 10 cards, once a day | The same hand for everyone, seeded from the UTC date. |
 | Rush | 90 seconds | As many as you can name. Speed and a run of correct answers both pay. |
 | Survival | 3 lives | Easy cards first, so the run gets harder as a life gets more expensive. |
+| Duel | 20 cards, two answers | One picture and the two countries this player keeps mixing up. |
+| Flash | 15 cards, from memory | The picture is covered before the answer, and the look shortens with the streak. |
 | Weak spots | 15 cards | Built from the countries the player actually gets wrong. |
 
 An answer scores a flat base, a bonus for answering quickly, a bonus for the
@@ -70,8 +72,19 @@ run back up instead of losing it. Walking away banks whatever the run had, with
 one exception: a half-played daily challenge is left open, because it is the
 only attempt that day.
 
-`/leaderboard` shows one row per player, their best run in the mode, over all
-time or the past week.
+`/leaderboard` opens on the site-wide table, which ranks every account by
+experience: every mode feeds it, so nobody climbs it by picking the mode that
+suits them, and a new player has a place on it from their first answer. The
+other tabs are per mode and show one row per player, their best run in it, over
+all time or the past week.
+
+A duel picks its second country from the pairs this player actually confuses,
+falling back to a neighbour when there is no history to go on. Flash decides
+its own reveal window on the server and shortens it by a third of a second for
+every correct answer in a row, down to a floor of 1.2 seconds. Covering the
+picture is still the browser's job, so the flash board is only as honest as the
+player's browser; the site-wide table is built on experience, which is earned
+one answer at a time and is not worth doctoring.
 
 ## Collections
 
@@ -85,6 +98,23 @@ Membership is a rule rather than a list of slugs, written in
 them instead of quietly going stale. Admins can also build one by hand in
 `/admin/decks`, which is where an event deck with a closing date belongs.
 
+## Sound
+
+The game makes a noise when an answer lands, when a streak reaches five, when
+the picture drops in flash mode, and when a run ends. Nothing is downloaded for
+any of it: the sounds are written as note lists in
+`frontend/src/lib/sound-design.ts` and played through the Web Audio API.
+
+That is deliberate. Synthesised sounds weigh nothing, so there is no audio to
+fetch before the first card; they belong to this project rather than to whoever
+recorded them; and a note list can be read and argued with, which an audio file
+cannot. The rule behind the notes is the one nobody has to be taught: up means
+yes, down means no, and nothing lasts long enough to get in the way.
+
+The speaker in the header turns it all off, remembered in that browser. A
+browser that refuses to remember it still plays, because sound is a
+convenience and a refused write is not an error worth showing anyone.
+
 ## Levels and badges
 
 Every answer earns experience, a correct one earns more, and the harder cards
@@ -97,7 +127,31 @@ nobody can edit cannot drift out of step with the badge it unlocks.
 
 ## Atlas
 
-`/atlas` is the reference half of the site, open to everyone. Each country
+`/atlas` opens on a world map. Countries the deck covers are painted and can
+be clicked; the rest are drawn flat, because a map with holes in it reads as
+broken rather than as unfinished. A search box and the country list sit under
+it, because typing a name is faster than hunting for it.
+
+The map is not a map service. Country borders do not move, so fetching them at
+runtime would buy an outage and a rate limit for nothing. The shapes come from
+Natural Earth by way of the `world-atlas` package, which is public domain, and
+`npm run map:build --workspace frontend` projects them once into
+`frontend/src/lib/world-map.json`. The page then renders that on the server as
+plain SVG paths: no geometry library reaches the browser, no JavaScript is
+needed to use the map, and each country is a real link that can be opened in a
+new tab. Rounded to whole pixels and with Antarctica left out, the whole world
+costs about 29 KB over the wire.
+
+The map zooms, because Luxembourg is four pixels wide at world scale. The wheel
+zooms towards the pointer, dragging moves the view, and there are buttons for
+anyone not using a mouse. Only the viewBox is worked out in the browser: the
+shapes are handed to the client component as children, already rendered on the
+server, so the geometry still never reaches the bundle. The wheel is only
+swallowed when it actually moved the map, so scrolling down a page past a map
+that is already zoomed out carries on down the page instead of stopping dead
+on it.
+
+It is the reference half of the site, open to everyone. Each country
 carries the facts a player checks once they think they know where they are,
 which side of the road, the domain and dialling code, the currency, the
 languages, the coverage generations, and a sentence on what to look at first.
