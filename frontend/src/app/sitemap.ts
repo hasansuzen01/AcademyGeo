@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { SERVER_API_URL } from '@/lib/api-base';
 
+import { fetchAtlasCountries } from '@/lib/atlas-api';
 import { fetchSiteSeo } from '@/lib/content-api';
 import { type SitemapRow, buildSitemap } from '@/lib/sitemap';
 
@@ -17,12 +18,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = await fetchSiteSeo();
   if (!site.sitemapEnabled) return [];
 
-  const [posts, pages] = await Promise.all([
+  const [posts, pages, countries] = await Promise.all([
     fetchRows('/api/blog/sitemap'),
     fetchRows('/api/pages/sitemap'),
+    fetchAtlasCountries().catch(() => []),
   ]);
 
-  return buildSitemap(site.siteUrl, posts, pages, new Date());
+  return buildSitemap(
+    site.siteUrl,
+    posts,
+    pages,
+    new Date(),
+    countries.map((country) => country.code),
+  );
 }
 
 /** One source failing should cost its own rows, not the whole file. */

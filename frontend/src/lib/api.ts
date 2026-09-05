@@ -74,9 +74,14 @@ export interface DashboardStats {
   activity: Array<{ day: string; reviews: number; correct: number }>;
 }
 
-export function fetchQueue(category?: string) {
-  const query = category ? `?category=${encodeURIComponent(category)}` : '';
-  return apiFetch<{ cards: QueueCard[]; generatedAt: string }>(`/review/queue${query}`);
+export function fetchQueue(filter: { category?: string; deckSlug?: string } = {}) {
+  const query = new URLSearchParams();
+  if (filter.category) query.set('category', filter.category);
+  if (filter.deckSlug) query.set('deckSlug', filter.deckSlug);
+
+  const suffix = query.size === 0 ? '' : `?${query.toString()}`;
+
+  return apiFetch<{ cards: QueueCard[]; generatedAt: string }>(`/review/queue${suffix}`);
 }
 
 export function submitAnswer(body: {

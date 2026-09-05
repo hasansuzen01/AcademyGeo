@@ -5,12 +5,24 @@ import { Check, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 
-import type { AnswerResult, QueueCard } from '@/lib/api';
+import type { QueueCard } from '@/lib/api';
 import { imageFitClass } from '@/lib/card-image';
 import { cn } from '@/lib/cn';
 import { useElementHeight } from '@/lib/use-element-height';
 
 import { RoadTimer } from './road-timer';
+
+/** What every mode knows about an answer once it has been graded. */
+export interface CardResult {
+  correct: boolean;
+  country: { code: string; nameEn: string; nameTr: string };
+  explanation: {
+    titleEn: string;
+    titleTr: string;
+    descriptionEn: string;
+    descriptionTr: string;
+  };
+}
 
 interface FlashcardProps {
   card: QueueCard;
@@ -18,12 +30,17 @@ interface FlashcardProps {
   total: number;
   startedAt: number;
   answeredAt: number | null;
-  result: AnswerResult | null;
+  result: CardResult | null;
   guessedCode: string | null;
   pending: boolean;
   onGuess: (countryCode: string) => void;
   onNext: () => void;
   isLast: boolean;
+  /** The one line each mode adds under the explanation: when the card comes
+   *  back in practice, what the answer scored in a run. */
+  footnote?: React.ReactNode;
+  /** Hidden while the clock, not the deck, decides when the run ends. */
+  showCounter?: boolean;
 }
 
 export function Flashcard({
@@ -38,6 +55,8 @@ export function Flashcard({
   onGuess,
   onNext,
   isLast,
+  footnote,
+  showCounter = true,
 }: FlashcardProps) {
   const t = useTranslations('play');
   const categories = useTranslations('categories');
@@ -154,14 +173,7 @@ export function Flashcard({
                     ? result.explanation.descriptionTr
                     : result.explanation.descriptionEn}
                 </p>
-                <p className="mt-2 text-xs font-800 text-muted">
-                  {t('nextDue', {
-                    interval:
-                      result.intervalDays === 0
-                        ? t('intervalMinutes')
-                        : t('intervalDays', { days: result.intervalDays }),
-                  })}
-                </p>
+                {footnote && <div className="mt-2 text-xs font-800 text-muted">{footnote}</div>}
               </div>
 
               <button
@@ -179,7 +191,9 @@ export function Flashcard({
         )}
       </AnimatePresence>
 
-      <p className="sr-only">{t('cardCounter', { current: index + 1, total })}</p>
+      {showCounter && (
+        <p className="sr-only">{t('cardCounter', { current: index + 1, total })}</p>
+      )}
     </div>
   );
 }

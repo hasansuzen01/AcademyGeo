@@ -4,6 +4,9 @@
     // These scripts run through Node's type stripping, which requires the
     // explicit .ts extension that tsc rejects by default.
     "allowImportingTsExtensions": true,
+    // The seed reuses the API's own content helpers, so the program reaches
+    // one directory up. Nothing is emitted, so this is only a check.
+    "rootDir": "..",
     "noEmit": true
   },
   "include": ["**/*.ts"],

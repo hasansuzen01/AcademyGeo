@@ -18,7 +18,7 @@ interface DemoCard {
 
 const DEMO_CARDS: DemoCard[] = [
   {
-    image: '/metas/no-bollard.svg',
+    image: '/demo/no-bollard.svg',
     answer: 'NO',
     choices: [
       { code: 'NO', en: 'Norway', tr: 'Norveç' },
@@ -30,7 +30,7 @@ const DEMO_CARDS: DemoCard[] = [
     titleTr: 'Düz kesilmiş baş, turuncu reflektör.',
   },
   {
-    image: '/metas/za-road.svg',
+    image: '/demo/za-road.svg',
     answer: 'ZA',
     choices: [
       { code: 'ZA', en: 'South Africa', tr: 'Güney Afrika' },
@@ -42,7 +42,7 @@ const DEMO_CARDS: DemoCard[] = [
     titleTr: 'Kenarlar sarı, orta çizgi beyaz.',
   },
   {
-    image: '/metas/br-plate.svg',
+    image: '/demo/br-plate.svg',
     answer: 'BR',
     choices: [
       { code: 'BR', en: 'Brazil', tr: 'Brezilya' },

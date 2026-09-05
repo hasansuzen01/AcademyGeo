@@ -61,3 +61,19 @@ describe('buildSitemap', () => {
     expect(new Set(listed).size).toBe(listed.length);
   });
 });
+
+describe('the atlas', () => {
+  it('lists the index in every language', () => {
+    const listed = urls(buildSitemap('https://academygeo.com', [], [], now));
+
+    expect(listed).toContain('https://academygeo.com/en/atlas');
+    expect(listed).toContain('https://academygeo.com/tr/atlas');
+  });
+
+  it('lists a country page in every language', () => {
+    const listed = urls(buildSitemap('https://academygeo.com', [], [], now, ['TR']));
+
+    expect(listed).toContain('https://academygeo.com/en/atlas/tr');
+    expect(listed).toContain('https://academygeo.com/tr/atlas/tr');
+  });
+});

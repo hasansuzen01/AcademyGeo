@@ -30,6 +30,7 @@ export class AdminOverviewService {
       metas,
       publishedMetas,
       illustratedMetas,
+      picturelessMetas,
       countries,
       decks,
       users,
@@ -43,6 +44,8 @@ export class AdminOverviewService {
       this.prisma.meta.count({ where: { isPublished: true } }),
       // Cards still showing a seeded diagram, waiting for a real photograph.
       this.prisma.meta.count({ where: { imageSource: 'ILLUSTRATION' } }),
+      // Cards written but with no picture at all: the upload queue.
+      this.prisma.meta.count({ where: { imageUrl: '' } }),
       this.prisma.country.count(),
       this.prisma.deck.count(),
       this.prisma.user.count(),
@@ -80,6 +83,7 @@ export class AdminOverviewService {
         publishedMetas,
         draftMetas: metas - publishedMetas,
         illustratedMetas,
+        picturelessMetas,
         countries,
         decks,
         users,

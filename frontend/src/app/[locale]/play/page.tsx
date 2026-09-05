@@ -1,18 +1,22 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { PlaySession } from '@/components/play-session';
+import { ModeHub } from '@/components/mode-hub';
 
 export default async function PlayPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('play');
+  const t = await getTranslations('games');
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-12">
-      <h1 className="mb-8 text-center font-display text-3xl font-800 tracking-tight">
-        {t('title')}
-      </h1>
-      <PlaySession />
+    <div className="mx-auto w-full max-w-4xl px-5 py-12">
+      <header className="mb-8">
+        <h1 className="font-display text-3xl font-800 tracking-tight sm:text-4xl">
+          {t('hub.title')}
+        </h1>
+        <p className="mt-2 text-sm text-muted">{t('hub.subtitle')}</p>
+      </header>
+
+      <ModeHub />
     </div>
   );
 }

@@ -33,7 +33,19 @@ describe('buildObjectKey', () => {
 
     expect(key.startsWith('metas/')).toBe(true);
     expect(key.endsWith('.png')).toBe(true);
-    expect(key).toContain('norwegian-bollard');
+  });
+
+  // The picture is the question. A card filed as "norwegian-bollard.png" puts
+  // the answer in a URL the player can read straight out of the network tab.
+  it('keeps the uploaded filename out of the key', () => {
+    const key = buildObjectKey({
+      prefix: 'metas',
+      filename: 'norwegian bollard.PNG',
+      contentType: 'image/png',
+    });
+
+    expect(key).not.toContain('norwegian');
+    expect(key).not.toContain('bollard');
   });
 
   it('cannot be steered out of the prefix by the supplied filename', () => {

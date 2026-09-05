@@ -1,4 +1,11 @@
-import { ImageSource, MetaCategory, Region, UserRole } from '@prisma/client';
+import {
+  DrivingSide,
+  ImageSource,
+  MetaCategory,
+  Region,
+  UserRole,
+  UserStatus,
+} from '@prisma/client';
 import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -21,6 +28,8 @@ import { IMAGE_CONTENT_TYPES } from '../storage/object-key.js';
 const CATEGORIES = Object.values(MetaCategory);
 const IMAGE_SOURCES = Object.values(ImageSource);
 const REGIONS = Object.values(Region);
+const DRIVING_SIDES = Object.values(DrivingSide);
+const USER_STATUSES = Object.values(UserStatus);
 const ROLES = Object.values(UserRole);
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -64,6 +73,12 @@ export class MetaListQuery extends PageQuery {
   @IsOptional()
   @IsIn(IMAGE_SOURCES)
   imageSource?: ImageSource;
+
+  /** false lists the cards still waiting for a picture to be uploaded. */
+  @IsOptional()
+  @Transform(({ obj }) => parseBooleanParam((obj as Record<string, unknown>).hasImage))
+  @IsBoolean()
+  hasImage?: boolean;
 }
 
 /** Query strings carry booleans as text, and only "true"/"false" mean anything. */
@@ -102,8 +117,9 @@ export class UpsertMetaDto {
   @Length(10, 1200)
   descriptionTr!: string;
 
+  /** Empty while the card is still waiting for a photograph. */
   @IsString()
-  @Length(1, 500)
+  @Length(0, 500)
   imageUrl!: string;
 
   @IsOptional()
@@ -141,6 +157,54 @@ export class UpsertCountryDto {
 
   @IsIn(REGIONS)
   region!: Region;
+
+  // -- Atlas facts. All optional: a country is worth practising long before
+  //    anyone has finished writing it up. --------------------------------
+  @IsOptional()
+  @IsString()
+  @Length(0, 8)
+  flagEmoji?: string;
+
+  @IsOptional()
+  @IsIn(DRIVING_SIDES)
+  drivingSide?: DrivingSide;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 12)
+  ccTld?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 12)
+  phonePrefix?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 40)
+  currency?: string;
+
+  /** Comma-separated, e.g. "Turkish,Kurdish". */
+  @IsOptional()
+  @IsString()
+  @Length(0, 200)
+  languages?: string;
+
+  /** Comma-separated coverage generations, e.g. "Gen 3,Gen 4". */
+  @IsOptional()
+  @IsString()
+  @Length(0, 200)
+  cameraGens?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 1200)
+  summaryEn?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 1200)
+  summaryTr?: string;
 }
 
 export class UpsertDeckDto {
@@ -207,11 +271,32 @@ export class UserListQuery extends PageQuery {
   @IsOptional()
   @IsIn(ROLES)
   role?: UserRole;
+
+  @IsOptional()
+  @IsIn(USER_STATUSES)
+  status?: UserStatus;
 }
 
 export class SetRoleDto {
   @IsIn(ROLES)
   role!: UserRole;
+}
+
+export class SetStatusDto {
+  @IsIn(USER_STATUSES)
+  status!: UserStatus;
+
+  /** Kept so the admin who lifts the suspension can see why it was applied. */
+  @IsOptional()
+  @IsString()
+  @Length(0, 300)
+  reason?: string;
+}
+
+export class UpdateUserDto {
+  @IsString()
+  @Length(1, 80)
+  name!: string;
 }
 
 export class SignUploadDto {

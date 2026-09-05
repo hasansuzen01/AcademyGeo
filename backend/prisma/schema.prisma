@@ -15,24 +15,45 @@ enum UserRole {
   ADMIN
 }
 
+/// A suspended account cannot sign in and does not appear on a leaderboard.
+/// Suspension is reversible; deleting the account is not.
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
 model User {
-  id            String   @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String
-  email         String   @unique
-  emailVerified Boolean  @default(false)
+  email         String     @unique
+  emailVerified Boolean    @default(false)
   image         String?
-  role          UserRole @default(USER)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  role          UserRole   @default(USER)
+  status        UserStatus @default(ACTIVE)
+  suspendedAt   DateTime?
+  /// Shown to the admin who lifts the suspension, so the reason survives the
+  /// person who wrote it down.
+  suspendReason String?
+  /// Experience earned from practice. Drives the level shown on the profile.
+  xp            Int        @default(0)
+  /// Written at most once every few minutes, so "last seen" is answerable
+  /// without a database write on every request.
+  lastSeenAt    DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   accounts      Account[]
   sessions      Session[]
   reviewCards   ReviewCard[]
   reviewLogs    ReviewLog[]
   dailyActivity DailyActivity[]
-  authoredMetas Meta[]          @relation("MetaAuthor")
-  posts         Post[]          @relation("PostAuthor")
+  gameRuns      GameRun[]
+  achievements  UserAchievement[]
+  authoredMetas Meta[]            @relation("MetaAuthor")
+  posts         Post[]            @relation("PostAuthor")
   auditLogs     AuditLog[]
+
+  @@index([status])
 }
 
 model Session {
@@ -117,11 +138,37 @@ enum MetaCategory {
   INFRASTRUCTURE
 }
 
+/// Which side of the road a country drives on. One of the first things a
+/// player reads off a street view, so it earns a field of its own rather
+/// than a line buried in a description.
+enum DrivingSide {
+  LEFT
+  RIGHT
+}
+
 model Country {
   code   String @id
   nameEn String
   nameTr String
   region Region
+
+  // ---------------------------------------------------------------------
+  // Atlas facts. Every one is optional: a country is worth practising long
+  // before an admin has finished writing it up.
+  // ---------------------------------------------------------------------
+  flagEmoji   String?
+  drivingSide DrivingSide?
+  /// Country-code top level domain, e.g. ".tr". Turns up on shop signs.
+  ccTld       String?
+  /// International dialling prefix, e.g. "+90". Turns up on shop signs too.
+  phonePrefix String?
+  currency    String?
+  /// Comma-separated, e.g. "Turkish,Kurdish".
+  languages   String       @default("")
+  /// Comma-separated coverage generations, e.g. "Gen 3,Gen 4".
+  cameraGens  String       @default("")
+  summaryEn   String       @default("")
+  summaryTr   String       @default("")
 
   metas Meta[]
 }
@@ -136,7 +183,9 @@ model Meta {
   titleTr       String
   descriptionEn String
   descriptionTr String
-  imageUrl      String
+  /// Empty until someone uploads a photograph. A card in that state stays a
+  /// draft: the picture is the question, so there is nothing to ask without it.
+  imageUrl      String       @default("")
   /// R2 object key when the picture was uploaded rather than generated.
   imageKey      String?
   imageSource   ImageSource  @default(ILLUSTRATION)
@@ -178,6 +227,7 @@ model Deck {
   updatedAt     DateTime  @updatedAt
 
   metas DeckMeta[]
+  runs  GameRun[]
 
   @@index([isPublished])
 }
@@ -260,6 +310,78 @@ model DailyActivity {
 
   @@unique([userId, day])
   @@index([userId, day])
+}
+
+// ---------------------------------------------------------------------------
+// Scored runs and progression
+// ---------------------------------------------------------------------------
+
+/// PRACTICE is the untimed spaced-repetition session. The rest are scored
+/// runs that end on their own terms and land on the leaderboard.
+enum GameMode {
+  PRACTICE
+  RUSH
+  SURVIVAL
+  DAILY
+  DRILL
+}
+
+/// One scored run. The server deals the cards and keeps the score, so a
+/// leaderboard row can only be earned by actually playing.
+model GameRun {
+  id     String   @id @default(cuid())
+  userId String
+  mode   GameMode
+
+  /// The hand, in the order it is dealt. Kept here so the client is never
+  /// told what is coming and cannot look an answer up in advance.
+  metaIds    String[]
+  /// How far through the hand the player is.
+  cursor     Int      @default(0)
+  answered   Int      @default(0)
+  correct    Int      @default(0)
+  score      Int      @default(0)
+  /// Correct answers behind the card now on screen. Held on the run rather
+  /// than counted back from the answer log, which cannot tell this run's
+  /// answers apart from a practice session in another tab.
+  streak     Int      @default(0)
+  bestStreak Int      @default(0)
+
+  /// The collection the hand was drawn from, when the run was started from
+  /// one. Held so a resumed run is the same collection the player left.
+  deckId     String?
+  /// UTC day, only for the daily challenge. Null elsewhere, and Postgres
+  /// leaves nulls out of a unique index, so ordinary runs stay unlimited.
+  day        String?
+  startedAt  DateTime  @default(now())
+  /// When the card now on screen was handed out. The client reports how long
+  /// it took to answer, and that report is capped by this, so a doctored
+  /// clock cannot buy a speed bonus.
+  servedAt   DateTime  @default(now())
+  finishedAt DateTime?
+  durationMs Int       @default(0)
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deck Deck? @relation(fields: [deckId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, day])
+  @@index([userId, finishedAt])
+  @@index([mode, score])
+  @@index([finishedAt])
+}
+
+/// A badge a player has earned. The catalogue itself lives in code: the name
+/// and the description belong in the translation files.
+model UserAchievement {
+  id         String   @id @default(cuid())
+  userId     String
+  code       String
+  unlockedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, code])
+  @@index([userId])
 }
 
 // ---------------------------------------------------------------------------

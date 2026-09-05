@@ -4,7 +4,17 @@ import { PrismaService } from '../prisma/prisma.service.js';
 
 export interface AuditEntry {
   actorId: string;
-  action: 'create' | 'update' | 'delete' | 'publish' | 'unpublish' | 'reorder' | 'grant' | 'revoke';
+  action:
+    | 'create'
+    | 'update'
+    | 'delete'
+    | 'publish'
+    | 'unpublish'
+    | 'reorder'
+    | 'grant'
+    | 'revoke'
+    | 'suspend'
+    | 'restore';
   entity: 'meta' | 'country' | 'deck' | 'user' | 'post' | 'page' | 'seo';
   entityId: string;
   summary: string;

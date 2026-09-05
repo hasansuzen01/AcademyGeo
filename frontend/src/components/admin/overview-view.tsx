@@ -43,6 +43,11 @@ export function OverviewView() {
       hint: t('illustratedMetasHint'),
     },
     {
+      label: t('picturelessMetas'),
+      value: data.counts.picturelessMetas,
+      hint: t('picturelessMetasHint'),
+    },
+    {
       label: t('countries'),
       value: data.counts.countries,
       hint: t('countriesHint'),

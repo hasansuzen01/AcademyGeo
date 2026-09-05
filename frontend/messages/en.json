@@ -11,7 +11,10 @@
     "language": "Language",
     "profile": "Account",
     "admin": "Admin",
-    "streak": "Day streak"
+    "streak": "Day streak",
+    "atlas": "Atlas",
+    "leaderboard": "Board",
+    "collections": "Collections"
   },
   "landing": {
     "eyebrow": "Static clue training",
@@ -38,7 +41,10 @@
     "statClues": "clue types",
     "statCards": "cards",
     "demoCorrect": "That is the one",
-    "demoWrong": "Not quite"
+    "demoWrong": "Not quite",
+    "atlasCta": "Browse the atlas",
+    "modesTitle": "Four ways to be tested",
+    "modesBody": "Practice keeps you honest over months. These tell you where you stand today, and they all feed the same schedule."
   },
   "categories": {
     "PLATE": "Plates",
@@ -173,7 +179,9 @@
       "columnAnswers": "Answers",
       "columnWinRate": "Win rate",
       "illustratedMetas": "Awaiting a photo",
-      "illustratedMetasHint": "Cards still showing a stand-in diagram"
+      "illustratedMetasHint": "Cards still showing a stand-in diagram",
+      "picturelessMetas": "Waiting for a picture",
+      "picturelessMetasHint": "Cards written up but with nothing to show yet. They stay drafts."
     },
     "metas": {
       "searchPlaceholder": "Search by name or slug",
@@ -194,7 +202,11 @@
       "needsPhoto": "Needs a photo",
       "filterAll": "Any picture",
       "filterPhoto": "Photographs",
-      "filterIllustration": "Diagrams only"
+      "filterIllustration": "Diagrams only",
+      "noPicture": "No picture",
+      "anyPicture": "Any picture state",
+      "filterNoPicture": "Waiting for a picture",
+      "filterHasPicture": "Has a picture"
     },
     "metaEditor": {
       "createTitle": "New card",
@@ -291,7 +303,20 @@
       "cancel": "Cancel",
       "edit": "Edit",
       "delete": "Delete",
-      "confirmDelete": "Delete {name}?"
+      "confirmDelete": "Delete {name}?",
+      "factsTitle": "Atlas facts",
+      "unset": "Not set",
+      "flagEmoji": "Flag",
+      "drivingSide": "Drives on",
+      "ccTld": "Domain",
+      "phonePrefix": "Dialling code",
+      "currency": "Currency",
+      "languages": "Languages",
+      "cameraGens": "Coverage",
+      "summaryEn": "Summary (English)",
+      "summaryTr": "Summary (Turkish)",
+      "listHint": "Comma-separated.",
+      "summaryHint": "What a player should look at first. Two sentences is plenty."
     },
     "users": {
       "searchPlaceholder": "Search by name or email",
@@ -304,7 +329,50 @@
       "columnAnswers": "Answers",
       "columnRole": "Role",
       "promote": "Make admin",
-      "demote": "Remove admin"
+      "demote": "Remove admin",
+      "manage": "Manage",
+      "backToList": "Back to accounts",
+      "anyStatus": "Any status",
+      "statusActive": "Active",
+      "statusSuspended": "Suspended",
+      "columnLevel": "Level",
+      "columnLastSeen": "Last seen",
+      "neverSeen": "Never seen",
+      "joined": "Joined {date}",
+      "lastSeen": "Last seen {date}",
+      "suspendedBecause": "Suspended: {reason}",
+      "statLevel": "Level",
+      "statXp": "XP",
+      "statAnswers": "Answers",
+      "statWinRate": "Win rate",
+      "statStreak": "Day streak",
+      "statRuns": "Scored runs",
+      "actionsTitle": "Account",
+      "nameLabel": "Display name",
+      "nameHint": "The email and the picture come from the sign-in provider.",
+      "saveName": "Save",
+      "saved": "Saved.",
+      "reasonLabel": "Reason for suspending",
+      "reasonHint": "Optional, and shown to whoever lifts the suspension later.",
+      "suspend": "Suspend",
+      "restore": "Restore",
+      "signOutEverywhere": "Sign out everywhere ({count})",
+      "signedOut": "Signed out of {count} sessions.",
+      "deleteAccount": "Delete account",
+      "deleteWarning": "Suspending shuts the account out and keeps its history. Deleting removes the account and everything it has answered, and cannot be undone.",
+      "confirmDelete": "Delete {name} and everything they have answered? This cannot be undone.",
+      "weakestTitle": "Countries they keep missing",
+      "weakestEmpty": "Nothing to show yet.",
+      "columnCountry": "Country",
+      "columnMisses": "Misses",
+      "columnWinRate": "Win rate",
+      "runsTitle": "Recent runs",
+      "runsEmpty": "No scored runs yet.",
+      "columnMode": "Mode",
+      "columnScore": "Score",
+      "columnResult": "Result",
+      "columnWhen": "When",
+      "badgesTitle": "Badges"
     },
     "audit": {
       "title": "Activity log",
@@ -515,5 +583,198 @@
     "empty": "Nothing published yet.",
     "readingTime": "{minutes} min read",
     "backToList": "All posts"
+  },
+  "games": {
+    "loading": "Dealing the cards…",
+    "hub": {
+      "title": "How do you want to practise?",
+      "subtitle": "Five ways into the same deck. Practice keeps you honest over months; the scored runs tell you where you are today.",
+      "collectionsTitle": "Collections",
+      "collectionsBody": "Bollards, plates, road lines, and the cards that still catch people out."
+    },
+    "modes": {
+      "PRACTICE": {
+        "name": "Practice",
+        "rule": "Untimed",
+        "blurb": "The spaced repetition session. Cards you miss come back sooner, cards you know come back later, and nothing is scored."
+      },
+      "DAILY": {
+        "name": "Daily challenge",
+        "rule": "10 cards, once a day",
+        "blurb": "The same ten cards for every player, changing at midnight UTC. One attempt, and the board shows how the day went."
+      },
+      "RUSH": {
+        "name": "Rush",
+        "rule": "90 seconds",
+        "blurb": "As many as you can name before the clock runs out. Speed pays, and a run of correct answers pays more."
+      },
+      "SURVIVAL": {
+        "name": "Survival",
+        "rule": "3 lives",
+        "blurb": "Starts easy and keeps getting harder. Three wrong answers and the run is over, so the last card is always worth the most."
+      },
+      "DRILL": {
+        "name": "Weak spots",
+        "rule": "15 cards",
+        "blurb": "Built from the countries you actually get wrong. The more you miss Norway, the more Norway you get."
+      }
+    },
+    "hud": {
+      "score": "Score",
+      "streak": "Streak",
+      "lives": "Lives",
+      "time": "Time",
+      "card": "Card"
+    },
+    "answer": {
+      "points": "+{points} points",
+      "xp": "+{xp} XP"
+    },
+    "summary": {
+      "points": "points",
+      "accuracy": "Accuracy",
+      "correctOf": "{correct} of {total}",
+      "bestStreak": "Best run",
+      "time": "Time",
+      "again": "Play again",
+      "seeBoard": "See the board",
+      "otherModes": "Other modes"
+    },
+    "history": {
+      "title": "Recent runs",
+      "empty": "No scored runs yet. Any mode but practice lands here.",
+      "line": "{correct}/{total} correct · {time}"
+    },
+    "daily": {
+      "doneToday": "Played today · {score}"
+    }
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "One row per player, their best run in the mode.",
+    "loading": "Reading the board…",
+    "empty": "Nobody has finished a run in this mode yet. Be the first.",
+    "correctOf": "{correct}/{total} correct",
+    "yourStanding": "You are {rank} with {score} points.",
+    "modes": {
+      "DAILY": "Daily",
+      "RUSH": "Rush",
+      "SURVIVAL": "Survival",
+      "DRILL": "Weak spots"
+    },
+    "windows": {
+      "all": "All time",
+      "week": "This week"
+    }
+  },
+  "atlas": {
+    "title": "Atlas",
+    "subtitle": "Every country in the deck, with the clues that give it away and the facts that confirm it.",
+    "searchPlaceholder": "Search a country",
+    "allRegions": "Everywhere",
+    "noMatches": "No country matches that.",
+    "clueCount": "{count} clues",
+    "noClues": "No clues have been published for this country yet.",
+    "backToIndex": "Back to the atlas",
+    "drillCta": "Drill my weak spots",
+    "facts": {
+      "drivingSide": "Drives on",
+      "languages": "Languages",
+      "ccTld": "Domain",
+      "phonePrefix": "Dialling code",
+      "currency": "Currency",
+      "cameraGens": "Coverage"
+    },
+    "drivingSide": {
+      "LEFT": "The left",
+      "RIGHT": "The right"
+    }
+  },
+  "progress": {
+    "level": "Level",
+    "xpToNext": "{xp} XP to go",
+    "totalXp": "{xp} XP earned",
+    "badges": "Badges",
+    "badgeCount": "{earned} of {total}",
+    "tiers": {
+      "BRONZE": "III",
+      "SILVER": "II",
+      "GOLD": "I"
+    },
+    "achievements": {
+      "first-ten": {
+        "name": "First ten",
+        "hint": "Answer ten cards."
+      },
+      "hundred-cards": {
+        "name": "Hundred up",
+        "hint": "Answer a hundred cards."
+      },
+      "thousand-cards": {
+        "name": "Thousand up",
+        "hint": "Answer a thousand cards."
+      },
+      "week-streak": {
+        "name": "Seven days",
+        "hint": "Practise seven days in a row."
+      },
+      "month-streak": {
+        "name": "Thirty days",
+        "hint": "Practise thirty days in a row."
+      },
+      "level-five": {
+        "name": "Level five",
+        "hint": "Reach level five."
+      },
+      "level-fifteen": {
+        "name": "Level fifteen",
+        "hint": "Reach level fifteen."
+      },
+      "level-thirty": {
+        "name": "Level thirty",
+        "hint": "Reach level thirty."
+      },
+      "hot-streak": {
+        "name": "On a roll",
+        "hint": "Get fifteen right in a row inside one run."
+      },
+      "unbroken": {
+        "name": "Unbroken",
+        "hint": "Get forty right in a row inside one run."
+      },
+      "rush-two-thousand": {
+        "name": "Two thousand",
+        "hint": "Score 2,000 in a single run."
+      },
+      "rush-five-thousand": {
+        "name": "Five thousand",
+        "hint": "Score 5,000 in a single run."
+      },
+      "daily-perfect": {
+        "name": "Clean sheet",
+        "hint": "Finish a daily challenge with no mistakes."
+      },
+      "daily-ten-perfect": {
+        "name": "Ten clean sheets",
+        "hint": "Do it ten times."
+      },
+      "globetrotter": {
+        "name": "Globetrotter",
+        "hint": "Name 25 different countries correctly."
+      },
+      "cartographer": {
+        "name": "Cartographer",
+        "hint": "Name 60 different countries correctly."
+      }
+    }
+  },
+  "collections": {
+    "title": "Collections",
+    "subtitle": "Themed runs through part of the catalogue. Study one, race it, or play it with three lives.",
+    "empty": "No collections have been published yet.",
+    "cardCount": "{count} cards",
+    "practise": "Practise",
+    "rush": "Rush",
+    "survival": "Survival"
   }
 }

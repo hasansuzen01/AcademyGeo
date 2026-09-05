@@ -15,6 +15,20 @@ export class MetasService {
     return this.prisma.country.findMany({ orderBy: { nameEn: 'asc' } });
   }
 
+  /**
+   * A few card pictures for the landing page. Only the picture: the country
+   * stays server-side like everywhere else, and the filenames are opaque, so
+   * the strip cannot be read as an answer key either.
+   */
+  getShowcase(take: number) {
+    return this.prisma.meta.findMany({
+      where: { isPublished: true },
+      select: { id: true, imageUrl: true, imageSource: true },
+      orderBy: { slug: 'asc' },
+      take,
+    });
+  }
+
   /** Deck size for the landing page, so the numbers there are never stale. */
   async getCatalogueSummary() {
     const [countries, cards, categories] = await Promise.all([

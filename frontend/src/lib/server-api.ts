@@ -47,3 +47,22 @@ export async function fetchCatalogueSummary(): Promise<CatalogueSummary> {
     return { countries: 0, cards: 0, clueTypes: 0 };
   }
 }
+
+export interface ShowcaseCard {
+  id: string;
+  imageUrl: string;
+  imageSource: string;
+}
+
+/** Card pictures for the landing strip. An empty strip beats a broken one. */
+export async function fetchShowcase(): Promise<ShowcaseCard[]> {
+  try {
+    const response = await fetch(`${API_URL}/api/metas/showcase`, {
+      next: { revalidate: 3600 },
+    });
+
+    return response.ok ? ((await response.json()) as ShowcaseCard[]) : [];
+  } catch {
+    return [];
+  }
+}

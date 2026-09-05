@@ -1,10 +1,16 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service.js';
 import { R2Service } from '../storage/r2.service.js';
 import { AuditService } from './audit.service.js';
 import { DEFAULT_PAGE_SIZE } from './paging.js';
+import { publishBlocker } from './publishable.js';
 import type { MetaListQuery, UpsertMetaDto } from './dto.js';
 
 @Injectable()
@@ -21,6 +27,7 @@ export class AdminMetasService {
       countryCode: query.countryCode,
       isPublished: query.isPublished,
       imageSource: query.imageSource,
+      ...(query.hasImage === undefined ? {} : { imageUrl: query.hasImage ? { not: '' } : '' }),
       ...(query.search
         ? {
             OR: [
@@ -88,6 +95,7 @@ export class AdminMetasService {
 
   async create(actorId: string, dto: UpsertMetaDto) {
     await this.assertSlugFree(dto.slug);
+    this.assertPublishable(dto);
 
     const meta = await this.prisma.meta.create({
       data: { ...dto, createdById: actorId },
@@ -109,6 +117,7 @@ export class AdminMetasService {
     const existing = await this.prisma.meta.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('Meta not found');
     if (dto.slug !== existing.slug) await this.assertSlugFree(dto.slug);
+    this.assertPublishable(dto);
 
     const meta = await this.prisma.meta.update({
       where: { id },
@@ -148,6 +157,14 @@ export class AdminMetasService {
     });
 
     return { id };
+  }
+
+  private assertPublishable(dto: UpsertMetaDto): void {
+    if (publishBlocker(dto) === 'no-picture') {
+      throw new BadRequestException(
+        'Upload a picture before publishing this card. Save it as a draft until then.',
+      );
+    }
   }
 
   private async assertSlugFree(slug: string): Promise<void> {

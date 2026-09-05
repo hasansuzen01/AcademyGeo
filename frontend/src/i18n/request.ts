@@ -9,6 +9,9 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale,
+    // Practice days, streaks and the daily challenge are all counted in UTC,
+    // so a date on screen has to be read in the same zone the score was.
+    timeZone: 'UTC',
     messages: (await import(`../../messages/${locale}.json`)).default,
   };
 });

@@ -44,11 +44,26 @@ export interface Me {
   role: 'USER' | 'ADMIN';
 }
 
+export type DrivingSide = 'LEFT' | 'RIGHT';
+
+export const DRIVING_SIDES: DrivingSide[] = ['RIGHT', 'LEFT'];
+
 export interface AdminCountry {
   code: string;
   nameEn: string;
   nameTr: string;
   region: Region;
+  // The atlas facts. Every one is optional: a country is worth practising
+  // long before anyone has finished writing it up.
+  flagEmoji?: string | null;
+  drivingSide?: DrivingSide | null;
+  ccTld?: string | null;
+  phonePrefix?: string | null;
+  currency?: string | null;
+  languages?: string;
+  cameraGens?: string;
+  summaryEn?: string;
+  summaryTr?: string;
   _count?: { metas: number };
 }
 
@@ -102,14 +117,74 @@ export interface AdminDeckDetail extends AdminDeck {
   metas: Array<{ position: number; meta: AdminMeta }>;
 }
 
+export type UserStatus = 'ACTIVE' | 'SUSPENDED';
+
 export interface AdminUser {
   id: string;
   name: string;
   email: string;
   image: string | null;
   role: 'USER' | 'ADMIN';
+  status: UserStatus;
+  xp: number;
+  level: number;
+  /** Null until the account has made a request since last-seen was added. */
+  lastSeenAt: string | null;
   createdAt: string;
-  _count?: { reviewLogs: number; reviewCards: number };
+  _count?: { reviewLogs: number; reviewCards: number; gameRuns: number };
+}
+
+export interface AdminUserRun {
+  id: string;
+  mode: string;
+  score: number;
+  correct: number;
+  answered: number;
+  bestStreak: number;
+  durationMs: number;
+  finishedAt: string;
+}
+
+/** One account in full, as the admin account page shows it. */
+export interface AdminUserDetail {
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+  role: 'USER' | 'ADMIN';
+  status: UserStatus;
+  xp: number;
+  lastSeenAt: string | null;
+  createdAt: string;
+  suspendedAt: string | null;
+  suspendReason: string | null;
+  level: {
+    level: number;
+    xp: number;
+    levelStartXp: number;
+    nextLevelXp: number;
+    progress: number;
+  };
+  stats: {
+    answers: number;
+    correct: number;
+    winRate: number | null;
+    streak: number;
+    daysPractised: number;
+    trackedMetas: number;
+    runs: number;
+    openSessions: number;
+  };
+  weakestCountries: Array<{ countryCode: string; misses: number; winRate: number }>;
+  recentRuns: AdminUserRun[];
+  achievements: Array<{
+    code: string;
+    tier: 'BRONZE' | 'SILVER' | 'GOLD';
+    threshold: number;
+    current: number;
+    unlocked: boolean;
+  }>;
+  signInMethods: Array<{ providerId: string; createdAt: string }>;
 }
 
 export interface AuditEntry {
@@ -128,6 +203,8 @@ export interface AdminOverview {
     publishedMetas: number;
     draftMetas: number;
     illustratedMetas: number;
+    /** Written up but with no picture at all: the upload queue. */
+    picturelessMetas: number;
     countries: number;
     decks: number;
     users: number;
@@ -182,6 +259,8 @@ export const fetchAdminMetas = (params: {
   countryCode?: string;
   isPublished?: boolean;
   imageSource?: string;
+  /** 'false' lists the cards still waiting for a picture. */
+  hasImage?: string;
   take?: number;
   skip?: number;
 }) => apiFetch<Page<AdminMeta>>(`/admin/metas${query(params)}`);
@@ -264,9 +343,30 @@ export const deleteAdminCountry = (code: string) =>
 export const fetchAdminUsers = (params: {
   search?: string;
   role?: string;
+  status?: string;
   take?: number;
   skip?: number;
 }) => apiFetch<Page<AdminUser>>(`/admin/users${query(params)}`);
+
+export const fetchAdminUser = (id: string) => apiFetch<AdminUserDetail>(`/admin/users/${id}`);
+
+export const updateAdminUser = (id: string, body: { name: string }) =>
+  apiFetch<AdminUser>(`/admin/users/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+  });
+
+export const setUserStatus = (id: string, status: UserStatus, reason?: string) =>
+  apiFetch<AdminUser>(`/admin/users/${id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status, reason }),
+  });
+
+export const signOutUserEverywhere = (id: string) =>
+  apiFetch<{ revoked: number }>(`/admin/users/${id}/sign-out`, { method: 'POST' });
+
+export const deleteAdminUser = (id: string) =>
+  apiFetch<{ id: string }>(`/admin/users/${id}`, { method: 'DELETE' });
 
 export const setUserRole = (id: string, role: 'USER' | 'ADMIN') =>
   apiFetch<AdminUser>(`/admin/users/${id}/role`, {

@@ -31,6 +31,9 @@ export function SiteHeader() {
 
   const links = [
     { href: '/play', label: t('play') },
+    { href: '/collections', label: t('collections') },
+    { href: '/atlas', label: t('atlas') },
+    { href: '/leaderboard', label: t('leaderboard') },
     { href: '/dashboard', label: t('dashboard') },
     ...(me ? [{ href: '/profile', label: t('profile') }] : []),
     ...(me?.role === 'ADMIN' ? [{ href: '/admin', label: t('admin') }] : []),

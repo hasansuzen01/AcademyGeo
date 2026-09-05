@@ -16,7 +16,7 @@ import { SignInPrompt } from './sign-in-prompt';
 
 type Phase = 'loading' | 'playing' | 'empty' | 'done' | 'error';
 
-export function PlaySession() {
+export function PlaySession({ deckSlug }: { deckSlug?: string } = {}) {
   const t = useTranslations('play');
   const errors = useTranslations('errors');
   const { data: session, isPending: sessionPending } = useSession();
@@ -36,7 +36,7 @@ export function PlaySession() {
   // the buttons that re-run a finished session set it themselves.
   const load = useCallback(async () => {
     try {
-      const queue = await fetchQueue();
+      const queue = await fetchQueue({ deckSlug });
       setCards(queue.cards);
       setIndex(0);
       setScore(0);
@@ -48,7 +48,7 @@ export function PlaySession() {
     } catch {
       setPhase('error');
     }
-  }, []);
+  }, [deckSlug]);
 
   useLoad(load, !sessionPending && Boolean(userId));
 
@@ -180,6 +180,15 @@ export function PlaySession() {
         onGuess={(code) => void guess(code)}
         onNext={next}
         isLast={index + 1 >= cards.length}
+        footnote={
+          result &&
+          t('nextDue', {
+            interval:
+              result.intervalDays === 0
+                ? t('intervalMinutes')
+                : t('intervalDays', { days: result.intervalDays }),
+          })
+        }
       />
     </div>
   );

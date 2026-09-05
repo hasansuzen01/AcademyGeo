@@ -39,7 +39,8 @@ export class AdminCountriesService {
 
     const country = await this.prisma.country.update({
       where: { code },
-      data: { nameEn: dto.nameEn, nameTr: dto.nameTr, region: dto.region },
+      // Not the code: it is the identity every meta points at.
+      data: { ...dto, code: undefined },
     });
 
     await this.audit.record({

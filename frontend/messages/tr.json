@@ -11,7 +11,10 @@
     "language": "Dil",
     "profile": "Hesap",
     "admin": "Yönetim",
-    "streak": "Günlük seri"
+    "streak": "Günlük seri",
+    "atlas": "Atlas",
+    "leaderboard": "Sıralama",
+    "collections": "Koleksiyonlar"
   },
   "landing": {
     "eyebrow": "Statik ipucu antrenmanı",
@@ -38,7 +41,10 @@
     "statClues": "ipucu türü",
     "statCards": "kart",
     "demoCorrect": "İşte bu",
-    "demoWrong": "Pek değil"
+    "demoWrong": "Pek değil",
+    "atlasCta": "Atlası gez",
+    "modesTitle": "Kendini sınamanın dört yolu",
+    "modesBody": "Pratik seni aylar boyunca dürüst tutar. Bunlar bugün nerede olduğunu söyler ve hepsi aynı tekrar programını besler."
   },
   "categories": {
     "PLATE": "Plakalar",
@@ -173,7 +179,9 @@
       "columnAnswers": "Cevap",
       "columnWinRate": "İsabet",
       "illustratedMetas": "Fotoğraf bekleyen",
-      "illustratedMetasHint": "Hâlâ geçici çizim gösteren kartlar"
+      "illustratedMetasHint": "Hâlâ geçici çizim gösteren kartlar",
+      "picturelessMetas": "Görsel bekliyor",
+      "picturelessMetasHint": "Yazılmış ama gösterecek görseli olmayan kartlar. Taslak kalırlar."
     },
     "metas": {
       "searchPlaceholder": "Ada veya slug degerine göre ara",
@@ -194,7 +202,11 @@
       "needsPhoto": "Fotoğraf bekliyor",
       "filterAll": "Tüm görseller",
       "filterPhoto": "Fotoğraflar",
-      "filterIllustration": "Yalnızca çizimler"
+      "filterIllustration": "Yalnızca çizimler",
+      "noPicture": "Görsel yok",
+      "anyPicture": "Görsel durumu farketmez",
+      "filterNoPicture": "Görsel bekleyenler",
+      "filterHasPicture": "Görseli olanlar"
     },
     "metaEditor": {
       "createTitle": "Yeni kart",
@@ -291,7 +303,20 @@
       "cancel": "Vazgeç",
       "edit": "Düzenle",
       "delete": "Sil",
-      "confirmDelete": "{name} silinsin mi?"
+      "confirmDelete": "{name} silinsin mi?",
+      "factsTitle": "Atlas bilgileri",
+      "unset": "Belirtilmedi",
+      "flagEmoji": "Bayrak",
+      "drivingSide": "Trafik yönü",
+      "ccTld": "Alan adı",
+      "phonePrefix": "Telefon kodu",
+      "currency": "Para birimi",
+      "languages": "Diller",
+      "cameraGens": "Kapsama",
+      "summaryEn": "Özet (İngilizce)",
+      "summaryTr": "Özet (Türkçe)",
+      "listHint": "Virgülle ayır.",
+      "summaryHint": "Oyuncunun ilk bakması gereken şey. İki cümle yeter."
     },
     "users": {
       "searchPlaceholder": "Ada veya e-postaya göre ara",
@@ -304,7 +329,50 @@
       "columnAnswers": "Cevap",
       "columnRole": "Rol",
       "promote": "Yönetici yap",
-      "demote": "Yöneticiliği al"
+      "demote": "Yöneticiliği al",
+      "manage": "Yönet",
+      "backToList": "Hesaplara dön",
+      "anyStatus": "Durum farketmez",
+      "statusActive": "Etkin",
+      "statusSuspended": "Askıda",
+      "columnLevel": "Seviye",
+      "columnLastSeen": "Son görülme",
+      "neverSeen": "Hiç görülmedi",
+      "joined": "{date} tarihinde katıldı",
+      "lastSeen": "Son görülme {date}",
+      "suspendedBecause": "Askıya alma sebebi: {reason}",
+      "statLevel": "Seviye",
+      "statXp": "XP",
+      "statAnswers": "Cevap",
+      "statWinRate": "İsabet",
+      "statStreak": "Gün serisi",
+      "statRuns": "Puanlı tur",
+      "actionsTitle": "Hesap",
+      "nameLabel": "Görünen ad",
+      "nameHint": "E-posta ve görsel giriş sağlayıcısından gelir.",
+      "saveName": "Kaydet",
+      "saved": "Kaydedildi.",
+      "reasonLabel": "Askıya alma sebebi",
+      "reasonHint": "İsteğe bağlı; askıyı sonradan kaldıran kişiye gösterilir.",
+      "suspend": "Askıya al",
+      "restore": "Askıyı kaldır",
+      "signOutEverywhere": "Her yerden çıkış yaptır ({count})",
+      "signedOut": "{count} oturum kapatıldı.",
+      "deleteAccount": "Hesabı sil",
+      "deleteWarning": "Askıya almak hesabı dışarıda bırakır ama geçmişini korur. Silmek hesabı ve verdiği bütün cevapları kaldırır, geri alınamaz.",
+      "confirmDelete": "{name} ve verdiği bütün cevaplar silinsin mi? Bu işlem geri alınamaz.",
+      "weakestTitle": "Sürekli kaçırdığı ülkeler",
+      "weakestEmpty": "Gösterilecek bir şey yok.",
+      "columnCountry": "Ülke",
+      "columnMisses": "Yanlış",
+      "columnWinRate": "İsabet",
+      "runsTitle": "Son turlar",
+      "runsEmpty": "Henüz puanlı tur yok.",
+      "columnMode": "Mod",
+      "columnScore": "Puan",
+      "columnResult": "Sonuç",
+      "columnWhen": "Tarih",
+      "badgesTitle": "Rozetler"
     },
     "audit": {
       "title": "İşlem kaydı",
@@ -515,5 +583,198 @@
     "empty": "Henüz yayımlanmış yazı yok.",
     "readingTime": "{minutes} dk okuma",
     "backToList": "Tüm yazılar"
+  },
+  "games": {
+    "loading": "Kartlar dağıtılıyor…",
+    "hub": {
+      "title": "Bugün nasıl çalışmak istersin?",
+      "subtitle": "Aynı desteye beş ayrı giriş. Pratik seni aylar boyunca dürüst tutar; puanlı turlar bugün nerede olduğunu söyler.",
+      "collectionsTitle": "Koleksiyonlar",
+      "collectionsBody": "Dubalar, plakalar, yol çizgileri ve hâlâ insanları yakalayan kartlar."
+    },
+    "modes": {
+      "PRACTICE": {
+        "name": "Pratik",
+        "rule": "Süresiz",
+        "blurb": "Aralıklı tekrar oturumu. Kaçırdığın kartlar daha erken, bildiklerin daha geç döner; puan tutulmaz."
+      },
+      "DAILY": {
+        "name": "Günün meydan okuması",
+        "rule": "Günde bir, 10 kart",
+        "blurb": "Her oyuncuya aynı on kart; UTC gece yarısı değişir. Tek hak, ve sıralama günün nasıl geçtiğini gösterir."
+      },
+      "RUSH": {
+        "name": "Hız turu",
+        "rule": "90 saniye",
+        "blurb": "Süre bitene kadar kaç tane bilebilirsen. Hız kazandırır, üst üste doğru daha çok kazandırır."
+      },
+      "SURVIVAL": {
+        "name": "Hayatta kalma",
+        "rule": "3 can",
+        "blurb": "Kolay başlar ve giderek zorlaşır. Üç yanlışta tur biter, bu yüzden son kart hep en değerlisidir."
+      },
+      "DRILL": {
+        "name": "Zayıf noktalar",
+        "rule": "15 kart",
+        "blurb": "Gerçekten yanlış bildiğin ülkelerden kurulur. Norveç’i ne kadar çok kaçırırsan o kadar çok Norveç gelir."
+      }
+    },
+    "hud": {
+      "score": "Puan",
+      "streak": "Seri",
+      "lives": "Can",
+      "time": "Süre",
+      "card": "Kart"
+    },
+    "answer": {
+      "points": "+{points} puan",
+      "xp": "+{xp} XP"
+    },
+    "summary": {
+      "points": "puan",
+      "accuracy": "İsabet",
+      "correctOf": "{total} kartta {correct}",
+      "bestStreak": "En uzun seri",
+      "time": "Süre",
+      "again": "Tekrar oyna",
+      "seeBoard": "Sıralamayı gör",
+      "otherModes": "Diğer modlar"
+    },
+    "history": {
+      "title": "Son turlar",
+      "empty": "Henüz puanlı tur yok. Pratik dışındaki her mod buraya düşer.",
+      "line": "{total} kartta {correct} doğru · {time}"
+    },
+    "daily": {
+      "doneToday": "Bugün oynandı · {score}"
+    }
+  },
+  "leaderboard": {
+    "title": "Sıralama",
+    "subtitle": "Her oyuncu için tek satır: o moddaki en iyi turu.",
+    "loading": "Sıralama okunuyor…",
+    "empty": "Bu modda henüz kimse tur bitirmedi. İlk sen ol.",
+    "correctOf": "{total} kartta {correct} doğru",
+    "yourStanding": "{rank}. sıradasın, {score} puan.",
+    "modes": {
+      "DAILY": "Günlük",
+      "RUSH": "Hız",
+      "SURVIVAL": "Hayatta kalma",
+      "DRILL": "Zayıf noktalar"
+    },
+    "windows": {
+      "all": "Tüm zamanlar",
+      "week": "Bu hafta"
+    }
+  },
+  "atlas": {
+    "title": "Atlas",
+    "subtitle": "Destedeki her ülke, onu ele veren ipuçları ve doğrulayan bilgilerle.",
+    "searchPlaceholder": "Ülke ara",
+    "allRegions": "Her yer",
+    "noMatches": "Eşleşen ülke yok.",
+    "clueCount": "{count} ipucu",
+    "noClues": "Bu ülke için henüz yayımlanmış ipucu yok.",
+    "backToIndex": "Atlasa dön",
+    "drillCta": "Zayıf noktalarımı çalış",
+    "facts": {
+      "drivingSide": "Trafik yönü",
+      "languages": "Diller",
+      "ccTld": "Alan adı",
+      "phonePrefix": "Telefon kodu",
+      "currency": "Para birimi",
+      "cameraGens": "Kapsama"
+    },
+    "drivingSide": {
+      "LEFT": "Solda",
+      "RIGHT": "Sağda"
+    }
+  },
+  "progress": {
+    "level": "Seviye",
+    "xpToNext": "Sonraki seviyeye {xp} XP",
+    "totalXp": "Toplam {xp} XP",
+    "badges": "Rozetler",
+    "badgeCount": "{total} rozetten {earned} tanesi",
+    "tiers": {
+      "BRONZE": "III",
+      "SILVER": "II",
+      "GOLD": "I"
+    },
+    "achievements": {
+      "first-ten": {
+        "name": "İlk on",
+        "hint": "On kart cevapla."
+      },
+      "hundred-cards": {
+        "name": "Yüz kart",
+        "hint": "Yüz kart cevapla."
+      },
+      "thousand-cards": {
+        "name": "Bin kart",
+        "hint": "Bin kart cevapla."
+      },
+      "week-streak": {
+        "name": "Yedi gün",
+        "hint": "Yedi gün üst üste çalış."
+      },
+      "month-streak": {
+        "name": "Otuz gün",
+        "hint": "Otuz gün üst üste çalış."
+      },
+      "level-five": {
+        "name": "Beşinci seviye",
+        "hint": "Beşinci seviyeye ulaş."
+      },
+      "level-fifteen": {
+        "name": "On beşinci seviye",
+        "hint": "On beşinci seviyeye ulaş."
+      },
+      "level-thirty": {
+        "name": "Otuzuncu seviye",
+        "hint": "Otuzuncu seviyeye ulaş."
+      },
+      "hot-streak": {
+        "name": "Seri yakaladın",
+        "hint": "Bir turda üst üste on beş doğru yap."
+      },
+      "unbroken": {
+        "name": "Hiç şaşmadan",
+        "hint": "Bir turda üst üste kırk doğru yap."
+      },
+      "rush-two-thousand": {
+        "name": "İki bin",
+        "hint": "Tek turda 2.000 puan topla."
+      },
+      "rush-five-thousand": {
+        "name": "Beş bin",
+        "hint": "Tek turda 5.000 puan topla."
+      },
+      "daily-perfect": {
+        "name": "Hatasız gün",
+        "hint": "Günün meydan okumasını hatasız bitir."
+      },
+      "daily-ten-perfect": {
+        "name": "On hatasız gün",
+        "hint": "Bunu on kez yap."
+      },
+      "globetrotter": {
+        "name": "Dünya gezgini",
+        "hint": "25 farklı ülkeyi doğru bil."
+      },
+      "cartographer": {
+        "name": "Haritacı",
+        "hint": "60 farklı ülkeyi doğru bil."
+      }
+    }
+  },
+  "collections": {
+    "title": "Koleksiyonlar",
+    "subtitle": "Kataloğun bir bölümünde temalı turlar. Çalış, süreye karşı yarış ya da üç canla oyna.",
+    "empty": "Henüz yayımlanmış koleksiyon yok.",
+    "cardCount": "{count} kart",
+    "practise": "Çalış",
+    "rush": "Hız turu",
+    "survival": "Hayatta kalma"
   }
 }

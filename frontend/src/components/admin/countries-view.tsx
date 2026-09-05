@@ -6,6 +6,8 @@ import { useCallback, useState } from 'react';
 
 import {
   type AdminCountry,
+  DRIVING_SIDES,
+  type DrivingSide,
   REGIONS,
   type Region,
   createAdminCountry,
@@ -15,15 +17,62 @@ import {
 } from '@/lib/admin-api';
 import { useLoad } from '@/lib/use-load';
 
-import { Badge, Button, EmptyRow, Field, Input, Panel, Select, TableShell, Td, Th } from './ui';
+import {
+  Badge,
+  Button,
+  EmptyRow,
+  Field,
+  Input,
+  Panel,
+  Select,
+  TableShell,
+  Td,
+  Textarea,
+  Th,
+} from './ui';
 
 type Draft = Omit<AdminCountry, '_count'>;
 
-const BLANK: Draft = { code: '', nameEn: '', nameTr: '', region: 'EUROPE' };
+const BLANK: Draft = {
+  code: '',
+  nameEn: '',
+  nameTr: '',
+  region: 'EUROPE',
+  flagEmoji: '',
+  drivingSide: null,
+  ccTld: '',
+  phonePrefix: '',
+  currency: '',
+  languages: '',
+  cameraGens: '',
+  summaryEn: '',
+  summaryTr: '',
+};
+
+/** Pulls a country into the editor. The meta count is a listing figure and
+ *  is not part of what gets saved back. */
+function toDraft(country: AdminCountry): Draft {
+  return {
+    code: country.code,
+    nameEn: country.nameEn,
+    nameTr: country.nameTr,
+    region: country.region,
+    flagEmoji: country.flagEmoji ?? '',
+    drivingSide: country.drivingSide ?? null,
+    ccTld: country.ccTld ?? '',
+    phonePrefix: country.phonePrefix ?? '',
+    currency: country.currency ?? '',
+    languages: country.languages ?? '',
+    cameraGens: country.cameraGens ?? '',
+    summaryEn: country.summaryEn ?? '',
+    summaryTr: country.summaryTr ?? '',
+  };
+}
 
 export function CountriesView() {
   const t = useTranslations('admin.countries');
   const regions = useTranslations('regions');
+  const atlas = useTranslations('atlas');
   const errors = useTranslations('errors');
 
   const [items, setItems] = useState<AdminCountry[]>([]);
@@ -106,12 +155,7 @@ export function CountriesView() {
                     aria-label={t('edit')}
                     onClick={() => {
                       setEditingCode(country.code);
-                      setDraft({
-                        code: country.code,
-                        nameEn: country.nameEn,
-                        nameTr: country.nameTr,
-                        region: country.region,
-                      });
+                      setDraft(toDraft(country));
                     }}
                     className="rounded-md border border-line p-1.5 text-muted transition-colors hover:border-muted hover:text-ink"
                   >
@@ -166,6 +210,88 @@ export function CountriesView() {
               ))}
             </Select>
           </Field>
+
+          <div className="border-t border-line pt-4">
+            <p className="eyebrow mb-3">{t('factsTitle')}</p>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label={t('flagEmoji')}>
+                  <Input
+                    value={draft.flagEmoji ?? ''}
+                    maxLength={8}
+                    onChange={(event) => setDraft({ ...draft, flagEmoji: event.target.value })}
+                  />
+                </Field>
+                <Field label={t('drivingSide')}>
+                  <Select
+                    value={draft.drivingSide ?? ''}
+                    onChange={(event) =>
+                      setDraft({
+                        ...draft,
+                        drivingSide: (event.target.value || null) as DrivingSide | null,
+                      })
+                    }
+                  >
+                    <option value="">{t('unset')}</option>
+                    {DRIVING_SIDES.map((side) => (
+                      <option key={side} value={side}>
+                        {atlas(`drivingSide.${side}`)}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+                <Field label={t('ccTld')}>
+                  <Input
+                    value={draft.ccTld ?? ''}
+                    maxLength={12}
+                    onChange={(event) => setDraft({ ...draft, ccTld: event.target.value })}
+                  />
+                </Field>
+                <Field label={t('phonePrefix')}>
+                  <Input
+                    value={draft.phonePrefix ?? ''}
+                    maxLength={12}
+                    onChange={(event) => setDraft({ ...draft, phonePrefix: event.target.value })}
+                  />
+                </Field>
+                <Field label={t('currency')}>
+                  <Input
+                    value={draft.currency ?? ''}
+                    maxLength={40}
+                    onChange={(event) => setDraft({ ...draft, currency: event.target.value })}
+                  />
+                </Field>
+                <Field label={t('cameraGens')} hint={t('listHint')}>
+                  <Input
+                    value={draft.cameraGens ?? ''}
+                    onChange={(event) => setDraft({ ...draft, cameraGens: event.target.value })}
+                  />
+                </Field>
+              </div>
+
+              <Field label={t('languages')} hint={t('listHint')}>
+                <Input
+                  value={draft.languages ?? ''}
+                  onChange={(event) => setDraft({ ...draft, languages: event.target.value })}
+                />
+              </Field>
+              <Field label={t('summaryEn')} hint={t('summaryHint')}>
+                <Textarea
+                  rows={3}
+                  value={draft.summaryEn ?? ''}
+                  onChange={(event) => setDraft({ ...draft, summaryEn: event.target.value })}
+                />
+              </Field>
+              <Field label={t('summaryTr')}>
+                <Textarea
+                  rows={3}
+                  value={draft.summaryTr ?? ''}
+                  onChange={(event) => setDraft({ ...draft, summaryTr: event.target.value })}
+                />
+              </Field>
+            </div>
+          </div>
 
           {error && <p className="text-sm text-stop">{error}</p>}
 

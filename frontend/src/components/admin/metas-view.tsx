@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus } from 'lucide-react';
+import { ImageOff, Plus } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
@@ -31,6 +31,7 @@ export function MetasView() {
   const [countryCode, setCountryCode] = useState('');
   const [published, setPublished] = useState('');
   const [imageSource, setImageSource] = useState('');
+  const [hasImage, setHasImage] = useState('');
   const [skip, setSkip] = useState(0);
 
   const [countries, setCountries] = useState<AdminCountry[]>([]);
@@ -54,6 +55,7 @@ export function MetasView() {
         countryCode: countryCode || undefined,
         isPublished: published === '' ? undefined : published === 'true',
         imageSource: imageSource || undefined,
+        hasImage: hasImage || undefined,
         take: PAGE_SIZE,
         skip,
       });
@@ -65,7 +67,7 @@ export function MetasView() {
     } finally {
       setLoading(false);
     }
-  }, [category, countryCode, published, imageSource, search, skip]);
+  }, [category, countryCode, published, imageSource, hasImage, search, skip]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => void load(), 200);
@@ -129,6 +131,15 @@ export function MetasView() {
           <option value="PHOTO">{t('filterPhoto')}</option>
           <option value="ILLUSTRATION">{t('filterIllustration')}</option>
         </Select>
+        <Select
+          value={hasImage}
+          onChange={(event) => changeFilter(() => setHasImage(event.target.value))}
+          className="w-44"
+        >
+          <option value="">{t('anyPicture')}</option>
+          <option value="false">{t('filterNoPicture')}</option>
+          <option value="true">{t('filterHasPicture')}</option>
+        </Select>
         <Link href="/admin/metas/new" className="inline-flex items-center gap-2 btn btn-go">
           <Plus className="size-4" aria-hidden />
           {t('create')}
@@ -156,8 +167,12 @@ export function MetasView() {
           {items.map((meta) => (
             <tr key={meta.id} className="transition-colors hover:bg-canvas">
               <Td>
-                <span className="relative block h-9 w-14 overflow-hidden rounded border border-line bg-canvas">
-                  <Image src={meta.imageUrl} alt="" fill sizes="56px" className="object-contain" />
+                <span className="relative flex h-9 w-14 items-center justify-center overflow-hidden rounded border border-line bg-canvas">
+                  {meta.imageUrl ? (
+                    <Image src={meta.imageUrl} alt="" fill sizes="56px" className="object-contain" />
+                  ) : (
+                    <ImageOff className="size-4 text-muted" aria-hidden />
+                  )}
                 </span>
               </Td>
               <Td>
@@ -175,7 +190,11 @@ export function MetasView() {
                   <Badge tone={meta.isPublished ? 'good' : 'warn'}>
                     {meta.isPublished ? t('published') : t('draft')}
                   </Badge>
-                  {needsRealPhoto(meta.imageSource) && <Badge tone="warn">{t('needsPhoto')}</Badge>}
+                  {meta.imageUrl === '' ? (
+                    <Badge tone="warn">{t('noPicture')}</Badge>
+                  ) : (
+                    needsRealPhoto(meta.imageSource) && <Badge tone="warn">{t('needsPhoto')}</Badge>
+                  )}
                 </div>
               </Td>
             </tr>

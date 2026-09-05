@@ -3,24 +3,20 @@ import Image from 'next/image';
 
 import { LandingDemo } from '@/components/landing-demo';
 import { Link } from '@/i18n/navigation';
-import { fetchCatalogueSummary } from '@/lib/server-api';
+import { fetchCatalogueSummary, fetchShowcase } from '@/lib/server-api';
 
-const CATALOGUE_STRIP = [
-  'tr-plate',
-  'no-bollard',
-  'us-road',
-  'ru-script',
-  'au-vegetation',
-  'jp-poles',
-  'nl-plate',
-  'pl-bollard',
-];
+/** The scored modes, in the order the hub lists them. */
+const MODES = ['DAILY', 'RUSH', 'SURVIVAL', 'DRILL'] as const;
 
 export default async function LandingPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('landing');
-  const summary = await fetchCatalogueSummary();
+  const [t, games, summary, showcase] = await Promise.all([
+    getTranslations('landing'),
+    getTranslations('games'),
+    fetchCatalogueSummary(),
+    fetchShowcase(),
+  ]);
 
   const steps = [
     { title: t('steps.oneTitle'), body: t('steps.oneBody') },
@@ -107,10 +103,10 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         <p className="mt-3 max-w-xl leading-relaxed text-muted">{t('catalogueBody')}</p>
 
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {CATALOGUE_STRIP.map((slug) => (
-            <div key={slug} className="card relative aspect-[8/5] overflow-hidden bg-paper">
+          {showcase.map((card) => (
+            <div key={card.id} className="card relative aspect-[8/5] overflow-hidden bg-paper">
               <Image
-                src={`/metas/${slug}.svg`}
+                src={card.imageUrl}
                 alt=""
                 fill
                 sizes="(max-width: 640px) 50vw, 240px"
@@ -118,6 +114,31 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
               />
             </div>
           ))}
+        </div>
+
+        <Link href="/atlas" className="btn btn-quiet mt-8">
+          {t('atlasCta')}
+        </Link>
+      </section>
+
+      <section className="border-t-2 border-line bg-paper py-16">
+        <div className="mx-auto w-full max-w-6xl px-5">
+          <h2 className="font-display text-3xl font-900 tracking-tight">{t('modesTitle')}</h2>
+          <p className="mt-3 max-w-xl leading-relaxed text-muted">{t('modesBody')}</p>
+
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {MODES.map((mode) => (
+              <li key={mode} className="card px-4 py-4">
+                <p className="eyebrow">{games(`modes.${mode}.rule`)}</p>
+                <h3 className="mt-1 font-display text-lg font-900 tracking-tight">
+                  {games(`modes.${mode}.name`)}
+                </h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted">
+                  {games(`modes.${mode}.blurb`)}
+                </p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

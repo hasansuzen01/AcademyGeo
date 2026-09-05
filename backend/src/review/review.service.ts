@@ -1,21 +1,18 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { MetaCategory, Region } from '@prisma/client';
 
-import { startOfUtcDay } from '../common/utc-day.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { RedisService } from '../redis/redis.service.js';
-import { statsCacheKey } from '../stats/stats.cache.js';
-import { buildChoices } from './choices.js';
+import { AnswersService } from './answers.service.js';
+import { toCardView } from './card-view.js';
 import type { SubmitAnswerDto } from './dto.js';
 import { buildReviewQueue } from './queue.js';
-import { INITIAL_REVIEW_STATE, gradeAnswer, scheduleNextReview } from './srs.js';
 
 const DEFAULT_SESSION_SIZE = 12;
-const CHOICES_PER_CARD = 4;
 
 export interface QueueFilter {
   category?: MetaCategory;
   region?: Region;
+  deckSlug?: string;
   limit?: number;
 }
 
@@ -23,7 +20,7 @@ export interface QueueFilter {
 export class ReviewService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly redis: RedisService,
+    private readonly answers: AnswersService,
   ) {}
 
   /**
@@ -38,6 +35,7 @@ export class ReviewService {
       isPublished: true,
       category: filter.category,
       country: filter.region ? { region: filter.region } : undefined,
+      decks: filter.deckSlug ? { some: { deck: { slug: filter.deckSlug } } } : undefined,
     };
 
     const [dueCards, unseenMetas, countries] = await Promise.all([
@@ -67,35 +65,10 @@ export class ReviewService {
       include: { country: true },
     });
     const byId = new Map(metas.map((meta) => [meta.id, meta]));
-    const byCode = new Map(countries.map((country) => [country.code, country]));
 
     const cards = orderedIds.flatMap((id) => {
       const meta = byId.get(id);
-      if (!meta) return [];
-
-      const choiceCodes = buildChoices(meta.country, countries, CHOICES_PER_CARD);
-
-      return [
-        {
-          metaId: meta.id,
-          category: meta.category,
-          imageUrl: meta.imageUrl,
-          imageSource: meta.imageSource,
-          difficulty: meta.difficulty,
-          choices: choiceCodes.flatMap((code) => {
-            const country = byCode.get(code);
-            return country
-              ? [
-                  {
-                    code: country.code,
-                    nameEn: country.nameEn,
-                    nameTr: country.nameTr,
-                  },
-                ]
-              : [];
-          }),
-        },
-      ];
+      return meta ? [toCardView(meta, countries)] : [];
     });
 
     return { cards, generatedAt: now.toISOString() };
@@ -103,84 +76,19 @@ export class ReviewService {
 
   /** Grades one answer, reschedules the card and records it for the dashboard. */
   async submitAnswer(userId: string, dto: SubmitAnswerDto) {
-    const meta = await this.prisma.meta.findUnique({
-      where: { id: dto.metaId },
-      include: { country: true },
-    });
-    if (!meta) throw new NotFoundException('Meta not found');
-
-    const card = await this.prisma.reviewCard.findUnique({
-      where: { userId_metaId: { userId, metaId: meta.id } },
-    });
-
-    const guessed = dto.guessedCountryCode.toUpperCase();
-
-    // Only real countries are recorded. Without this a client could post any
-    // two letters and fill the confusion chart with codes nobody can read.
-    const known = await this.prisma.country.findUnique({ where: { code: guessed } });
-    if (!known) throw new BadRequestException('Unknown country code');
-
-    const correct = meta.countryCode === guessed;
-    const outcome = { correct, responseMs: dto.responseMs };
-    const now = new Date();
-    const next = scheduleNextReview(card ?? INITIAL_REVIEW_STATE, outcome, now);
-    const scheduling = {
-      repetitions: next.repetitions,
-      intervalDays: next.intervalDays,
-      easeFactor: next.easeFactor,
-      lapses: next.lapses,
-      dueAt: next.dueAt,
-      lastReviewedAt: now,
-    };
-
-    await this.prisma.$transaction([
-      this.prisma.reviewCard.upsert({
-        where: { userId_metaId: { userId, metaId: meta.id } },
-        create: { userId, metaId: meta.id, ...scheduling },
-        update: scheduling,
-      }),
-      this.prisma.reviewLog.create({
-        data: {
-          userId,
-          metaId: meta.id,
-          guessedCountryCode: guessed,
-          correct,
-          responseMs: dto.responseMs,
-          grade: gradeAnswer(outcome),
-        },
-      }),
-      this.prisma.dailyActivity.upsert({
-        where: { userId_day: { userId, day: startOfUtcDay(now) } },
-        create: {
-          userId,
-          day: startOfUtcDay(now),
-          reviews: 1,
-          correct: correct ? 1 : 0,
-        },
-        update: {
-          reviews: { increment: 1 },
-          correct: { increment: correct ? 1 : 0 },
-        },
-      }),
-    ]);
-
-    await this.redis.invalidate(statsCacheKey(userId));
+    const answer = await this.answers.record(
+      userId,
+      dto.metaId,
+      dto.guessedCountryCode,
+      dto.responseMs,
+    );
 
     return {
-      correct,
-      country: {
-        code: meta.country.code,
-        nameEn: meta.country.nameEn,
-        nameTr: meta.country.nameTr,
-      },
-      explanation: {
-        titleEn: meta.titleEn,
-        titleTr: meta.titleTr,
-        descriptionEn: meta.descriptionEn,
-        descriptionTr: meta.descriptionTr,
-      },
-      nextDueAt: next.dueAt.toISOString(),
-      intervalDays: next.intervalDays,
+      correct: answer.correct,
+      country: answer.country,
+      explanation: answer.explanation,
+      nextDueAt: answer.nextDueAt,
+      intervalDays: answer.intervalDays,
     };
   }
 }

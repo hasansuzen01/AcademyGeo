@@ -18,6 +18,8 @@ export interface SitemapRow {
  */
 const STATIC_PATHS: { path: string; priority: number }[] = [
   { path: '', priority: 1 },
+  { path: '/atlas', priority: 0.9 },
+  { path: '/collections', priority: 0.7 },
   { path: '/blog', priority: 0.8 },
 ];
 
@@ -27,6 +29,8 @@ export function buildSitemap(
   posts: SitemapRow[],
   pages: SitemapRow[],
   now: Date,
+  /** Country codes with an atlas page. Empty when the API is unreachable. */
+  countryCodes: string[] = [],
 ): MetadataRoute.Sitemap {
   const root = siteUrl.replace(/\/+$/, '');
   const entries = new Map<string, MetadataRoute.Sitemap[number]>();
@@ -38,6 +42,14 @@ export function buildSitemap(
   for (const locale of locales) {
     for (const route of STATIC_PATHS) {
       add(`${root}/${locale}${route.path}`, now, route.priority);
+    }
+  }
+
+  // The atlas is the site's reference half, open to everyone, and it is the
+  // part a search for "what country has yellow bollards" should land on.
+  for (const locale of locales) {
+    for (const code of countryCodes) {
+      add(`${root}/${locale}/atlas/${code.toLowerCase()}`, now, 0.6);
     }
   }
 

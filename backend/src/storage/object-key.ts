@@ -2,6 +2,10 @@ import { randomUUID } from 'node:crypto';
 
 export interface ObjectKeyInput {
   prefix: string;
+  /**
+   * Kept in the shape the upload form posts, but deliberately unused: see
+   * buildObjectKey. The extension comes from the content type instead.
+   */
   filename: string;
   contentType: string;
   /**
@@ -26,7 +30,7 @@ const ALLOWED_TYPES = new Map([
 /** The same list, for the upload DTO to reject anything else with a 400. */
 export const IMAGE_CONTENT_TYPES = [...ALLOWED_TYPES.keys()];
 
-export function buildObjectKey({ prefix, filename, contentType, name }: ObjectKeyInput): string {
+export function buildObjectKey({ prefix, contentType, name }: ObjectKeyInput): string {
   const extension = ALLOWED_TYPES.get(contentType);
   if (!extension) {
     throw new Error(`Unsupported content type: ${contentType}`);
@@ -36,12 +40,10 @@ export function buildObjectKey({ prefix, filename, contentType, name }: ObjectKe
     return `${prefix}/${slugify(name)}.${extension}`;
   }
 
-  // The stem is only there to keep the bucket readable. Uniqueness comes from
-  // the suffix, so re-uploading the same filename never overwrites a live card.
-  const stem = slugify(filename.replace(/\.[^.]+$/, '')) || 'upload';
-  const suffix = randomUUID().slice(0, 8);
-
-  return `${prefix}/${stem}-${suffix}.${extension}`;
+  // The uploaded filename is deliberately thrown away. A card picture saved as
+  // "norwegian-bollard.jpg" puts the answer in a URL the player can read out
+  // of the network tab, and the key only has to be unique, not readable.
+  return `${prefix}/${randomUUID()}.${extension}`;
 }
 
 function slugify(value: string): string {

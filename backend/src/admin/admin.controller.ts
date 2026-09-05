@@ -27,10 +27,12 @@ import {
   MetaListQuery,
   PageQuery,
   SetRoleDto,
+  SetStatusDto,
   SignUploadDto,
   UpsertCountryDto,
   UpsertDeckDto,
   UpsertMetaDto,
+  UpdateUserDto,
   UserListQuery,
 } from './dto.js';
 
@@ -156,6 +158,20 @@ export class AdminController {
     return this.users.listUsers(query);
   }
 
+  @Get('users/:id')
+  getUser(@Param('id') id: string) {
+    return this.users.getUser(id);
+  }
+
+  @Patch('users/:id')
+  updateUser(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
+  ) {
+    return this.users.updateUser(user.id, id, dto);
+  }
+
   @Patch('users/:id/role')
   setRole(
     @CurrentUser() user: AuthenticatedUser,
@@ -163,6 +179,25 @@ export class AdminController {
     @Body() dto: SetRoleDto,
   ) {
     return this.users.setRole(user.id, id, dto.role);
+  }
+
+  @Patch('users/:id/status')
+  setStatus(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') id: string,
+    @Body() dto: SetStatusDto,
+  ) {
+    return this.users.setStatus(user.id, id, dto);
+  }
+
+  @Post('users/:id/sign-out')
+  revokeSessions(@CurrentUser() user: AuthenticatedUser, @Param('id') id: string) {
+    return this.users.revokeSessions(user.id, id);
+  }
+
+  @Delete('users/:id')
+  removeUser(@CurrentUser() user: AuthenticatedUser, @Param('id') id: string) {
+    return this.users.removeUser(user.id, id);
   }
 
   // -- Audit trail ----------------------------------------------------------

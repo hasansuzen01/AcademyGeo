@@ -9,20 +9,30 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { artFileName } from './art-file.ts';
 import { type ArtSpec, METAS } from './catalogue.ts';
 
 const WIDTH = 640;
 const BACKDROP = '#eef3f0';
 const HEIGHT = 400;
 
+/**
+ * The three cards the landing page walks a visitor through. They are written
+ * a second time under readable names because that demo shows the answer as
+ * part of the pitch, so there is nothing left to give away.
+ */
+const DEMO_SLUGS = ['no-bollard', 'za-road', 'br-plate'];
+
 const OUTPUT_DIR = join(
   dirname(fileURLToPath(import.meta.url)),
   '..',
   '..',
-  'web',
+  'frontend',
   'public',
   'metas',
 );
+
+const DEMO_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'frontend', 'public', 'demo');
 
 function escapeText(value: string): string {
   return value
@@ -204,9 +214,18 @@ function render(art: ArtSpec): string {
 
 async function main(): Promise<void> {
   await mkdir(OUTPUT_DIR, { recursive: true });
+  await mkdir(DEMO_DIR, { recursive: true });
 
   await Promise.all(
-    METAS.map((meta) => writeFile(join(OUTPUT_DIR, `${meta.slug}.svg`), render(meta.art), 'utf8')),
+    METAS.map((meta) =>
+      writeFile(join(OUTPUT_DIR, artFileName(meta.slug)), render(meta.art), 'utf8'),
+    ),
+  );
+
+  await Promise.all(
+    METAS.filter((meta) => DEMO_SLUGS.includes(meta.slug)).map((meta) =>
+      writeFile(join(DEMO_DIR, `${meta.slug}.svg`), render(meta.art), 'utf8'),
+    ),
   );
 
   console.log(`Rendered ${METAS.length} meta illustrations into ${OUTPUT_DIR}`);
