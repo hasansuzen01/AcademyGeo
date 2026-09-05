@@ -320,7 +320,7 @@
       "upload": "Görsel yükle",
       "uploading": "Yükleniyor",
       "hint": "Ya da çizilmiş görsellerden birinin yolunu yapıştır.",
-      "storageMissing": "Yükleme için apps/api/.env içindeki R2 değerleri gerekli.",
+      "storageMissing": "Yükleme için backend/.env içindeki R2 değerleri gerekli.",
       "failed": "Yükleme başarısız oldu."
     },
     "pagination": {

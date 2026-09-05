@@ -4,23 +4,21 @@ AcademyGeo dört dış servise bağlanır: PostgreSQL, Redis, Google OAuth ve
 Cloudflare R2. Bu belge her birinin anahtarını nereden alacağını ve hangi
 dosyaya yazacağını anlatır.
 
-Üç env dosyası var ve hiçbiri diğerini okumaz:
+İki env dosyası var ve hiçbiri diğerini okumaz:
 
 | Dosya | Kimin için | Ne zaman gerekir |
 | --- | --- | --- |
-| `apps/api/.env` | NestJS API | `npm run dev` |
-| `apps/web/.env.local` | Next.js arayüzü | `npm run dev` |
-| `.env` | docker compose | `docker compose up` |
+| `backend/.env` | NestJS API | `npm run dev` |
+| `frontend/.env.local` | Next.js arayüzü | `npm run dev` |
 
-Docker ile çalıştıracaksan API'nin ihtiyaç duyduğu değerleri kök dizindeki
-`.env` dosyasına da yazman gerekir. Compose `apps/api/.env` dosyasını okumaz.
+`docker compose up` de aynı iki dosyayı okur, bu yüzden kök dizinde ayrı
+bir `.env` yok. Bir değeri tek bir yerde tutman yeter.
 
 Başlangıç:
 
 ```bash
-cp .env.example .env
-cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env.local
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
 ```
 
 ## 1. PostgreSQL ve Redis
@@ -30,18 +28,18 @@ tutuyor olabileceği için bu proje 5433 ve 6380 kullanır.
 
 ```bash
 docker compose up -d postgres redis
-npm run db:migrate --workspace api
-npm run seed --workspace api
+npm run db:migrate --workspace backend
+npm run seed --workspace backend
 ```
 
-`apps/api/.env` içine:
+`backend/.env` içine:
 
 ```
 DATABASE_URL=postgresql://academygeo:PAROLA@localhost:5433/academygeo?schema=public
 REDIS_URL=redis://localhost:6380
 ```
 
-Parolayı kök `.env` dosyasındaki `POSTGRES_PASSWORD` ile aynı yap.
+Parolayı `docker-compose.yml` içindeki `POSTGRES_PASSWORD` ile aynı yap.
 
 Canlıda yönetilen bir servis kullanmak istersen: veritabanı için Neon veya
 Supabase, Redis için Upstash. Her biri sana hazır bir bağlantı adresi verir,
@@ -62,7 +60,7 @@ openssl rand -base64 32
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
-Çıkan değeri `apps/api/.env` içindeki `BETTER_AUTH_SECRET` alanına yaz. Canlı
+Çıkan değeri `backend/.env` içindeki `BETTER_AUTH_SECRET` alanına yaz. Canlı
 ortamda geliştirme ortamındakinden farklı bir değer kullan. Bu değeri
 değiştirdiğinde herkesin oturumu kapanır.
 
@@ -98,7 +96,7 @@ Giriş yönteminin tamamı budur, e-posta ve parola kapalıdır.
     http://localhost:3001/api/auth/callback/google
     ```
 
-11. **Create** de. Açılan kutudaki iki değeri `apps/api/.env` içine yaz:
+11. **Create** de. Açılan kutudaki iki değeri `backend/.env` içine yaz:
 
     ```
     GOOGLE_CLIENT_ID=...apps.googleusercontent.com
@@ -134,7 +132,7 @@ görüyorsan aşağıdaki Console Ninja notuna bak.
 `state_not_found` hatası, Google'dan dönen adresteki sorgu dizesinin API'ye
 ulaşmadığı anlamına gelir. Better Auth handler'ı joker karakterli bir yola
 bağlanırsa Express yolun tamamını `baseUrl` içine koyar ve sorgu düşer.
-`apps/api/src/auth/mount-auth.ts` bu yüzden düz bir önek kullanır ve
+`backend/src/auth/mount-auth.ts` bu yüzden düz bir önek kullanır ve
 `mount-auth.spec.ts` bunu koruyan testi taşır.
 
 `state_mismatch` görüyorsan state kaydı bulunamamıştır. Google ekranında beş
@@ -143,8 +141,8 @@ girişi baştan başlat.
 
 `internal_server_error` ile birlikte kayıtlarda `Unknown argument` diyen bir
 Prisma hatası görüyorsan şema, Better Auth'un beklediği tablolarla uyuşmuyor
-demektir. `npm run db:deploy --workspace api` ile migration'ları uygula.
-`apps/api/src/auth/auth-schema.spec.ts` iki tarafı karşılaştırır, yani bu
+demektir. `npm run db:deploy --workspace backend` ile migration'ları uygula.
+`backend/src/auth/auth-schema.spec.ts` iki tarafı karşılaştırır, yani bu
 uyuşmazlık normalde teste takılır. Better Auth sürümünü yükselttikten sonra
 `npm test` çalıştır.
 
@@ -163,7 +161,7 @@ Bu yalnızca hesap ilk oluşturulurken bakılır. Zaten var olan bir hesabı
 yükseltmek için:
 
 ```bash
-npm run admin:grant --workspace api -- sen@ornek.com
+npm run admin:grant --workspace backend -- sen@ornek.com
 ```
 
 Son yöneticinin rolü panelden geri alınamaz, aksi halde kimse içeri
@@ -217,7 +215,7 @@ yalnızca imza üretir, dosya API'nin üzerinden geçmez.
    görünür:
 
    ```
-   # apps/web/.env.local
+   # frontend/.env.local
    NEXT_PUBLIC_MEDIA_HOST=https://pub-abc123....r2.dev
    ```
 
@@ -254,7 +252,7 @@ r2.dev adresi hız sınırlıdır ve önbelleğe alınmaz, canlıda özel alan a
 
 ## 6. Tüm değişkenler
 
-`apps/api/.env`:
+`backend/.env`:
 
 | Anahtar | Zorunlu | Nereden |
 | --- | --- | --- |
@@ -279,7 +277,7 @@ r2.dev adresi hız sınırlıdır ve önbelleğe alınmaz, canlıda özel alan a
 API, ilk üç zorunlu kimlik değeri olmadan başlamayı reddeder ve hangi dosyayı
 dolduracağını söyler.
 
-`apps/web/.env.local`:
+`frontend/.env.local`:
 
 | Anahtar | Zorunlu | Nereden |
 | --- | --- | --- |
@@ -301,7 +299,7 @@ görürsün.
 Pause**), sonra:
 
 ```bash
-rm -rf apps/web/.next
+rm -rf frontend/.next
 npm run dev
 ```
 
@@ -320,6 +318,6 @@ diyorsa eskisini kapat.
 - [ ] R2 bucket'ında özel alan adı ve canlı origin'i içeren CORS kaydı var
 - [ ] `NEXT_PUBLIC_MEDIA_HOST` bucket adresine ayarlı ve web yeniden derlendi
 - [ ] `AUTH_COOKIE_DOMAIN` web ve API farklı alt alan adlarındaysa dolu
-- [ ] `npm run db:deploy --workspace api` ile migration'lar uygulandı
+- [ ] `npm run db:deploy --workspace backend` ile migration'lar uygulandı
 - [ ] `ADMIN_EMAILS` dolu ya da en az bir hesap `admin:grant` ile yükseltildi
-- [ ] Docker kullanıyorsan kök `.env` dosyasında R2 ve `ADMIN_EMAILS` değerleri var
+- [ ] `backend/.env` içinde R2 ve `ADMIN_EMAILS` değerleri var

@@ -87,7 +87,7 @@ export class R2Service {
   private requireStorage(): { client: S3Client; settings: R2Settings } {
     if (!this.client || !this.settings) {
       throw new ServiceUnavailableException(
-        'Image storage is not configured. Set the R2_* values in apps/api/.env.',
+        'Image storage is not configured. Set the R2_* values in backend/.env.',
       );
     }
     return { client: this.client, settings: this.settings };

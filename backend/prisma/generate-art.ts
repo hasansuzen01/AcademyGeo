@@ -3,7 +3,7 @@
  * consistent, license-free illustration of each clue, so they are generated
  * from the catalogue rather than sourced from photographs.
  *
- * Run with: npm run seed:art --workspace api
+ * Run with: npm run seed:art --workspace backend
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';

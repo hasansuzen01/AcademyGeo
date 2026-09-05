@@ -69,7 +69,7 @@ function required(config: ConfigService, key: string): string {
   const value = config.get<string>(key);
   if (!value) {
     throw new Error(
-      `${key} is not set. Copy apps/api/.env.example to apps/api/.env and fill it in.`,
+      `${key} is not set. Copy backend/.env.example to backend/.env and fill it in.`,
     );
   }
   return value;

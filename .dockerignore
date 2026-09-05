@@ -5,6 +5,8 @@ node_modules
 **/.env
 **/.env.*
 !**/.env.example
+# The web build reads its NEXT_PUBLIC_* values from here.
+!frontend/.env.local
 .git
 .claude
 .agents

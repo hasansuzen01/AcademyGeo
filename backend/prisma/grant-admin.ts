@@ -1,7 +1,7 @@
 /**
  * Promotes an existing account to admin.
  *
- * Run with: npm run admin:grant --workspace api -- someone@example.com
+ * Run with: npm run admin:grant --workspace backend -- someone@example.com
  *
  * The account has to exist, which means the person must have signed in with
  * Google at least once.
@@ -14,7 +14,7 @@ import { PrismaClient } from '@prisma/client';
 const email = process.argv[2];
 
 if (!email) {
-  console.error('Usage: npm run admin:grant --workspace api -- someone@example.com');
+  console.error('Usage: npm run admin:grant --workspace backend -- someone@example.com');
   process.exit(1);
 }
 

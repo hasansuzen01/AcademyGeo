@@ -320,7 +320,7 @@
       "upload": "Upload a picture",
       "uploading": "Uploading",
       "hint": "Or paste a path to one of the drawn illustrations.",
-      "storageMissing": "Uploads need the R2 values in apps/api/.env.",
+      "storageMissing": "Uploads need the R2 values in backend/.env.",
       "failed": "The upload failed."
     },
     "pagination": {
