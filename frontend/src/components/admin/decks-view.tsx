@@ -53,7 +53,7 @@ export function DecksView() {
           {items.map((deck) => (
             <tr key={deck.id} className="transition-colors hover:bg-canvas">
               <Td>
-                <Link href={`/admin/decks/${deck.id}`} className="hover:text-paint">
+                <Link href={`/admin/decks/${deck.id}`} className="hover:text-paint-deep">
                   <span className="block">{locale === 'tr' ? deck.nameTr : deck.nameEn}</span>
                   <span className="font-mono text-xs text-muted">{deck.slug}</span>
                 </Link>

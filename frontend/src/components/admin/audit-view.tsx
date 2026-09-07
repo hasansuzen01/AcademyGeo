@@ -33,7 +33,7 @@ export function AuditView() {
 
   return (
     <Panel title={t('title')}>
-      {error && <p className="px-5 py-3 text-sm text-stop">{error}</p>}
+      {error && <p className="px-5 py-3 text-sm text-stop-deep">{error}</p>}
 
       <TableShell
         head={

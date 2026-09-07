@@ -36,7 +36,7 @@ with anything already on the default ports.
 
 ```bash
 docker compose up -d postgres redis
-npm run db:migrate --workspace backend   # create the schema
+npm run db:push --workspace backend      # bring the schema up to date
 npm run seed --workspace backend         # 28 countries, 32 metas
 ```
 
@@ -229,6 +229,38 @@ Two rules stop the panel locking itself: nobody can suspend, demote or delete
 their own account, and the last remaining admin cannot be taken out either.
 Every one of these writes a line to the audit trail naming who did it.
 
+## The guide
+
+`/guides` is the reading half of the site: the metas written down, rather
+than asked. It is two levels. A **heading** names a kind of clue, the way a
+player would say it out loud, and under it sit the **articles** that say what
+to look at and what each thing narrows the answer down to. Power poles is a
+heading; wooden poles with two crossarms is an article under it.
+
+Both are written in `/admin/guides`. A heading carries a title, a summary, an
+icon and, optionally, the clue type it teaches. An article is a rich text body
+with pictures, written in the same editor the blog uses and cleaned by the API
+the same way, plus the country it is about when it is about one.
+
+Two switches decide what is public. An article is only readable when it and
+its heading are both live, so a heading can go up long before there is enough
+under it to publish, and publishing an article early cannot drag the
+unfinished heading into public with it.
+
+The library is wired into the rest of the site rather than sitting beside it:
+
+- A heading tied to a clue type offers **practise these cards**, which opens a
+  practice session dealt from that clue type alone.
+- An article about a country links to that country in the atlas, and the
+  country's atlas page lists the articles written about it.
+- Finishing an article offers the next one under the same heading.
+- Getting a card wrong now offers the country it was, instead of stopping at
+  two sentences.
+
+Ten headings are seeded, one per kind of clue, in both languages and as
+drafts. They are created once and never updated, so wording changed in the
+panel stays changed.
+
 ## Blog, pages and search engines
 
 `/admin/posts` writes blog posts with a rich text editor. A post belongs to one
@@ -270,9 +302,57 @@ npm test         # scheduler, queue, choices, streak and locale tests
 docker compose up --build
 ```
 
-Compose reads `backend/.env` and `frontend/.env.local`, so there is nothing to
-fill in at the repository root. The frontend image bakes its `NEXT_PUBLIC_*`
-values at build time, so rebuild that service after changing the public URLs.
+Compose reads `backend/.env`, so there is nothing to fill in at the repository
+root. The web app's public URLs are build arguments, listed in the compose
+file, so rebuild that service after changing one.
+
+The schema is the single source of truth. The API brings the database up to
+it with `prisma db push` on every start, in the container and on a laptop
+alike, so nothing reads the leftover `backend/prisma/migrations` folder.
+
+## Deploying to Coolify
+
+Two services, each built from its own Dockerfile with the **repository root**
+as the build context. In Coolify that means Base Directory `/` and Dockerfile
+Location `backend/Dockerfile` or `frontend/Dockerfile`. Both images run as
+`node` rather than root and carry a health check Coolify can wait on.
+
+Add Postgres and Redis as Coolify resources and paste the connection strings
+it gives you into the API's `DATABASE_URL` and `REDIS_URL`. The
+`docker-compose.yml` in this repository is for a laptop: its database
+password is in the file and both ports are bound to the loopback.
+
+**The API** reads everything at run time, so its settings are ordinary
+environment variables. It brings the database up to the shape the code expects
+on every start, with `prisma db push`, and then seeds. The seed only ever
+adds rows: nothing an admin has edited in the panel is written a second time,
+so a redeploy cannot undo their work. `SKIP_SEED=1` turns it off.
+
+**The web app** bakes everything the browser is told into the bundle at build
+time, so these four have to be set as Coolify **build arguments**, not only as
+runtime variables:
+
+| Build argument | Example |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | `https://api.academygeo.com` |
+| `NEXT_PUBLIC_AUTH_URL` | `https://api.academygeo.com` |
+| `NEXT_PUBLIC_APP_URL` | `https://academygeo.com` |
+| `NEXT_PUBLIC_MEDIA_HOST` | `https://media.academygeo.com` |
+
+Leaving `NEXT_PUBLIC_MEDIA_HOST` out builds a site that refuses to draw a
+single uploaded picture, because next/image will not load a host it was not
+told about. Set `INTERNAL_API_URL` as a runtime variable too if the two
+services share a private network; server-rendered pages will take it.
+
+Three settings on the API have to agree with the web app's address, and the
+symptom when they do not is a site that looks fine and cannot keep anyone
+signed in: `WEB_URL`, `CORS_ORIGIN` and, when the two share a parent domain,
+`AUTH_COOKIE_DOMAIN` (`.academygeo.com`). The session cookie is sent
+cross-site automatically whenever the two hosts differ, so a deployment on two
+unrelated domains works as well.
+
+Google's console needs `{API_URL}/api/auth/callback/google` as an authorised
+redirect URI before anyone can sign in.
 
 ## How the review scheduler works
 

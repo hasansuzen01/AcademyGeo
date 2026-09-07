@@ -172,7 +172,8 @@ model Country {
   summaryEn   String       @default("")
   summaryTr   String       @default("")
 
-  metas Meta[]
+  metas        Meta[]
+  guideEntries GuideEntry[]
 }
 
 model Meta {
@@ -506,4 +507,95 @@ model SiteSeo {
   contactEmail     String?
 
   updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Guides
+// ---------------------------------------------------------------------------
+
+/// A heading in the guide library: bollards, poles, road lines, signage.
+/// An admin writes the heading first and fills it with entries afterwards,
+/// so a topic with nothing under it yet is an ordinary state, not a fault.
+model GuideTopic {
+  id      String @id @default(cuid())
+  /// "en" or "tr", the same rule as a post: a topic is written for one
+  /// audience rather than being half of a translation pair.
+  locale  String
+  slug    String
+  title   String
+  summary String @default("")
+  /// Lucide icon name drawn on the topic card, e.g. "utility-pole".
+  icon    String @default("")
+
+  coverImageUrl String?
+  coverImageKey String?
+
+  /// The clue type this heading teaches, when there is one. Set it and the
+  /// topic offers the matching cards to practise, so reading leads straight
+  /// into the drill rather than ending on the page.
+  category MetaCategory?
+
+  /// Position in the library. Topics sharing a number fall back to title.
+  position Int           @default(0)
+  status   ContentStatus @default(DRAFT)
+
+  metaTitle       String?
+  metaDescription String?
+  keywords        String  @default("")
+  canonicalUrl    String?
+  robotsMeta      String  @default("index,follow")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entries GuideEntry[]
+
+  @@unique([locale, slug])
+  @@index([locale, status, position])
+}
+
+/// One article under a heading. This is the "if it looks like this, it is
+/// there" half of the library, so it carries a picture and a body rather
+/// than a question and an answer.
+model GuideEntry {
+  id      String @id @default(cuid())
+  topicId String
+  slug    String
+  title   String
+  excerpt String @default("")
+  /// Sanitised HTML from the editor.
+  content String
+
+  coverImageUrl String?
+  coverImageKey String?
+
+  /// The country the entry is about, when it is about one. Lets the atlas
+  /// point at the reading for a country a player keeps missing.
+  countryCode String?
+
+  position Int           @default(0)
+  status   ContentStatus @default(DRAFT)
+
+  metaTitle       String?
+  metaDescription String?
+  keywords        String  @default("")
+  canonicalUrl    String?
+  robotsMeta      String  @default("index,follow")
+
+  /// Counted when the entry is saved: the list response carries no body.
+  wordCount   Int @default(0)
+  readingTime Int @default(1)
+
+  publishedAt DateTime?
+  viewCount   Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  topic   GuideTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  country Country?   @relation(fields: [countryCode], references: [code], onDelete: SetNull)
+
+  @@unique([topicId, slug])
+  @@index([topicId, position])
+  @@index([countryCode])
 }

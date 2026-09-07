@@ -101,7 +101,7 @@ function Countdown({ endsAt }: { endsAt: string }) {
         transition={urgent ? { duration: 1, repeat: Infinity } : { duration: 0.2 }}
         className={cn(
           'flex items-center gap-1.5 font-display text-lg font-900 tabular-nums',
-          urgent ? 'text-stop' : 'text-ink',
+          urgent ? 'text-stop-deep' : 'text-ink',
         )}
       >
         <Timer className="size-4" aria-hidden />

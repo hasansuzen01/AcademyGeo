@@ -11,7 +11,7 @@ import { useLoad } from '@/lib/use-load';
 
 const TIER_TONE: Record<AchievementStanding['tier'], string> = {
   BRONZE: 'bg-paint/25 text-paint-deep',
-  SILVER: 'bg-sky/20 text-sky',
+  SILVER: 'bg-sky/20 text-sky-deep',
   GOLD: 'bg-go/20 text-go-deep',
 };
 

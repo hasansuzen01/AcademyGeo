@@ -1,0 +1,12 @@
+# Line endings.
+#
+# The repository is worked on from Windows, where git is configured to check
+# files out with CRLF. A shell script that reaches a Linux container that way
+# fails on its own first line: the kernel reads "/bin/sh\r" as the interpreter
+# and cannot find it. The container entrypoint is the one file where that
+# turns a deploy into a crash loop, so these are pinned to LF.
+* text=auto
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

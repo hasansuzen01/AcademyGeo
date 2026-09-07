@@ -49,7 +49,7 @@ const MODES: ModeCard[] = [
     href: '/play/rush',
     icon: <Timer className="size-6" aria-hidden />,
     accent: 'bg-sky',
-    tint: 'bg-sky/15 text-sky',
+    tint: 'bg-sky/15 text-sky-deep',
   },
   {
     mode: 'SURVIVAL',

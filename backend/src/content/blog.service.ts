@@ -1,9 +1,9 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import type { ContentStatus, Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
-import { type AuditEntry, AuditService } from '../admin/audit.service.js';
+import { AuditService } from '../admin/audit.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { measureContent, resolvePublishedAt, sanitiseContent } from './content.js';
+import { measureContent, publishAction, resolvePublishedAt, sanitiseContent } from './content.js';
 import type { ContentListQuery, UpsertPostDto } from './dto.js';
 
 /** Fields the reader's list needs. The body is deliberately absent. */
@@ -17,16 +17,6 @@ const CARD_FIELDS = {
   readingTime: true,
   publishedAt: true,
 } satisfies Prisma.PostSelect;
-
-/**
- * Publishing and withdrawing get their own names in the audit trail, so they
- * do not disappear among ordinary edits. Both are decisions someone may be
- * asked about later.
- */
-function publishAction(before: ContentStatus, after: ContentStatus): AuditEntry['action'] {
-  if (before === after) return 'update';
-  return after === 'PUBLISHED' ? 'publish' : 'unpublish';
-}
 
 @Injectable()
 export class BlogService {

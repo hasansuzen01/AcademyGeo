@@ -4,13 +4,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Check, EyeOff, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { QueueCard } from '@/lib/api';
 import { imageFitClass } from '@/lib/card-image';
+import { choiceForKey } from '@/lib/choice-keys';
 import { cn } from '@/lib/cn';
 import { playEffect } from '@/lib/sound';
 import { useElementHeight } from '@/lib/use-element-height';
+import { Link } from '@/i18n/navigation';
 
 import { RoadTimer } from './road-timer';
 
@@ -71,10 +73,27 @@ export function Flashcard({
   // height. A long explanation makes it taller than any fixed guess.
   const [barRef, barHeight] = useElementHeight<HTMLDivElement>();
 
-  const covered = useCover(card.metaId, card.revealMs, result !== null);
+  const answered = result !== null;
+  const covered = useCover(card.metaId, card.revealMs, answered);
   const isDuel = card.choices.length === DUEL_CHOICES;
   const name = (choice: QueueCard['choices'][number]) =>
     locale === 'tr' ? choice.nameTr : choice.nameEn;
+
+  // Focus moves to Next when the answer lands: the button that was just
+  // pressed is now disabled, so a keyboard player would otherwise be stranded
+  // on a dead control every card.
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (answered) nextRef.current?.focus();
+  }, [answered]);
+
+  // Joined rather than passed as an array: a fresh array every render would
+  // tear the listener down and put it back on every render.
+  useChoiceKeys({
+    codes: card.choices.map((choice) => choice.code).join(','),
+    disabled: pending || answered,
+    onGuess,
+  });
 
   return (
     <div style={{ paddingBottom: barHeight + 24 }}>
@@ -144,7 +163,7 @@ export function Flashcard({
                   initial={{ opacity: 0, x: side === 0 ? -40 : 40 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: side * 0.06 }}
-                  disabled={pending || result !== null}
+                  disabled={pending || answered}
                   onClick={() => onGuess(choice.code)}
                   className={cn(
                     'btn btn-quiet min-h-28 flex-col justify-center px-5 py-6 text-center',
@@ -166,17 +185,25 @@ export function Flashcard({
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {card.choices.map((choice) => (
+              {card.choices.map((choice, position) => (
                 <button
                   key={choice.code}
                   type="button"
-                  disabled={pending || result !== null}
+                  disabled={pending || answered}
                   onClick={() => onGuess(choice.code)}
                   className={cn(
                     'btn btn-quiet justify-start px-5 py-4 text-base text-ink',
                     choiceTone(result, choice.code, guessedCode),
                   )}
                 >
+                  {/* The number is the shortcut. Showing it is the only way
+                      anyone finds out the keyboard works. */}
+                  <span
+                    aria-hidden
+                    className="mr-1 hidden size-6 shrink-0 items-center justify-center rounded-lg bg-canvas font-mono text-xs font-900 text-muted sm:inline-flex"
+                  >
+                    {position + 1}
+                  </span>
                   {name(choice)}
                 </button>
               ))}
@@ -193,6 +220,10 @@ export function Flashcard({
             exit={{ y: '100%' }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             ref={barRef}
+            // The verdict and the explanation are the whole lesson, so they
+            // are announced rather than only drawn.
+            role="status"
+            aria-live="polite"
             className={cn(
               'fixed inset-x-0 bottom-0 z-30 border-t-2 shadow-[0_-8px_24px_rgba(23,40,45,0.08)]',
               result.correct ? 'border-go bg-go-wash' : 'border-stop bg-stop-wash',
@@ -231,10 +262,22 @@ export function Flashcard({
                     : result.explanation.descriptionEn}
                 </p>
                 {footnote && <div className="mt-2 text-xs font-800 text-muted">{footnote}</div>}
+
+                {/* Two sentences is where the lesson used to stop. This is
+                    the moment a player will actually go and read more. */}
+                <Link
+                  href={`/atlas/${result.country.code.toLowerCase()}`}
+                  className="mt-2 inline-block text-xs font-900 text-go-deep underline underline-offset-4"
+                >
+                  {t('readMore', {
+                    country: locale === 'tr' ? result.country.nameTr : result.country.nameEn,
+                  })}
+                </Link>
               </div>
 
               <button
                 type="button"
+                ref={nextRef}
                 onClick={onNext}
                 className={cn(
                   'btn w-full shrink-0 sm:w-auto',
@@ -251,6 +294,50 @@ export function Flashcard({
       {showCounter && <p className="sr-only">{t('cardCounter', { current: index + 1, total })}</p>}
     </div>
   );
+}
+
+/**
+ * The keyboard: 1-9 pick an answer.
+ *
+ * The buttons are numbered on screen, so the numbers are what a player reaches
+ * for. Anything typed into a field is left alone, and a modifier means the
+ * press belongs to the browser rather than to the game.
+ *
+ * Moving on is deliberately not handled here. Focus is already on the Next
+ * button by then, so Enter and Space are its own to answer; taking them here
+ * as well advanced the run twice and skipped a card.
+ */
+function useChoiceKeys({
+  codes,
+  disabled,
+  onGuess,
+}: {
+  codes: string;
+  disabled: boolean;
+  onGuess: (code: string) => void;
+}) {
+  useEffect(() => {
+    if (disabled) return;
+
+    const choices = codes.split(',');
+
+    function handle(event: KeyboardEvent) {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select')) {
+        return;
+      }
+
+      const picked = choiceForKey(event.key, choices.length);
+      if (picked === null) return;
+
+      event.preventDefault();
+      onGuess(choices[picked]);
+    }
+
+    window.addEventListener('keydown', handle);
+
+    return () => window.removeEventListener('keydown', handle);
+  }, [codes, disabled, onGuess]);
 }
 
 /**

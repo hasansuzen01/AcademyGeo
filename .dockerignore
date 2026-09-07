@@ -2,11 +2,16 @@ node_modules
 **/node_modules
 **/.next
 **/dist
+**/coverage
+**/*.tsbuildinfo
+# Nothing in an image is read from a local env file: the API reads its settings
+# from the platform at run time, and the web build takes its public values as
+# build arguments.
 **/.env
 **/.env.*
 !**/.env.example
-# The web build reads its NEXT_PUBLIC_* values from here.
-!frontend/.env.local
 .git
+.github
 .claude
 .agents
+docs

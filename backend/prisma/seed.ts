@@ -11,6 +11,7 @@ import { COUNTRY_FACTS } from './country-facts.ts';
 import { DECKS } from './decks.ts';
 import { type CardSeed, DRAFT_CARDS } from './draft-cards.ts';
 import { FOOTER_PAGES } from './footer-pages.ts';
+import { GUIDE_TOPICS } from './guide-topics.ts';
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
@@ -40,14 +41,18 @@ async function main(): Promise<void> {
     await upsertCard(card, '');
   }
 
+  // Seeded once and then left alone. Re-seeding runs on every deploy, and an
+  // admin who rewrote the about page should not find their words replaced by
+  // the shipped ones the next time the container restarts.
   for (const page of FOOTER_PAGES) {
     await prisma.page.upsert({
       where: { locale_slug: { locale: page.locale, slug: page.slug } },
       create: page,
-      update: page,
+      update: {},
     });
   }
 
+  await seedGuideTopics();
   await seedDecks();
   await seedPosts();
   await seedSiteSeo();
@@ -55,7 +60,8 @@ async function main(): Promise<void> {
   console.log(
     `Seeded ${COUNTRIES.length} countries, ${METAS.length} metas, ` +
       `${DRAFT_CARDS.length} draft cards awaiting a photograph, ${DECKS.length} collections, ` +
-      `${BLOG_POSTS.length} posts and ${FOOTER_PAGES.length} footer pages`,
+      `${BLOG_POSTS.length} posts, ${FOOTER_PAGES.length} footer pages ` +
+      `and ${GUIDE_TOPICS.length} guide headings`,
   );
 }
 
@@ -149,10 +155,10 @@ async function seedPosts(): Promise<void> {
 
     await prisma.post.upsert({
       where: { locale_slug: { locale: seed.locale, slug: seed.slug } },
-      // publishedAt is only written on the way in: editing a post later must
-      // not move its publication date to today.
       create: { ...data, publishedAt },
-      update: data,
+      // Nothing on an existing post is touched. Re-seeding runs on every
+      // deploy, and a post an admin has edited belongs to them from then on.
+      update: {},
     });
   }
 }
@@ -190,3 +196,20 @@ await main()
     process.exitCode = 1;
   })
   .finally(() => prisma.$disconnect());
+
+/**
+ * The headings the guide library opens with.
+ *
+ * Created once and never updated: what is written under a heading, and the
+ * wording of the heading itself, belongs to whoever writes it in the panel.
+ * They arrive as drafts, so nothing is public until someone says so.
+ */
+async function seedGuideTopics(): Promise<void> {
+  for (const topic of GUIDE_TOPICS) {
+    await prisma.guideTopic.upsert({
+      where: { locale_slug: { locale: topic.locale, slug: topic.slug } },
+      create: topic,
+      update: {},
+    });
+  }
+}

@@ -561,3 +561,129 @@ export const fetchSeoSettings = () => apiFetch<SeoSettings>('/admin/seo');
 
 export const updateSeoSettings = (body: Partial<SeoSettings>) =>
   apiFetch<SeoSettings>('/admin/seo', { method: 'PUT', body: JSON.stringify(body) });
+
+// -- Guides ------------------------------------------------------------------
+
+export interface AdminGuideTopic {
+  id: string;
+  locale: string;
+  slug: string;
+  title: string;
+  summary: string;
+  icon: string;
+  coverImageUrl: string | null;
+  coverImageKey: string | null;
+  category: MetaCategory | null;
+  position: number;
+  status: ContentStatus;
+  updatedAt: string;
+  _count: { entries: number };
+}
+
+export interface AdminGuideEntry {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  coverImageUrl: string | null;
+  countryCode: string | null;
+  readingTime: number;
+  position: number;
+  status: ContentStatus;
+  updatedAt: string;
+  viewCount: number;
+}
+
+export interface AdminGuideTopicDetail extends Omit<AdminGuideTopic, '_count'> {
+  metaTitle: string | null;
+  metaDescription: string | null;
+  keywords: string;
+  canonicalUrl: string | null;
+  robotsMeta: string;
+  entries: AdminGuideEntry[];
+}
+
+export interface AdminGuideEntryDetail extends AdminGuideEntry {
+  content: string;
+  coverImageKey: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  keywords: string;
+  canonicalUrl: string | null;
+  robotsMeta: string;
+  topic: { id: string; locale: string; slug: string; title: string };
+}
+
+export type GuideTopicInput = {
+  locale: string;
+  slug: string;
+  title: string;
+  summary: string;
+  icon: string;
+  coverImageUrl: string;
+  coverImageKey: string;
+  category: MetaCategory | '';
+  position: number;
+  status: ContentStatus;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string;
+  canonicalUrl: string;
+  robotsMeta: string;
+};
+
+export type GuideEntryInput = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  coverImageUrl: string;
+  coverImageKey: string;
+  countryCode: string;
+  position: number;
+  status: ContentStatus;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string;
+  canonicalUrl: string;
+  robotsMeta: string;
+};
+
+export const fetchAdminGuides = (params: {
+  locale?: string;
+  status?: string;
+  search?: string;
+} = {}) => apiFetch<Page<AdminGuideTopic>>(`/admin/guides${query(params)}`);
+
+export const fetchAdminGuide = (id: string) =>
+  apiFetch<AdminGuideTopicDetail>(`/admin/guides/${id}`);
+
+export const createAdminGuide = (body: GuideTopicInput) =>
+  apiFetch<AdminGuideTopicDetail>('/admin/guides', { method: 'POST', body: JSON.stringify(body) });
+
+export const updateAdminGuide = (id: string, body: GuideTopicInput) =>
+  apiFetch<AdminGuideTopicDetail>(`/admin/guides/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  });
+
+export const deleteAdminGuide = (id: string) =>
+  apiFetch<{ id: string }>(`/admin/guides/${id}`, { method: 'DELETE' });
+
+export const fetchAdminGuideEntry = (id: string) =>
+  apiFetch<AdminGuideEntryDetail>(`/admin/guide-entries/${id}`);
+
+export const createAdminGuideEntry = (topicId: string, body: GuideEntryInput) =>
+  apiFetch<AdminGuideEntryDetail>(`/admin/guides/${topicId}/entries`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+
+export const updateAdminGuideEntry = (id: string, body: GuideEntryInput) =>
+  apiFetch<AdminGuideEntryDetail>(`/admin/guide-entries/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  });
+
+export const deleteAdminGuideEntry = (id: string) =>
+  apiFetch<{ id: string }>(`/admin/guide-entries/${id}`, { method: 'DELETE' });

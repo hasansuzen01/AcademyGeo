@@ -123,7 +123,7 @@ export function OverviewView() {
             data.hardestMetas.map((meta) => (
               <tr key={meta.id} className="transition-colors hover:bg-canvas">
                 <Td>
-                  <Link href={`/admin/metas/${meta.id}`} className="hover:text-paint">
+                  <Link href={`/admin/metas/${meta.id}`} className="hover:text-paint-deep">
                     <span className="font-mono text-xs text-muted">{meta.countryCode}</span>{' '}
                     {meta.slug}
                   </Link>

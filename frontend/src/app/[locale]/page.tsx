@@ -39,7 +39,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           </span>
 
           <h1 className="mt-5 max-w-2xl font-display text-4xl leading-[1.05] font-900 tracking-tight text-balance sm:text-5xl lg:text-6xl">
-            {t('title')} <span className="text-go">{t('titleAccent')}</span>
+            {t('title')} <span className="text-go-deep">{t('titleAccent')}</span>
           </h1>
 
           <p className="mt-5 max-w-lg leading-relaxed text-muted">{t('lede')}</p>

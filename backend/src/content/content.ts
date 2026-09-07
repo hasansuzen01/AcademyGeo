@@ -1,3 +1,4 @@
+import type { ContentStatus } from '@prisma/client';
 import sanitizeHtml from 'sanitize-html';
 
 const WORDS_PER_MINUTE = 200;
@@ -13,8 +14,13 @@ const TRANSLITERATIONS: Record<string, string> = {
   ü: 'u',
 };
 
-/** A readable address for a title, in either language. */
-export function toSlug(title: string): string {
+/**
+ * A readable address for a title, in either language.
+ *
+ * The caller names the fallback because it knows what it is naming: a heading
+ * whose title is all punctuation should not land at "post".
+ */
+export function toSlug(title: string, fallback = 'post'): string {
   const slug = title
     .replace(
       /[çğıİöşü]/gi,
@@ -24,7 +30,7 @@ export function toSlug(title: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
-  return slug || 'post';
+  return slug || fallback;
 }
 
 /**
@@ -114,4 +120,20 @@ export function resolvePublishedAt({
   if (existing) return existing;
 
   return status === 'PUBLISHED' ? now : null;
+}
+
+/**
+ * The name an edit goes into the audit trail under.
+ *
+ * Publishing and withdrawing get their own names so they do not disappear
+ * among ordinary edits. Both are decisions someone may be asked about later,
+ * and every kind of content in the panel is published the same way.
+ */
+export function publishAction(
+  before: ContentStatus,
+  after: ContentStatus,
+): 'update' | 'publish' | 'unpublish' {
+  if (before === after) return 'update';
+
+  return after === 'PUBLISHED' ? 'publish' : 'unpublish';
 }

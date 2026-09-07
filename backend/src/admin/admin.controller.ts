@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 
 import { AdminGuard } from '../auth/admin.guard.js';
+import { Throttle } from '../common/rate-limit.guard.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import type { AuthenticatedUser } from '../auth/session.guard.js';
 import { MAX_UPLOAD_BYTES, R2Service } from '../storage/r2.service.js';
@@ -214,6 +215,7 @@ export class AdminController {
 
   // -- Uploads --------------------------------------------------------------
 
+  @Throttle({ route: 'upload-sign', limit: 60, windowMs: 60_000 })
   @Post('uploads/sign')
   signUpload(@Body() dto: SignUploadDto) {
     if (dto.size > MAX_UPLOAD_BYTES) {

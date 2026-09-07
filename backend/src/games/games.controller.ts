@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 
 import { CurrentUser } from '../auth/current-user.decorator.js';
+import { Throttle } from '../common/rate-limit.guard.js';
 import type { AuthenticatedUser } from '../auth/session.guard.js';
 import { SessionGuard } from '../auth/session.guard.js';
 import { GlobalBoardQuery, LeaderboardQuery, RunAnswerDto, StartRunDto } from './dto.js';
@@ -19,11 +20,13 @@ export class GamesController {
     private readonly leaderboard: LeaderboardService,
   ) {}
 
+  @Throttle({ route: 'run-start', limit: 30, windowMs: 60_000 })
   @Post('start')
   start(@CurrentUser() user: AuthenticatedUser, @Body() dto: StartRunDto) {
     return this.games.start(user.id, dto);
   }
 
+  @Throttle({ route: 'run-answer', limit: 240, windowMs: 60_000 })
   @Post('answer')
   answer(@CurrentUser() user: AuthenticatedUser, @Body() dto: RunAnswerDto) {
     return this.games.answer(user.id, dto.runId, dto.guessedCountryCode, dto.responseMs);

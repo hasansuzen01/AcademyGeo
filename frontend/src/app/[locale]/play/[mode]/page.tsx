@@ -31,7 +31,7 @@ export default async function ModePage({
   return (
     <div className="page-shell px-5 py-12">
       <header className="mx-auto mb-8 max-w-2xl text-center">
-        <h1 className="font-display text-3xl font-800 tracking-tight">
+        <h1 className="font-display text-3xl font-900 tracking-tight">
           {t(`modes.${scoredMode}.name`)}
         </h1>
         <p className="mt-2 text-sm text-muted">{t(`modes.${scoredMode}.blurb`)}</p>

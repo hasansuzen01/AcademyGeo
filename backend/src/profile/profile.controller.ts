@@ -2,6 +2,7 @@ import { BadRequestException, Body, Controller, Get, Patch, Post, UseGuards } fr
 
 import { SignUploadDto, UpdateProfileDto } from '../admin/dto.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
+import { Throttle } from '../common/rate-limit.guard.js';
 import type { AuthenticatedUser } from '../auth/session.guard.js';
 import { SessionGuard } from '../auth/session.guard.js';
 import { MAX_UPLOAD_BYTES, R2Service } from '../storage/r2.service.js';
@@ -30,6 +31,7 @@ export class ProfileController {
    * and the object name is the account id so a new picture replaces the old one
    * instead of leaving it behind in the bucket.
    */
+  @Throttle({ route: 'avatar-upload', limit: 10, windowMs: 60_000 })
   @Post('avatar-upload')
   signAvatar(@CurrentUser() user: AuthenticatedUser, @Body() dto: SignUploadDto) {
     if (dto.size > MAX_UPLOAD_BYTES) {

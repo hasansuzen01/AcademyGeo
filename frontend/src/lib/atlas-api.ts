@@ -46,21 +46,35 @@ export interface AtlasCountryDetail extends Omit<AtlasCountry, 'clueCount'> {
  */
 const ATLAS_REVALIDATE_SECONDS = 300;
 
+/**
+ * An unreachable API answers as an empty atlas rather than throwing.
+ *
+ * The image is built before anything is running, so a build that insists on
+ * reaching the API cannot be built at all. Every caller already handles an
+ * empty answer: the index shows its empty state and the country pages are
+ * rendered on demand instead of ahead of time.
+ */
 export async function fetchAtlasCountries(): Promise<AtlasCountry[]> {
-  const response = await fetch(`${SERVER_API_URL}/api/atlas/countries`, {
-    next: { revalidate: ATLAS_REVALIDATE_SECONDS },
-  });
-  if (!response.ok) return [];
+  try {
+    const response = await fetch(`${SERVER_API_URL}/api/atlas/countries`, {
+      next: { revalidate: ATLAS_REVALIDATE_SECONDS },
+    });
 
-  return (await response.json()) as AtlasCountry[];
+    return response.ok ? ((await response.json()) as AtlasCountry[]) : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchAtlasCountry(code: string): Promise<AtlasCountryDetail | null> {
-  const response = await fetch(
-    `${SERVER_API_URL}/api/atlas/countries/${encodeURIComponent(code)}`,
-    { next: { revalidate: ATLAS_REVALIDATE_SECONDS } },
-  );
-  if (!response.ok) return null;
+  try {
+    const response = await fetch(
+      `${SERVER_API_URL}/api/atlas/countries/${encodeURIComponent(code)}`,
+      { next: { revalidate: ATLAS_REVALIDATE_SECONDS } },
+    );
 
-  return (await response.json()) as AtlasCountryDetail;
+    return response.ok ? ((await response.json()) as AtlasCountryDetail) : null;
+  } catch {
+    return null;
+  }
 }

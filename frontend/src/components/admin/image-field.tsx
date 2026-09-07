@@ -85,7 +85,7 @@ export function ImageField({ value, prefix, storageReady, onChange }: ImageField
         </div>
       </div>
 
-      {error && <p className="text-xs text-stop">{error}</p>}
+      {error && <p className="text-xs text-stop-deep">{error}</p>}
     </div>
   );
 }

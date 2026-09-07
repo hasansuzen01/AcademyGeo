@@ -135,7 +135,7 @@ export function DeckEditor({ deckId }: { deckId?: string }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-800 tracking-tight">
+        <h1 className="font-display text-2xl font-900 tracking-tight">
           {deckId ? t('editTitle') : t('createTitle')}
         </h1>
         <div className="flex gap-2">
@@ -151,7 +151,7 @@ export function DeckEditor({ deckId }: { deckId?: string }) {
         </div>
       </div>
 
-      {error && <p className="card-raised px-5 py-3 text-sm text-stop">{error}</p>}
+      {error && <p className="card-raised px-5 py-3 text-sm text-stop-deep">{error}</p>}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="space-y-6">

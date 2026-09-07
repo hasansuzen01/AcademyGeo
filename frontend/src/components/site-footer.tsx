@@ -26,6 +26,9 @@ export async function SiteFooter({ locale }: { locale: string }) {
           </div>
 
           <nav aria-label={t('linksLabel')} className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            <Link href="/guides" className="text-muted transition-colors hover:text-ink">
+              {t('guides')}
+            </Link>
             <Link href="/blog" className="text-muted transition-colors hover:text-ink">
               {t('blog')}
             </Link>

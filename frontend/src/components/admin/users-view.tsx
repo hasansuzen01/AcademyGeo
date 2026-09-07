@@ -93,7 +93,7 @@ export function UsersView() {
         </Select>
       </div>
 
-      {error && <p className="card-raised px-5 py-3 text-sm text-stop">{error}</p>}
+      {error && <p className="card-raised px-5 py-3 text-sm text-stop-deep">{error}</p>}
 
       <Panel>
         <TableShell
@@ -112,7 +112,7 @@ export function UsersView() {
           {items.map((user) => (
             <tr key={user.id} className="transition-colors hover:bg-canvas">
               <Td>
-                <Link href={`/admin/users/${user.id}`} className="hover:text-paint">
+                <Link href={`/admin/users/${user.id}`} className="hover:text-paint-deep">
                   <span className="block">{user.name}</span>
                   <span className="font-mono text-xs text-muted">{user.email}</span>
                 </Link>

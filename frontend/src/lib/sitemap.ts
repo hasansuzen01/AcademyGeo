@@ -8,6 +8,21 @@ export interface SitemapRow {
   updatedAt: string;
 }
 
+/** A guide heading, or one entry under it when `entrySlug` is filled in. */
+export interface GuideSitemapRow extends SitemapRow {
+  entrySlug?: string | null;
+}
+
+export interface SitemapSources {
+  siteUrl: string;
+  now: Date;
+  posts?: SitemapRow[];
+  pages?: SitemapRow[];
+  /** Country codes with an atlas page. Empty when the API is unreachable. */
+  countryCodes?: string[];
+  guides?: GuideSitemapRow[];
+}
+
 /**
  * Addresses defined in code that are worth indexing, one per language.
  *
@@ -19,19 +34,20 @@ export interface SitemapRow {
 const STATIC_PATHS: { path: string; priority: number }[] = [
   { path: '', priority: 1 },
   { path: '/atlas', priority: 0.9 },
+  { path: '/guides', priority: 0.9 },
   { path: '/collections', priority: 0.7 },
   { path: '/blog', priority: 0.8 },
 ];
 
 /** Every address the site wants indexed, in the shape Next serves. */
-export function buildSitemap(
-  siteUrl: string,
-  posts: SitemapRow[],
-  pages: SitemapRow[],
-  now: Date,
-  /** Country codes with an atlas page. Empty when the API is unreachable. */
-  countryCodes: string[] = [],
-): MetadataRoute.Sitemap {
+export function buildSitemap({
+  siteUrl,
+  now,
+  posts = [],
+  pages = [],
+  countryCodes = [],
+  guides = [],
+}: SitemapSources): MetadataRoute.Sitemap {
   const root = siteUrl.replace(/\/+$/, '');
   const entries = new Map<string, MetadataRoute.Sitemap[number]>();
 
@@ -55,6 +71,13 @@ export function buildSitemap(
 
   for (const post of posts) {
     add(`${root}/${post.locale}/blog/${post.slug}`, new Date(post.updatedAt), 0.7);
+  }
+
+  // The library answers the question a search actually asks, so its entries
+  // are ranked above a blog post rather than below one.
+  for (const guide of guides) {
+    const path = guide.entrySlug ? `${guide.slug}/${guide.entrySlug}` : guide.slug;
+    add(`${root}/${guide.locale}/guides/${path}`, new Date(guide.updatedAt), 0.8);
   }
 
   for (const page of pages) {

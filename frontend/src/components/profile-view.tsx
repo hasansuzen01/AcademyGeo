@@ -41,7 +41,7 @@ export function ProfileView() {
   if (!userId) return <SignInPrompt reason="progress" />;
   if (!profile) {
     return error ? (
-      <p className="card-raised px-5 py-8 text-sm text-stop">{error}</p>
+      <p className="card-raised px-5 py-8 text-sm text-stop-deep">{error}</p>
     ) : (
       <div className="card-raised h-64 animate-pulse" />
     );
@@ -82,8 +82,8 @@ export function ProfileView() {
             <Input value={profile.email} disabled />
           </Field>
 
-          {error && <p className="text-sm text-stop">{error}</p>}
-          {saved && <p className="text-sm text-go">{t('saved')}</p>}
+          {error && <p className="text-sm text-stop-deep">{error}</p>}
+          {saved && <p className="text-sm text-go-deep">{t('saved')}</p>}
 
           <Button type="button" disabled={saving} onClick={() => void save()}>
             {saving ? t('saving') : t('save')}
@@ -120,7 +120,7 @@ export function ProfileView() {
 
           {profile.role === 'ADMIN' && (
             <div className="border-t border-line px-5 py-4">
-              <Link href="/admin" className="text-sm text-paint hover:underline">
+              <Link href="/admin" className="text-sm text-paint-deep hover:underline">
                 {t('openAdmin')}
               </Link>
             </div>

@@ -176,7 +176,7 @@ export function MetasView() {
                 </span>
               </Td>
               <Td>
-                <Link href={`/admin/metas/${meta.id}`} className="hover:text-paint">
+                <Link href={`/admin/metas/${meta.id}`} className="hover:text-paint-deep">
                   <span className="block">{locale === 'tr' ? meta.titleTr : meta.titleEn}</span>
                   <span className="font-mono text-xs text-muted">{meta.slug}</span>
                 </Link>

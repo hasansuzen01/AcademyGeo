@@ -21,7 +21,7 @@ export function Field({
       <span className="eyebrow">{label}</span>
       <div className="mt-2">{children}</div>
       {hint && !error && <span className="mt-1.5 block text-xs text-muted">{hint}</span>}
-      {error && <span className="mt-1.5 block text-xs text-stop">{error}</span>}
+      {error && <span className="mt-1.5 block text-xs text-stop-deep">{error}</span>}
     </label>
   );
 }

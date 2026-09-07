@@ -10,7 +10,9 @@
   --color-canvas: #f4f7f5;
   --color-paper: #ffffff;
   --color-ink: #17282d;
-  --color-muted: #6d838b;
+  /* Dark enough to clear 4.5:1 on both paper and canvas: this is the colour
+     of nearly all body copy on the site, not just a decorative label. */
+  --color-muted: #566f78;
   --color-line: #e4ebe7;
   --color-edge: #d2ddd6;
 
@@ -21,6 +23,8 @@
   --color-stop: #ff5a4e;
   --color-stop-deep: #d93a2e;
   --color-sky: #35a7ff;
+  /* The readable form of the accent. Bright sky is a fill, never a word. */
+  --color-sky-deep: #0b6fbf;
 
   /* Opaque washes for the answer bar. A translucent tint let the choice
      buttons show through the panel that sits over them. */
@@ -37,6 +41,9 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* The palette is committed to daylight. Saying so stops a device in dark
+       mode painting form controls and scrollbars against it. */
+    color-scheme: light;
   }
 
   body {

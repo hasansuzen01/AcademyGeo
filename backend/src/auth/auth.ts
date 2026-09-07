@@ -4,6 +4,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { USER_ADDITIONAL_FIELDS, parseAdminEmails, resolveInitialRole } from './admin-bootstrap.js';
+import { needsCrossSiteCookie } from './cross-site.js';
 
 export type Auth = ReturnType<typeof createAuth>;
 
@@ -13,10 +14,12 @@ export function createAuth(prisma: PrismaService, config: ConfigService) {
   const webUrl = config.get<string>('WEB_URL') ?? 'http://localhost:3000';
   const cookieDomain = config.get<string>('AUTH_COOKIE_DOMAIN');
   const adminEmails = parseAdminEmails(config.get<string>('ADMIN_EMAILS'));
+  const apiUrl = config.get<string>('BETTER_AUTH_URL') ?? config.get<string>('API_URL') ?? '';
+  const crossSite = needsCrossSiteCookie({ webUrl, apiUrl });
 
   return betterAuth({
     appName: 'AcademyGeo',
-    baseURL: config.get<string>('BETTER_AUTH_URL') ?? config.get<string>('API_URL'),
+    baseURL: apiUrl,
     basePath: AUTH_BASE_PATH,
     secret: required(config, 'BETTER_AUTH_SECRET'),
     database: prismaAdapter(prisma, { provider: 'postgresql' }),
@@ -48,12 +51,16 @@ export function createAuth(prisma: PrismaService, config: ConfigService) {
       cookieCache: { enabled: true, maxAge: 5 * 60 },
     },
     advanced: {
-      // The web app and the API sit on different hosts in production, so the
-      // session cookie has to be readable across the shared parent domain.
+      // A shared parent domain lets one cookie cover both hosts. It is the
+      // better arrangement, but it is not the only one that has to work.
       crossSubDomainCookies: cookieDomain
         ? { enabled: true, domain: cookieDomain }
         : { enabled: false },
-      defaultCookieAttributes: cookieDomain
+      // In production the web app and the API are always on different origins,
+      // whether or not they share a parent, so the cookie has to be sent
+      // cross-site. Keying this on AUTH_COOKIE_DOMAIN meant that forgetting
+      // one setting silently signed everybody out on their next click.
+      defaultCookieAttributes: crossSite
         ? { sameSite: 'none', secure: true, partitioned: true }
         : undefined,
     },

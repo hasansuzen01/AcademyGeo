@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { ContentModule } from './content/content.module.js';
 import { DecksModule } from './decks/decks.module.js';
 import { GamesModule } from './games/games.module.js';
+import { GuidesModule } from './guides/guides.module.js';
 import { HealthModule } from './health/health.module.js';
 import { MeController } from './auth/me.controller.js';
 import { MetasModule } from './metas/metas.module.js';
@@ -32,6 +33,7 @@ import { StorageModule } from './storage/storage.module.js';
     ContentModule,
     ReviewModule,
     GamesModule,
+    GuidesModule,
     ProgressModule,
     StatsModule,
     ProfileModule,

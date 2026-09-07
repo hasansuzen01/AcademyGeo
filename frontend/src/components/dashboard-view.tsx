@@ -68,7 +68,7 @@ export function DashboardView() {
       </div>
 
       <section className="card-raised px-5 py-5">
-        <h2 className="font-display text-lg font-800 tracking-tight">{t('activityTitle')}</h2>
+        <h2 className="font-display text-lg font-900 tracking-tight">{t('activityTitle')}</h2>
         <ActivityRoad activity={stats.activity} emptyLabel={t('activityEmpty')} />
       </section>
 
@@ -92,7 +92,7 @@ function WinRateTile({ stats }: { stats: DashboardStats }) {
   return (
     <div className="card-raised relative overflow-hidden px-5 py-5">
       <span className="eyebrow">{t('winRate')}</span>
-      <p className="mt-3 font-display text-5xl font-900 tracking-tight tabular-nums text-paint">
+      <p className="mt-3 font-display text-5xl font-900 tracking-tight tabular-nums text-paint-deep">
         {stats.winRate}
         <span className="text-2xl text-muted">%</span>
       </p>
@@ -166,7 +166,7 @@ function ConfusionLog({ stats, countries }: { stats: DashboardStats; countries: 
 
   return (
     <section className="card-raised px-5 py-5">
-      <h2 className="font-display text-lg font-800 tracking-tight">{t('confusionsTitle')}</h2>
+      <h2 className="font-display text-lg font-900 tracking-tight">{t('confusionsTitle')}</h2>
       <p className="mt-1 text-xs text-muted">{t('confusionsBody')}</p>
 
       {stats.confusions.length === 0 ? (
@@ -181,7 +181,7 @@ function ConfusionLog({ stats, countries }: { stats: DashboardStats; countries: 
               <span className="font-mono text-xs text-muted">{row.actual}</span>
               <span className="truncate">{nameOf(row.actual)}</span>
               <span className="h-px flex-1 bg-edge" />
-              <span className="truncate text-stop">{nameOf(row.guessed)}</span>
+              <span className="truncate text-stop-deep">{nameOf(row.guessed)}</span>
               <span className="font-mono text-xs text-muted">
                 {t('confusionsCount', { count: row.count })}
               </span>
@@ -199,7 +199,7 @@ function CategoryBars({ stats }: { stats: DashboardStats }) {
 
   return (
     <section className="card-raised px-5 py-5">
-      <h2 className="font-display text-lg font-800 tracking-tight">{t('categoriesTitle')}</h2>
+      <h2 className="font-display text-lg font-900 tracking-tight">{t('categoriesTitle')}</h2>
 
       {stats.categories.length === 0 ? (
         <p className="mt-6 text-sm text-muted">{t('categoriesEmpty')}</p>

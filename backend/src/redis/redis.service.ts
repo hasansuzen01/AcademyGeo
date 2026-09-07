@@ -45,6 +45,22 @@ export class RedisService implements OnModuleDestroy {
     }
   }
 
+  /**
+   * Counts one hit in a window and answers the running total.
+   *
+   * Answers 0 when Redis is unreachable, which reads as "under the limit":
+   * a cache outage must cost the limit, never the request.
+   */
+  async countInWindow(key: string, ttlSeconds: number): Promise<number> {
+    try {
+      const [hits] = await this.client.multi().incr(key).expire(key, ttlSeconds, 'NX').exec() ?? [];
+
+      return typeof hits?.[1] === 'number' ? hits[1] : 0;
+    } catch {
+      return 0;
+    }
+  }
+
   async onModuleDestroy(): Promise<void> {
     await this.client.quit().catch(() => undefined);
   }

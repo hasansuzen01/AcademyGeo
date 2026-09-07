@@ -22,6 +22,12 @@ describe('toSlug', () => {
   it('falls back to a usable word when nothing survives', () => {
     expect(toSlug('!!! ???')).toBe('post');
   });
+
+  // A guide heading called "???" landing at /guides/post reads as a bug. The
+  // caller knows what it is naming, so it gets to say what the fallback is.
+  it('lets the caller name the fallback', () => {
+    expect(toSlug('!!! ???', 'topic')).toBe('topic');
+  });
 });
 
 describe('measureContent', () => {

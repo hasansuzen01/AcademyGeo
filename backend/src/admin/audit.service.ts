@@ -15,7 +15,7 @@ export interface AuditEntry {
     | 'revoke'
     | 'suspend'
     | 'restore';
-  entity: 'meta' | 'country' | 'deck' | 'user' | 'post' | 'page' | 'seo';
+  entity: 'meta' | 'country' | 'deck' | 'user' | 'post' | 'page' | 'seo' | 'guide' | 'guide-entry';
   entityId: string;
   summary: string;
 }

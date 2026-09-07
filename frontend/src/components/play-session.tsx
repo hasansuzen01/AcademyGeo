@@ -17,7 +17,7 @@ import { SignInPrompt } from './sign-in-prompt';
 
 type Phase = 'loading' | 'playing' | 'empty' | 'done' | 'error';
 
-export function PlaySession({ deckSlug }: { deckSlug?: string } = {}) {
+export function PlaySession({ deckSlug, category }: { deckSlug?: string; category?: string } = {}) {
   const t = useTranslations('play');
   const errors = useTranslations('errors');
   const { data: session, isPending: sessionPending } = useSession();
@@ -37,7 +37,7 @@ export function PlaySession({ deckSlug }: { deckSlug?: string } = {}) {
   // the buttons that re-run a finished session set it themselves.
   const load = useCallback(async () => {
     try {
-      const queue = await fetchQueue({ deckSlug });
+      const queue = await fetchQueue({ deckSlug, category });
       setCards(queue.cards);
       setIndex(0);
       setScore(0);
@@ -49,7 +49,7 @@ export function PlaySession({ deckSlug }: { deckSlug?: string } = {}) {
     } catch {
       setPhase('error');
     }
-  }, [deckSlug]);
+  }, [category, deckSlug]);
 
   useLoad(load, !sessionPending && Boolean(userId));
 
@@ -139,7 +139,7 @@ export function PlaySession({ deckSlug }: { deckSlug?: string } = {}) {
           <PartyPopper className="size-8" aria-hidden />
         </span>
 
-        <p className="mt-6 font-display text-6xl font-900 tracking-tight tabular-nums text-go">
+        <p className="mt-6 font-display text-6xl font-900 tracking-tight tabular-nums text-go-deep">
           {score}
           <span className="text-muted">/{cards.length}</span>
         </p>

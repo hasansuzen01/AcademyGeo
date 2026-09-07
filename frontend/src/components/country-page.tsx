@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import type { AtlasCountryDetail } from '@/lib/atlas-api';
 import { imageFitClass } from '@/lib/card-image';
+import { GuideIcon } from '@/lib/guide-icons';
+import { fetchCountryGuides } from '@/lib/guides-api';
 
 /**
  * One country, read the way a player works through a scene: the facts that
@@ -14,7 +16,9 @@ export async function CountryPage({ country }: { country: AtlasCountryDetail }) 
   const t = await getTranslations('atlas');
   const categories = await getTranslations('categories');
   const regions = await getTranslations('regions');
+  const guideText = await getTranslations('guides');
   const locale = await getLocale();
+  const guides = await fetchCountryGuides(country.code);
 
   const name = locale === 'tr' ? country.nameTr : country.nameEn;
   const summary = locale === 'tr' ? country.summaryTr : country.summaryEn;
@@ -104,6 +108,40 @@ export async function CountryPage({ country }: { country: AtlasCountryDetail }) 
             </ul>
           </section>
         ))
+      )}
+
+      {/* What has been written about this country. A player who has just been
+          told they were wrong wants the reading, not another card. */}
+      {guides.length > 0 && (
+        <section className="mt-12">
+          <h2 className="mb-4 font-display text-xl font-900 tracking-tight">
+            {guideText('fromGuide')}
+          </h2>
+
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {guides.map((guide) => (
+              <li key={guide.id}>
+                <Link
+                  href={`/guides/${guide.topic.slug}/${guide.slug}`}
+                  className="card-raised card-lift flex h-full items-start gap-4 p-5"
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-paint/25 text-paint-deep">
+                    <GuideIcon name={guide.topic.icon} className="size-5" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="eyebrow">{guide.topic.title}</span>
+                    <span className="mt-1 block font-display font-900 text-ink">{guide.title}</span>
+                    {guide.excerpt && (
+                      <span className="mt-1 block text-sm leading-relaxed text-muted">
+                        {guide.excerpt}
+                      </span>
+                    )}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <div className="mt-12 flex flex-col gap-3 sm:flex-row">

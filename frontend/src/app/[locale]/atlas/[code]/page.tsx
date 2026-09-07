@@ -5,6 +5,13 @@ import { notFound } from 'next/navigation';
 import { CountryPage } from '@/components/country-page';
 import { fetchAtlasCountries, fetchAtlasCountry } from '@/lib/atlas-api';
 
+/**
+ * The countries worth building ahead of time.
+ *
+ * Empty when the API is not up, which it is not while the image is being
+ * built. Every country page is still reachable: an address that was not
+ * listed here is rendered the first time somebody asks for it.
+ */
 export async function generateStaticParams() {
   const countries = await fetchAtlasCountries();
 

@@ -9,6 +9,7 @@ import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { routing } from '@/i18n/routing';
 import { fetchSiteSeo } from '@/lib/content-api';
+import { fetchViewer } from '@/lib/server-api';
 import { buildMetadata } from '@/lib/metadata';
 import { SearchEngineTags } from '@/components/search-engine-tags';
 import '../globals.css';
@@ -60,11 +61,15 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
+  // Resolved here so the bar draws right on the first paint rather than
+  // flashing a sign-in button at somebody who is already signed in.
+  const viewer = await fetchViewer();
+
   return (
     <html lang={locale} className={nunito.variable}>
       <body className="flex min-h-screen flex-col bg-canvas text-ink antialiased">
         <NextIntlClientProvider>
-          <SiteHeader />
+          <SiteHeader viewer={viewer} />
           <main className="flex-1">{children}</main>
           <SiteFooter locale={locale} />
         </NextIntlClientProvider>

@@ -6,6 +6,7 @@ import {
   Flag,
   Layers,
   LayoutDashboard,
+  Library,
   Map,
   PenLine,
   Search,
@@ -25,6 +26,7 @@ const SECTIONS = [
   { href: '/admin/metas', key: 'metas', icon: Map },
   { href: '/admin/decks', key: 'decks', icon: Layers },
   { href: '/admin/countries', key: 'countries', icon: Flag },
+  { href: '/admin/guides', key: 'guides', icon: Library },
   { href: '/admin/posts', key: 'posts', icon: PenLine },
   { href: '/admin/pages', key: 'pages', icon: FileText },
   { href: '/admin/seo', key: 'seo', icon: Search },
@@ -52,7 +54,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   if (me?.role !== 'ADMIN') {
     return (
       <div className="mx-auto w-full max-w-md px-5 py-24 text-center">
-        <h1 className="font-display text-2xl font-800 tracking-tight">{t('deniedTitle')}</h1>
+        <h1 className="font-display text-2xl font-900 tracking-tight">{t('deniedTitle')}</h1>
         <p className="mt-2 text-sm text-muted">{t('deniedBody')}</p>
       </div>
     );

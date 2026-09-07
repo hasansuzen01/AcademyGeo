@@ -50,7 +50,7 @@ export function SeoView() {
 
   if (!form) {
     return error ? (
-      <p className="card-raised px-5 py-8 text-sm text-stop">{error}</p>
+      <p className="card-raised px-5 py-8 text-sm text-stop-deep">{error}</p>
     ) : (
       <div className="card-raised h-96 animate-pulse" />
     );
@@ -61,7 +61,7 @@ export function SeoView() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-800 tracking-tight">{t('title')}</h1>
+        <h1 className="font-display text-2xl font-900 tracking-tight">{t('title')}</h1>
         <div className="flex items-center gap-3">
           {saved && <span className="text-sm text-go-deep">{t('saved')}</span>}
           <Button type="button" disabled={saving} onClick={() => void save()}>
@@ -70,7 +70,7 @@ export function SeoView() {
         </div>
       </div>
 
-      {error && <p className="card-raised px-5 py-3 text-sm text-stop">{error}</p>}
+      {error && <p className="card-raised px-5 py-3 text-sm text-stop-deep">{error}</p>}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Panel title={t('sectionIdentity')}>

@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
-import { SERVER_API_URL } from '@/lib/api-base';
 
 import { fetchAtlasCountries } from '@/lib/atlas-api';
+import { SERVER_API_URL } from '@/lib/api-base';
 import { fetchSiteSeo } from '@/lib/content-api';
-import { type SitemapRow, buildSitemap } from '@/lib/sitemap';
+import { type GuideSitemapRow, type SitemapRow, buildSitemap } from '@/lib/sitemap';
 
 /**
  * sitemap.xml.
@@ -18,27 +18,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = await fetchSiteSeo();
   if (!site.sitemapEnabled) return [];
 
-  const [posts, pages, countries] = await Promise.all([
-    fetchRows('/api/blog/sitemap'),
-    fetchRows('/api/pages/sitemap'),
+  const [posts, pages, guides, countries] = await Promise.all([
+    fetchRows<SitemapRow>('/api/blog/sitemap'),
+    fetchRows<SitemapRow>('/api/pages/sitemap'),
+    fetchRows<GuideSitemapRow>('/api/guides/sitemap'),
     fetchAtlasCountries().catch(() => []),
   ]);
 
-  return buildSitemap(
-    site.siteUrl,
+  return buildSitemap({
+    siteUrl: site.siteUrl,
+    now: new Date(),
     posts,
     pages,
-    new Date(),
-    countries.map((country) => country.code),
-  );
+    guides,
+    countryCodes: countries.map((country) => country.code),
+  });
 }
 
 /** One source failing should cost its own rows, not the whole file. */
-async function fetchRows(path: string): Promise<SitemapRow[]> {
+async function fetchRows<T>(path: string): Promise<T[]> {
   try {
     const response = await fetch(`${SERVER_API_URL}${path}`, { cache: 'no-store' });
 
-    return response.ok ? ((await response.json()) as SitemapRow[]) : [];
+    return response.ok ? ((await response.json()) as T[]) : [];
   } catch {
     return [];
   }

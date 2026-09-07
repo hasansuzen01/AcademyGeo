@@ -83,7 +83,7 @@ export function UserDetail({ id }: { id: string }) {
 
   if (!user) {
     return error ? (
-      <p className="card-raised px-5 py-8 text-sm text-stop">{error}</p>
+      <p className="card-raised px-5 py-8 text-sm text-stop-deep">{error}</p>
     ) : (
       <div className="card-raised h-64 animate-pulse" />
     );
@@ -252,7 +252,7 @@ export function UserDetail({ id }: { id: string }) {
           <p className="text-xs text-muted">{t('deleteWarning')}</p>
 
           {note && <p className="text-sm text-go-deep">{note}</p>}
-          {error && <p className="text-sm text-stop">{error}</p>}
+          {error && <p className="text-sm text-stop-deep">{error}</p>}
         </div>
       </Panel>
 
