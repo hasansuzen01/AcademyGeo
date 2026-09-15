@@ -94,7 +94,7 @@ export async function CountryPage({ country }: { country: AtlasCountryDetail }) 
                       alt={locale === 'tr' ? clue.titleTr : clue.titleEn}
                       fill
                       sizes="(max-width: 640px) 100vw, 380px"
-                      className={imageFitClass(clue.imageSource)}
+                      className={imageFitClass(clue.imageSource, clue.category)}
                     />
                   </div>
 

@@ -19,6 +19,16 @@ describe('imageFitClass', () => {
   it('letterboxes anything it does not recognise, which never crops', () => {
     expect(imageFitClass(undefined)).toBe('object-contain');
   });
+
+  // A number plate is about three times wider than it is tall. Filling the card
+  // with one cuts off the characters, which are the whole point of the card.
+  it('shows the whole plate when a plate is photographed', () => {
+    expect(imageFitClass('PHOTO', 'PLATE')).toBe('object-contain');
+  });
+
+  it('still fills the frame with photographs of other clues', () => {
+    expect(imageFitClass('PHOTO', 'ROAD_LINE')).toBe('object-cover');
+  });
 });
 
 describe('needsRealPhoto', () => {

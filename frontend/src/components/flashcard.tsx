@@ -113,7 +113,7 @@ export function Flashcard({
                   alt=""
                   fill
                   sizes="(max-width: 768px) 100vw, 640px"
-                  className={imageFitClass(card.imageSource)}
+                  className={imageFitClass(card.imageSource, card.category)}
                   priority={index === 0}
                 />
               </motion.div>

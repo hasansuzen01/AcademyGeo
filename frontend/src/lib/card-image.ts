@@ -6,8 +6,14 @@ export type ImageSource = 'PHOTO' | 'ILLUSTRATION';
  * A photograph is a view of a place, so it fills the frame the way the game
  * screen does. A diagram is drawn to its own edges, so it is letterboxed:
  * cropping one can cut off the exact detail the card asks about.
+ *
+ * A photographed number plate is the exception. Plates are about three times
+ * wider than they are tall, so filling the frame with one cuts off the very
+ * characters the card is about.
  */
-export function imageFitClass(source: ImageSource | undefined): string {
+export function imageFitClass(source: ImageSource | undefined, category?: string): string {
+  if (category === 'PLATE') return 'object-contain';
+
   return source === 'PHOTO' ? 'object-cover' : 'object-contain';
 }
 
