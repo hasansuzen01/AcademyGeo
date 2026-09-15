@@ -13,8 +13,8 @@ export class ReviewController {
   constructor(private readonly review: ReviewService) {}
 
   @Get('queue')
-  queue(@CurrentUser() user: AuthenticatedUser, @Query() query: ReviewQueueQuery) {
-    return this.review.getQueue(user.id, query);
+  queue(@Query() query: ReviewQueueQuery) {
+    return this.review.getQueue(query);
   }
 
   @Throttle({ route: 'review-answer', limit: 120, windowMs: 60_000 })

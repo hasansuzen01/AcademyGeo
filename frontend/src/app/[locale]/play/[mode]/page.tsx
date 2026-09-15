@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { GameRunner } from '@/components/game-runner';
 import { SCORED_MODES, type ScoredMode } from '@/lib/games-api';
 import { NOT_FOR_SEARCH } from '@/lib/metadata';
+import { returnPlace } from '@/lib/return-place';
 
 export const metadata: Metadata = NOT_FOR_SEARCH;
 
@@ -22,9 +23,9 @@ export default async function ModePage({
   searchParams,
 }: {
   params: Promise<{ locale: string; mode: string }>;
-  searchParams: Promise<{ deck?: string }>;
+  searchParams: Promise<{ deck?: string; from?: string }>;
 }) {
-  const [{ locale, mode }, { deck }] = await Promise.all([params, searchParams]);
+  const [{ locale, mode }, { deck, from }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
 
   const scoredMode = BY_SLUG[mode.toLowerCase()];
@@ -41,7 +42,7 @@ export default async function ModePage({
         <p className="mt-2 text-sm text-muted">{t(`modes.${scoredMode}.blurb`)}</p>
       </header>
 
-      <GameRunner mode={scoredMode} deckSlug={deck} />
+      <GameRunner mode={scoredMode} deckSlug={deck} returnTo={returnPlace(from)} />
     </div>
   );
 }

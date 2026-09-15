@@ -41,7 +41,7 @@ export default async function CollectionsPage({
               style={{ animationDelay: `${index * 45}ms` }}
             >
               <article className="card-raised group flex flex-1 flex-col overflow-hidden">
-                <Link href={`/play/practice?deck=${collection.slug}`} tabIndex={-1} aria-hidden>
+                <Link href={`/play/practice?deck=${collection.slug}&from=collections`} tabIndex={-1} aria-hidden>
                   <CollectionCover
                     collection={collection}
                     name={current === 'tr' ? collection.nameTr : collection.nameEn}
@@ -58,19 +58,19 @@ export default async function CollectionsPage({
                   {/* Three ways into the same set: study it, race it, or risk it. */}
                   <div className="mt-auto flex flex-wrap gap-2 pt-5">
                     <Link
-                      href={`/play/practice?deck=${collection.slug}`}
+                      href={`/play/practice?deck=${collection.slug}&from=collections`}
                       className="btn btn-go px-4 py-2 text-sm"
                     >
                       {t('practise')}
                     </Link>
                     <Link
-                      href={`/play/rush?deck=${collection.slug}`}
+                      href={`/play/rush?deck=${collection.slug}&from=collections`}
                       className="btn btn-quiet px-4 py-2 text-sm text-ink"
                     >
                       {t('rush')}
                     </Link>
                     <Link
-                      href={`/play/survival?deck=${collection.slug}`}
+                      href={`/play/survival?deck=${collection.slug}&from=collections`}
                       className="btn btn-quiet px-4 py-2 text-sm text-ink"
                     >
                       {t('survival')}

@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PlaySession } from '@/components/play-session';
 import { META_CATEGORIES, type MetaCategory } from '@/lib/admin-api';
 import { NOT_FOR_SEARCH } from '@/lib/metadata';
+import { returnPlace } from '@/lib/return-place';
 
 export const metadata: Metadata = NOT_FOR_SEARCH;
 
@@ -17,9 +18,9 @@ export default async function PracticePage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ deck?: string; category?: string }>;
+  searchParams: Promise<{ deck?: string; category?: string; from?: string }>;
 }) {
-  const [{ locale }, { deck, category }] = await Promise.all([params, searchParams]);
+  const [{ locale }, { deck, category, from }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
   const [t, categories] = await Promise.all([
     getTranslations('play'),
@@ -37,7 +38,7 @@ export default async function PracticePage({
         {filter && <p className="eyebrow mt-2">{categories(filter)}</p>}
       </header>
 
-      <PlaySession deckSlug={deck} category={filter} />
+      <PlaySession deckSlug={deck} category={filter} returnTo={returnPlace(from)} />
     </div>
   );
 }

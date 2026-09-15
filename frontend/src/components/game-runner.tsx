@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useSession } from '@/lib/auth-client';
+import type { ReturnPlace } from '@/lib/return-place';
 import {
   type GradedAnswer,
   type RunView,
@@ -28,7 +29,15 @@ type Phase = 'loading' | 'playing' | 'done' | 'error';
  * differences between rush, survival, the daily and the drill live entirely
  * in the rules the server applies.
  */
-export function GameRunner({ mode, deckSlug }: { mode: ScoredMode; deckSlug?: string }) {
+export function GameRunner({
+  mode,
+  deckSlug,
+  returnTo,
+}: {
+  mode: ScoredMode;
+  deckSlug?: string;
+  returnTo: ReturnPlace;
+}) {
   const t = useTranslations('games');
   const errors = useTranslations('errors');
   const { data: session, isPending: sessionPending } = useSession();
@@ -147,7 +156,11 @@ export function GameRunner({ mode, deckSlug }: { mode: ScoredMode; deckSlug?: st
   }
 
   if (phase === 'done' || !run?.card) {
-    return run ? <RunSummary run={run} onAgain={restart} /> : <Shell>{t('loading')}</Shell>;
+    return run ? (
+      <RunSummary run={run} onAgain={restart} returnTo={returnTo} />
+    ) : (
+      <Shell>{t('loading')}</Shell>
+    );
   }
 
   return (

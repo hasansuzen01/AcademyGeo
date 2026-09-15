@@ -97,7 +97,7 @@ export default async function GuideTopicPage({ params }: RouteParams) {
       {/* Reading is only half of it. A heading tied to a clue type sends the
           reader straight into the cards that ask about it. */}
       {topic.category && (
-        <Link href={`/play/practice?category=${topic.category}`} className="btn btn-go mt-6">
+        <Link href={`/play/practice?category=${topic.category}&from=guides/${topic.slug}`} className="btn btn-go mt-6">
           {t('practice')}
         </Link>
       )}

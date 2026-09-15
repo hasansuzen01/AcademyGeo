@@ -1,13 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { PartyPopper } from 'lucide-react';
+import { ArrowLeft, PartyPopper } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 
 import { Link } from '@/i18n/navigation';
 import { type AnswerResult, type QueueCard, fetchQueue, submitAnswer } from '@/lib/api';
 import { useSession } from '@/lib/auth-client';
+import type { ReturnPlace } from '@/lib/return-place';
 import { playEffect } from '@/lib/sound';
 import { useLoad } from '@/lib/use-load';
 
@@ -17,7 +18,16 @@ import { SignInPrompt } from './sign-in-prompt';
 
 type Phase = 'loading' | 'playing' | 'empty' | 'done' | 'error';
 
-export function PlaySession({ deckSlug, category }: { deckSlug?: string; category?: string } = {}) {
+export function PlaySession({
+  deckSlug,
+  category,
+  returnTo,
+}: {
+  deckSlug?: string;
+  category?: string;
+  /** Where the back button sends the player: the page the session was opened from. */
+  returnTo: ReturnPlace;
+}) {
   const t = useTranslations('play');
   const errors = useTranslations('errors');
   const { data: session, isPending: sessionPending } = useSession();
@@ -121,6 +131,10 @@ export function PlaySession({ deckSlug, category }: { deckSlug?: string; categor
           {t('emptyTitle')}
         </h2>
         <p className="mt-2 max-w-md">{t('emptyBody')}</p>
+        <Link href={returnTo.href} className="btn btn-quiet mt-6">
+          <ArrowLeft className="size-4" aria-hidden />
+          {t(`back.${returnTo.label}`)}
+        </Link>
       </Shell>
     );
   }
@@ -157,6 +171,10 @@ export function PlaySession({ deckSlug, category }: { deckSlug?: string; categor
           <Link href="/dashboard" className="btn btn-quiet">
             {t('summaryDashboard')}
           </Link>
+          <Link href={returnTo.href} className="btn btn-quiet">
+            <ArrowLeft className="size-4" aria-hidden />
+            {t(`back.${returnTo.label}`)}
+          </Link>
         </div>
       </motion.div>
     );
@@ -183,15 +201,6 @@ export function PlaySession({ deckSlug, category }: { deckSlug?: string; categor
         onGuess={(code) => void guess(code)}
         onNext={next}
         isLast={index + 1 >= cards.length}
-        footnote={
-          result &&
-          t('nextDue', {
-            interval:
-              result.intervalDays === 0
-                ? t('intervalMinutes')
-                : t('intervalDays', { days: result.intervalDays }),
-          })
-        }
       />
     </div>
   );

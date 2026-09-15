@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { AnswersService } from './answers.service.js';
 import { toCardView } from './card-view.js';
 import type { SubmitAnswerDto } from './dto.js';
-import { buildReviewQueue } from './queue.js';
+import { dealPracticeCards } from './queue.js';
 
 const DEFAULT_SESSION_SIZE = 12;
 
@@ -24,54 +24,41 @@ export class ReviewService {
   ) {}
 
   /**
-   * One practice session: cards the player is about to forget first, then
-   * metas they have never seen. The country is never sent to the client.
+   * One practice session: a random dozen of the published cards that match,
+   * dealt fresh every time, like a quiz. The country is never sent to the client.
    */
-  async getQueue(userId: string, filter: QueueFilter) {
-    const limit = filter.limit ?? DEFAULT_SESSION_SIZE;
-    const now = new Date();
-    const metaWhere = {
-      // Draft cards stay in the admin panel until someone publishes them.
-      isPublished: true,
-      category: filter.category,
-      country: filter.region ? { region: filter.region } : undefined,
-      decks: filter.deckSlug ? { some: { deck: { slug: filter.deckSlug } } } : undefined,
-    };
-
-    const [dueCards, unseenMetas, countries] = await Promise.all([
-      this.prisma.reviewCard.findMany({
-        where: { userId, dueAt: { lte: now }, meta: metaWhere },
-        select: { metaId: true, dueAt: true },
-        orderBy: { dueAt: 'asc' },
-        take: limit,
-      }),
+  async getQueue(filter: QueueFilter) {
+    const [matching, countries] = await Promise.all([
       this.prisma.meta.findMany({
-        where: { ...metaWhere, cards: { none: { userId } } },
+        where: {
+          // Draft cards stay in the admin panel until someone publishes them.
+          isPublished: true,
+          category: filter.category,
+          country: filter.region ? { region: filter.region } : undefined,
+          decks: filter.deckSlug ? { some: { deck: { slug: filter.deckSlug } } } : undefined,
+        },
         select: { id: true },
-        take: limit,
       }),
       this.prisma.country.findMany(),
     ]);
 
-    const orderedIds = buildReviewQueue({
-      dueCards,
-      newMetaIds: unseenMetas.map((meta) => meta.id),
-      limit,
-      now,
-    });
+    const dealtIds = dealPracticeCards(
+      matching.map((meta) => meta.id),
+      filter.limit ?? DEFAULT_SESSION_SIZE,
+    );
 
     const metas = await this.prisma.meta.findMany({
-      where: { id: { in: orderedIds } },
+      where: { id: { in: dealtIds } },
       include: { country: true },
     });
     const byId = new Map(metas.map((meta) => [meta.id, meta]));
 
-    const cards = orderedIds.flatMap((id) => {
+    const cards = dealtIds.flatMap((id) => {
       const meta = byId.get(id);
       return meta ? [toCardView(meta, countries)] : [];
     });
 
-    return { cards, generatedAt: now.toISOString() };
+    return { cards };
   }
 
   /** Grades one answer, reschedules the card and records it for the dashboard. */

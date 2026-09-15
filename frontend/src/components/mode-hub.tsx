@@ -84,7 +84,7 @@ export function ModeHub({ collections }: { collections: Collection[] }) {
     <div className="space-y-12">
       <section>
         <Link
-          href="/play/practice"
+          href="/play/practice?from=play"
           className="card-raised card-lift rise-in group grid overflow-hidden lg:grid-cols-[1fr_1.05fr]"
         >
           <span className="flex flex-col justify-center gap-4 p-6 sm:p-9">
@@ -220,7 +220,7 @@ export function ModeHub({ collections }: { collections: Collection[] }) {
             {shown.map((collection) => (
               <li key={collection.slug}>
                 <Link
-                  href={`/play/practice?deck=${collection.slug}`}
+                  href={`/play/practice?deck=${collection.slug}&from=play`}
                   className="card-raised card-lift group block overflow-hidden"
                 >
                   <CollectionCover

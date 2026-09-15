@@ -90,7 +90,7 @@ export function fetchQueue(filter: { category?: string; deckSlug?: string } = {}
 
   const suffix = query.size === 0 ? '' : `?${query.toString()}`;
 
-  return apiFetch<{ cards: QueueCard[]; generatedAt: string }>(`/review/queue${suffix}`);
+  return apiFetch<{ cards: QueueCard[] }>(`/review/queue${suffix}`);
 }
 
 export function submitAnswer(body: {

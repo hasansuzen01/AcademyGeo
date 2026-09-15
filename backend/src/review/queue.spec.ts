@@ -1,36 +1,30 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildReviewQueue } from './queue.js';
+import { dealPracticeCards } from './queue.js';
 
-const NOW = new Date('2026-01-01T12:00:00.000Z');
+const IDS = Array.from({ length: 30 }, (_, index) => `meta-${index}`);
 
-describe('buildReviewQueue', () => {
-  it('puts due cards ahead of unseen metas and respects the session limit', () => {
-    const queue = buildReviewQueue({
-      dueCards: [
-        { metaId: 'due-1', dueAt: new Date('2026-01-01T09:00:00.000Z') },
-        { metaId: 'due-2', dueAt: new Date('2026-01-01T11:00:00.000Z') },
-      ],
-      newMetaIds: ['new-1', 'new-2'],
-      limit: 3,
-      now: NOW,
-    });
+describe('dealPracticeCards', () => {
+  it('deals a full session from a large set, with no card twice', () => {
+    const dealt = dealPracticeCards(IDS, 12);
 
-    expect(queue).toEqual(['due-1', 'due-2', 'new-1']);
+    expect(dealt).toHaveLength(12);
+    expect(new Set(dealt).size).toBe(12);
+    expect(dealt.every((id) => IDS.includes(id))).toBe(true);
   });
 
-  it('drops cards that are not due yet and starts with the most overdue one', () => {
-    const queue = buildReviewQueue({
-      dueCards: [
-        { metaId: 'later-today', dueAt: new Date('2026-01-01T11:59:00.000Z') },
-        { metaId: 'tomorrow', dueAt: new Date('2026-01-02T12:00:00.000Z') },
-        { metaId: 'yesterday', dueAt: new Date('2025-12-31T12:00:00.000Z') },
-      ],
-      newMetaIds: [],
-      limit: 10,
-      now: NOW,
-    });
+  it('deals every card of a set smaller than a session', () => {
+    expect(dealPracticeCards(['a', 'b', 'c'], 12).sort()).toEqual(['a', 'b', 'c']);
+  });
 
-    expect(queue).toEqual(['yesterday', 'later-today']);
+  it('draws a different hand when the dice fall differently', () => {
+    expect(dealPracticeCards(IDS, 12, () => 0)).not.toEqual(dealPracticeCards(IDS, 12, () => 0.999));
+  });
+
+  it('leaves the list it was given alone', () => {
+    const ids = ['a', 'b', 'c', 'd'];
+    dealPracticeCards(ids, 2, () => 0);
+
+    expect(ids).toEqual(['a', 'b', 'c', 'd']);
   });
 });

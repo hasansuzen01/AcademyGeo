@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Flame, Target, Timer, Trophy } from 'lucide-react';
+import { ArrowLeft, Flame, Target, Timer, Trophy } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '@/i18n/navigation';
 import type { RunView } from '@/lib/games-api';
+import type { ReturnPlace } from '@/lib/return-place';
 import { formatDuration } from '@/lib/run-clock';
 
 /**
@@ -13,8 +14,18 @@ import { formatDuration } from '@/lib/run-clock';
  * the number that reaches the leaderboard; accuracy, streak and time are the
  * three things a player changes to move it.
  */
-export function RunSummary({ run, onAgain }: { run: RunView; onAgain: () => void }) {
+export function RunSummary({
+  run,
+  onAgain,
+  returnTo,
+}: {
+  run: RunView;
+  onAgain: () => void;
+  /** The page the run was opened from, so the player can go straight back to it. */
+  returnTo: ReturnPlace;
+}) {
   const t = useTranslations('games');
+  const play = useTranslations('play');
   const accuracy = run.answered === 0 ? 0 : Math.round((run.correct / run.answered) * 100);
 
   return (
@@ -63,8 +74,12 @@ export function RunSummary({ run, onAgain }: { run: RunView; onAgain: () => void
             {t('summary.again')}
           </button>
         )}
-        <Link href="/play" className="btn btn-quiet">
-          {t('summary.otherModes')}
+        <Link href="/dashboard" className="btn btn-quiet">
+          {play('summaryDashboard')}
+        </Link>
+        <Link href={returnTo.href} className="btn btn-quiet">
+          <ArrowLeft className="size-4" aria-hidden />
+          {play(`back.${returnTo.label}`)}
         </Link>
       </div>
     </motion.div>
