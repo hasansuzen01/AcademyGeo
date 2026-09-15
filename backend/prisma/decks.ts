@@ -82,7 +82,7 @@ export const DECKS: DeckSeed[] = [
       'When the writing is not Latin, the alphabet alone can settle the country. When it is Latin, the diacritics do the same job more quietly.',
     descriptionTr:
       'Yazı Latin değilse alfabe tek başına ülkeyi belirleyebilir. Latinse aynı işi, daha sessizce, harflerin üstündeki işaretler yapar.',
-    rule: { categories: ['LANGUAGE', 'ARCHITECTURE', 'INFRASTRUCTURE'] },
+    rule: { categories: ['LANGUAGE', 'ARCHITECTURE', 'SIGN'] },
   },
   {
     slug: 'hard-mode',

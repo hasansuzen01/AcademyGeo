@@ -60,7 +60,9 @@
     "LANGUAGE": "Yazı",
     "CAMERA": "Kamera",
     "VEHICLE": "Araçlar",
-    "INFRASTRUCTURE": "Altyapı"
+    "INFRASTRUCTURE": "Yol kenarı",
+    "POLE": "Elektrik direkleri",
+    "SIGN": "Tabelalar"
   },
   "play": {
     "title": "Çalışma",
@@ -966,6 +968,9 @@
     "empty": "Rehber yazılıyor. Kartlar şimdiden burada.",
     "emptyAction": "Onun yerine çalış",
     "topicEmpty": "Bu başlığın altına henüz bir şey yazılmadı.",
+    "examplesTitle": "Ülke ülke",
+    "examplesIntro": "Kartlardaki gerçek fotoğraflar, ülkelerine göre. Bir ülkenin geri kalanını görmek için adına tıkla.",
+    "exampleCount": "{count, plural, =1 {# örnek} other {# örnek}}",
     "comingSoon": "Yazılıyor",
     "entryCount": "{count, plural, =1 {# yazı} other {# yazı}}",
     "readingTime": "{minutes} dk okuma",

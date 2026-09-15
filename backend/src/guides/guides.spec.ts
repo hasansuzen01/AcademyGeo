@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { nextEntry, summariseTopic } from './guides.js';
+import { type ExampleRow, guideExamples, nextEntry, summariseTopic } from './guides.js';
 
 describe('summariseTopic', () => {
   const entry = (status: 'DRAFT' | 'PUBLISHED', readingTime: number) => ({
@@ -46,5 +46,54 @@ describe('nextEntry', () => {
 
   it('offers nothing when the entry is not in the heading', () => {
     expect(nextEntry(readable, 'painted-kerbs')).toBeNull();
+  });
+});
+
+describe('guideExamples', () => {
+  const row = (code: string, nameEn: string, nameTr: string): ExampleRow => ({
+    id: `${code}-id`,
+    slug: `${code.toLowerCase()}-sign`,
+    titleEn: `${nameEn} sign`,
+    titleTr: `${nameTr} tabelası`,
+    descriptionEn: `How a ${nameEn} sign looks.`,
+    descriptionTr: `${nameTr} tabelası böyle görünür.`,
+    imageUrl: `https://cdn.example/${code}.jpg`,
+    imageAuthor: 'Jane Doe',
+    imageLicense: 'CC BY-SA 4.0',
+    imageSourceUrl: null,
+    country: { code, nameEn, nameTr, flagEmoji: '🏳️' },
+  });
+
+  // A heading is written for one audience, so the photo cards under it have
+  // to speak that audience's language, credit included.
+  it('shows each card in the language the heading is written in', () => {
+    const [example] = guideExamples('tr', [row('CL', 'Chile', 'Şili')]);
+
+    expect(example).toEqual({
+      id: 'CL-id',
+      slug: 'cl-sign',
+      title: 'Şili tabelası',
+      description: 'Şili tabelası böyle görünür.',
+      imageUrl: 'https://cdn.example/CL.jpg',
+      credit: { author: 'Jane Doe', license: 'CC BY-SA 4.0', sourceUrl: null },
+      country: { code: 'CL', name: 'Şili', flagEmoji: '🏳️' },
+    });
+  });
+
+  // Readers scan a long gallery for their country by name, so the order has
+  // to be the one their alphabet uses: Ç after C and Ş after S in Turkish.
+  it('goes country by country in the reader’s alphabetical order', () => {
+    const rows = [
+      row('CL', 'Chile', 'Şili'),
+      row('CN', 'China', 'Çin'),
+      row('RS', 'Serbia', 'Sırbistan'),
+      row('DZ', 'Algeria', 'Cezayir'),
+    ];
+
+    const names = (locale: string) =>
+      guideExamples(locale, rows).map((example) => example.country.name);
+
+    expect(names('tr')).toEqual(['Cezayir', 'Çin', 'Sırbistan', 'Şili']);
+    expect(names('en')).toEqual(['Algeria', 'Chile', 'China', 'Serbia']);
   });
 });

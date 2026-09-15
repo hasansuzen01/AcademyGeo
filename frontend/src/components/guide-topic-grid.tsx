@@ -13,6 +13,19 @@ import type { GuideTopicCard } from '@/lib/guides-api';
 export async function GuideTopicGrid({ topics }: { topics: GuideTopicCard[] }) {
   const t = await getTranslations('guides');
 
+  // A heading with no articles yet can still hold photos, and those are worth
+  // opening, so "being written" is kept for a heading with neither.
+  const tally = (topic: GuideTopicCard) => {
+    const parts: string[] = [];
+    if (topic.entryCount > 0) {
+      parts.push(t('entryCount', { count: topic.entryCount }));
+      parts.push(t('readingTime', { minutes: topic.readingTime }));
+    }
+    if (topic.exampleCount > 0) parts.push(t('exampleCount', { count: topic.exampleCount }));
+
+    return parts.length > 0 ? parts.join(' · ') : t('comingSoon');
+  };
+
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {topics.map((topic, index) => (
@@ -36,13 +49,7 @@ export async function GuideTopicGrid({ topics }: { topics: GuideTopicCard[] }) {
               )}
             </span>
 
-            <span className="eyebrow">
-              {topic.entryCount === 0
-                ? t('comingSoon')
-                : `${t('entryCount', { count: topic.entryCount })} · ${t('readingTime', {
-                    minutes: topic.readingTime,
-                  })}`}
-            </span>
+            <span className="eyebrow">{tally(topic)}</span>
           </Link>
         </li>
       ))}

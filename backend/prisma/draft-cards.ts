@@ -617,7 +617,7 @@ export const DRAFT_CARDS: CardSeed[] = [
   {
     slug: 'th-poles',
     countryCode: 'TH',
-    category: 'INFRASTRUCTURE',
+    category: 'POLE',
     titleEn: 'Square concrete power poles',
     titleTr: 'Kare kesitli beton elektrik direkleri',
     descriptionEn:
@@ -629,7 +629,7 @@ export const DRAFT_CARDS: CardSeed[] = [
   {
     slug: 'id-poles',
     countryCode: 'ID',
-    category: 'INFRASTRUCTURE',
+    category: 'POLE',
     titleEn: 'Round poles under a tangle of low cable',
     titleTr: 'Alçak kablo yumağının altında yuvarlak direkler',
     descriptionEn:
@@ -641,7 +641,7 @@ export const DRAFT_CARDS: CardSeed[] = [
   {
     slug: 'br-poles',
     countryCode: 'BR',
-    category: 'INFRASTRUCTURE',
+    category: 'POLE',
     titleEn: 'Concrete poles with a wide cross-arm',
     titleTr: 'Geniş traversli beton direkler',
     descriptionEn:
@@ -653,7 +653,7 @@ export const DRAFT_CARDS: CardSeed[] = [
   {
     slug: 'us-poles',
     countryCode: 'US',
-    category: 'INFRASTRUCTURE',
+    category: 'POLE',
     titleEn: 'Wooden poles carrying everything',
     titleTr: 'Her şeyi taşıyan ahşap direkler',
     descriptionEn:
@@ -665,7 +665,7 @@ export const DRAFT_CARDS: CardSeed[] = [
   {
     slug: 'pl-poles',
     countryCode: 'PL',
-    category: 'INFRASTRUCTURE',
+    category: 'POLE',
     titleEn: 'Grey concrete poles with a hooked top',
     titleTr: 'Kancalı tepeli gri beton direkler',
     descriptionEn:
@@ -677,7 +677,7 @@ export const DRAFT_CARDS: CardSeed[] = [
   {
     slug: 'ke-poles',
     countryCode: 'KE',
-    category: 'INFRASTRUCTURE',
+    category: 'POLE',
     titleEn: 'Concrete poles over red earth verges',
     titleTr: 'Kırmızı toprak banketlerin üstünde beton direkler',
     descriptionEn:

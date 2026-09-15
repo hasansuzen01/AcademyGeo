@@ -3,7 +3,9 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { PhotoCredit } from '@/components/photo-credit';
 import { Link } from '@/i18n/navigation';
+import { imageFitClass } from '@/lib/card-image';
 import { fetchSiteSeo } from '@/lib/content-api';
 import { GuideIcon } from '@/lib/guide-icons';
 import { fetchGuideTopic } from '@/lib/guides-api';
@@ -38,10 +40,11 @@ export default async function GuideTopicPage({ params }: RouteParams) {
   const { locale, topic: slug } = await params;
   setRequestLocale(locale);
 
-  const [topic, site, t] = await Promise.all([
+  const [topic, site, t, play] = await Promise.all([
     fetchGuideTopic(locale, slug),
     fetchSiteSeo(),
     getTranslations({ locale, namespace: 'guides' }),
+    getTranslations({ locale, namespace: 'play' }),
   ]);
 
   if (!topic) notFound();
@@ -102,11 +105,13 @@ export default async function GuideTopicPage({ params }: RouteParams) {
         </Link>
       )}
 
-      {topic.entries.length === 0 ? (
+      {topic.entries.length === 0 && topic.examples.length === 0 && (
         <p className="card-raised mt-10 px-6 py-12 text-center text-sm text-muted">
           {t('topicEmpty')}
         </p>
-      ) : (
+      )}
+
+      {topic.entries.length > 0 && (
         <ol className="mt-10 grid gap-4 lg:grid-cols-2">
           {topic.entries.map((entry, index) => (
             <li key={entry.id} className="rise-in" style={{ animationDelay: `${index * 45}ms` }}>
@@ -144,6 +149,52 @@ export default async function GuideTopicPage({ params }: RouteParams) {
             </li>
           ))}
         </ol>
+      )}
+
+      {/* The photos added for practice already say which country and which
+          clue they show, so the heading reuses them rather than keeping its own. */}
+      {topic.examples.length > 0 && (
+        <section className="mt-12">
+          <h2 className="font-display text-2xl font-900 tracking-tight">{t('examplesTitle')}</h2>
+          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted">
+            {t('examplesIntro')}
+          </p>
+
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {topic.examples.map((example, index) => (
+              <li
+                key={example.id}
+                className="card-raised rise-in overflow-hidden"
+                style={{ animationDelay: `${Math.min(index, 12) * 35}ms` }}
+              >
+                <div className="relative aspect-[8/5] w-full bg-canvas">
+                  <Image
+                    src={example.imageUrl}
+                    alt={example.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 400px"
+                    className={imageFitClass('PHOTO', topic.category ?? undefined)}
+                  />
+                </div>
+
+                <div className="px-4 py-4">
+                  <Link
+                    href={`/atlas/${example.country.code.toLowerCase()}`}
+                    className="inline-flex items-center gap-1.5 text-sm font-800 text-muted transition-colors hover:text-ink"
+                  >
+                    <span aria-hidden>{example.country.flagEmoji ?? '🌍'}</span>
+                    {example.country.name}
+                  </Link>
+                  <h3 className="mt-1 font-display text-lg font-900 tracking-tight text-ink">
+                    {example.title}
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">{example.description}</p>
+                  <PhotoCredit credit={example.credit} label={play('photoCredit')} className="mt-3" />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
     </div>
   );

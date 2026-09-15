@@ -11,7 +11,9 @@ export type MetaCategory =
   | 'LANGUAGE'
   | 'CAMERA'
   | 'VEHICLE'
-  | 'INFRASTRUCTURE';
+  | 'INFRASTRUCTURE'
+  | 'POLE'
+  | 'SIGN';
 
 export type Region =
   | 'EUROPE'
@@ -32,6 +34,8 @@ export const META_CATEGORIES: MetaCategory[] = [
   'CAMERA',
   'VEHICLE',
   'INFRASTRUCTURE',
+  'POLE',
+  'SIGN',
 ];
 
 export const REGIONS: Region[] = [

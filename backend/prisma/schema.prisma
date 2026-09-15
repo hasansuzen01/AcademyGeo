@@ -138,7 +138,11 @@ enum MetaCategory {
   LANGUAGE
   CAMERA
   VEHICLE
+  /// Roadside furniture no heading of its own covers: kilometre markers,
+  /// mailboxes, cable markers.
   INFRASTRUCTURE
+  POLE
+  SIGN
 }
 
 /// Which side of the road a country drives on. One of the first things a

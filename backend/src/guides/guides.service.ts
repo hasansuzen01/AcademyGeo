@@ -13,9 +13,10 @@ import {
   resolvePublishedAt,
   sanitiseContent,
 } from '../content/content.js';
+import { CREDIT_COLUMNS } from '../metas/image-credit.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import type { GuideListQuery, UpsertEntryDto, UpsertTopicDto } from './dto.js';
-import { nextEntry, summariseTopic } from './guides.js';
+import { guideExamples, nextEntry, summariseTopic } from './guides.js';
 
 /** What an entry shows in a list. The body is deliberately absent. */
 const ENTRY_CARD = {
@@ -30,6 +31,25 @@ const ENTRY_CARD = {
 } satisfies Prisma.GuideEntrySelect;
 
 const PUBLISHED = { status: 'PUBLISHED' } as const;
+
+/**
+ * Cards fit to stand in a heading as examples: live, and showing a real
+ * photograph. A seeded diagram is a stand-in for a quiz, not a field guide.
+ */
+const PHOTO_CARD = { isPublished: true, imageSource: 'PHOTO' } satisfies Prisma.MetaWhereInput;
+
+/** What a heading needs from each of its example cards. */
+const EXAMPLE_ROW = {
+  id: true,
+  slug: true,
+  titleEn: true,
+  titleTr: true,
+  descriptionEn: true,
+  descriptionTr: true,
+  imageUrl: true,
+  ...CREDIT_COLUMNS,
+  country: { select: { code: true, nameEn: true, nameTr: true, flagEmoji: true } },
+} satisfies Prisma.MetaSelect;
 
 /** Entries in the order the author set, ties broken by title. */
 const BY_POSITION: Prisma.GuideEntryOrderByWithRelationInput[] = [
@@ -53,17 +73,41 @@ export class GuidesService {
 
   /** The library index: every published heading with what is under it. */
   async listTopics(locale: string) {
-    const topics = await this.prisma.guideTopic.findMany({
-      where: { locale, ...PUBLISHED },
-      orderBy: [{ position: 'asc' }, { title: 'asc' }],
-      include: { entries: { select: { status: true, readingTime: true } } },
-    });
+    const [topics, photoCounts] = await Promise.all([
+      this.prisma.guideTopic.findMany({
+        where: { locale, ...PUBLISHED },
+        orderBy: [{ position: 'asc' }, { title: 'asc' }],
+        include: { entries: { select: { status: true, readingTime: true } } },
+      }),
+      this.prisma.meta.groupBy({ by: ['category'], where: PHOTO_CARD, _count: { _all: true } }),
+    ]);
 
-    return topics.map(({ entries, ...topic }) => ({ ...topic, ...summariseTopic(entries) }));
+    const perCategory = new Map(photoCounts.map((row) => [row.category, row._count._all]));
+
+    return topics.map(({ entries, ...topic }) => ({
+      ...topic,
+      ...summariseTopic(entries),
+      exampleCount: topic.category ? (perCategory.get(topic.category) ?? 0) : 0,
+    }));
   }
 
-  /** One heading and the entries a reader can open under it. */
+  /**
+   * One heading, the entries a reader can open under it, and every photo card
+   * of its clue type, country by country.
+   */
   async readTopic(locale: string, slug: string) {
+    const topic = await this.findReadableTopic(locale, slug);
+    const rows = topic.category
+      ? await this.prisma.meta.findMany({
+          where: { ...PHOTO_CARD, category: topic.category },
+          select: EXAMPLE_ROW,
+        })
+      : [];
+
+    return { ...topic, examples: guideExamples(locale, rows) };
+  }
+
+  private async findReadableTopic(locale: string, slug: string) {
     const topic = await this.prisma.guideTopic.findFirst({
       where: { locale, slug, ...PUBLISHED },
       include: { entries: { where: PUBLISHED, select: ENTRY_CARD, orderBy: BY_POSITION } },
@@ -80,7 +124,7 @@ export class GuidesService {
    * heading still being written must not put the heading in public with it.
    */
   async readEntry(locale: string, topicSlug: string, entrySlug: string) {
-    const { entries, ...topic } = await this.readTopic(locale, topicSlug);
+    const { entries, ...topic } = await this.findReadableTopic(locale, topicSlug);
 
     const entry = await this.prisma.guideEntry.findFirst({
       where: { topicId: topic.id, slug: entrySlug, ...PUBLISHED },

@@ -22,7 +22,9 @@ export type MetaCategory =
   | 'LANGUAGE'
   | 'CAMERA'
   | 'VEHICLE'
-  | 'INFRASTRUCTURE';
+  | 'INFRASTRUCTURE'
+  | 'POLE'
+  | 'SIGN';
 
 export interface CountrySeed {
   code: string;
@@ -580,7 +582,7 @@ export const METAS: MetaSeed[] = [
   {
     slug: 'jp-poles',
     countryCode: 'JP',
-    category: 'INFRASTRUCTURE',
+    category: 'POLE',
     titleEn: 'Concrete poles with stacked transformers',
     titleTr: 'Üst üste trafolu beton direkler',
     descriptionEn:

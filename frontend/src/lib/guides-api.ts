@@ -1,6 +1,7 @@
 import 'server-only';
 import { readPublic } from './api-base';
 import type { MetaCategory } from './admin-api';
+import type { ImageCredit } from './photo-credit';
 
 export interface GuideTopicCard {
   id: string;
@@ -14,6 +15,19 @@ export interface GuideTopicCard {
   /** Readable entries under the heading, and how long they take together. */
   entryCount: number;
   readingTime: number;
+  /** Published photo cards of the heading's clue type. */
+  exampleCount: number;
+}
+
+/** One country's photo card, shown under the heading for its clue type. */
+export interface GuideExample {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  credit: ImageCredit | null;
+  country: { code: string; name: string; flagEmoji: string | null };
 }
 
 export interface GuideEntryCard {
@@ -27,7 +41,8 @@ export interface GuideEntryCard {
   position: number;
 }
 
-export interface GuideTopic extends Omit<GuideTopicCard, 'entryCount' | 'readingTime'> {
+export interface GuideTopic
+  extends Omit<GuideTopicCard, 'entryCount' | 'readingTime' | 'exampleCount'> {
   metaTitle: string | null;
   metaDescription: string | null;
   keywords: string;
@@ -35,6 +50,7 @@ export interface GuideTopic extends Omit<GuideTopicCard, 'entryCount' | 'reading
   robotsMeta: string;
   updatedAt: string;
   entries: GuideEntryCard[];
+  examples: GuideExample[];
 }
 
 export interface GuideEntry extends GuideEntryCard {
@@ -51,7 +67,7 @@ export interface GuideEntry extends GuideEntryCard {
 
 export interface GuideReading {
   entry: GuideEntry;
-  topic: Omit<GuideTopic, 'entries'>;
+  topic: Omit<GuideTopic, 'entries' | 'examples'>;
   /** The entry to offer next, or null at the end of the heading. */
   next: GuideEntryCard | null;
 }

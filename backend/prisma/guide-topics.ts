@@ -38,7 +38,7 @@ const TOPICS: Pair[] = [
       tr: 'Ahşap mı beton mu, traversler nasıl duruyor, izolatörler nerede. Direkler her yolun kenarında var ve neredeyse her sınırda değişiyor.',
     },
     icon: 'utility-pole',
-    category: 'INFRASTRUCTURE',
+    category: 'POLE',
   },
   {
     slug: { en: 'road-lines', tr: 'yol-cizgileri' },
@@ -68,7 +68,7 @@ const TOPICS: Pair[] = [
       tr: 'Şekil, kenarlık, zemin rengi ve üzerindeki yazı tipi. Tabelalar hem ülkeyi hem çoğu zaman bölgeyi taşır.',
     },
     icon: 'signpost',
-    category: 'INFRASTRUCTURE',
+    category: 'SIGN',
   },
   {
     slug: { en: 'plates', tr: 'plakalar' },

@@ -60,7 +60,9 @@
     "LANGUAGE": "Script",
     "CAMERA": "Camera",
     "VEHICLE": "Vehicles",
-    "INFRASTRUCTURE": "Infrastructure"
+    "INFRASTRUCTURE": "Roadside",
+    "POLE": "Poles",
+    "SIGN": "Signs"
   },
   "play": {
     "title": "Practice",
@@ -966,6 +968,9 @@
     "empty": "The guide is being written. The cards are already here.",
     "emptyAction": "Practise instead",
     "topicEmpty": "Nothing has been written under this heading yet.",
+    "examplesTitle": "Country by country",
+    "examplesIntro": "The real photos from the cards, filed by country. Open a country's name to see the rest of what gives it away.",
+    "exampleCount": "{count, plural, =1 {# example} other {# examples}}",
     "comingSoon": "Being written",
     "entryCount": "{count, plural, =1 {# article} other {# articles}}",
     "readingTime": "{minutes} min read",
