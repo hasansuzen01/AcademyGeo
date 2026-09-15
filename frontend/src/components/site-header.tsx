@@ -11,6 +11,7 @@ import { fetchDashboard } from '@/lib/api';
 import { signOut } from '@/lib/auth-client';
 import { cn } from '@/lib/cn';
 
+import { BrandMark } from './brand-mark';
 import { LocaleSwitch } from './locale-switch';
 import { SoundToggle } from './sound-toggle';
 
@@ -54,7 +55,7 @@ export function SiteHeader({ viewer }: { viewer: Me | null }) {
     <header className="sticky top-0 z-40 border-b-2 border-line bg-paper/95 backdrop-blur-md">
       <div className="page-shell flex h-[68px] items-center gap-3 px-4 sm:gap-5 sm:px-5">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <span className="centre-line h-2 w-11 rounded-full" />
+          <BrandMark className="size-9" />
           <span className="hidden font-display text-lg font-900 tracking-tight sm:inline">
             {brand('name')}
           </span>

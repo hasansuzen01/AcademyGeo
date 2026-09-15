@@ -114,6 +114,7 @@
     "title": "Sign in to keep your progress",
     "body": "Your review schedule, streak and stats are tied to your account. Google is the only sign-in method.",
     "google": "Continue with Google",
+    "failed": "Sign-in didn't go through. Try again.",
     "signedInAs": "Signed in as {name}",
     "guardTitle": "Sign in to practise",
     "guardBody": "Sessions are scheduled per player, so AcademyGeo needs to know who you are."

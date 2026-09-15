@@ -60,9 +60,14 @@ export function createAuth(prisma: PrismaService, config: ConfigService) {
       // whether or not they share a parent, so the cookie has to be sent
       // cross-site. Keying this on AUTH_COOKIE_DOMAIN meant that forgetting
       // one setting silently signed everybody out on their next click.
-      defaultCookieAttributes: crossSite
-        ? { sameSite: 'none', secure: true, partitioned: true }
-        : undefined,
+      //
+      // Not partitioned. A partitioned cookie is filed under the site of the
+      // tab it was set in, and sign-in sets its cookies in two different tabs:
+      // the state cookie on a fetch from the web app, the session cookie on
+      // the API's own callback page. Across sites the two land in separate
+      // jars, so the callback cannot find the state it just issued and
+      // answers `state_mismatch`, and the web app never sees the session.
+      defaultCookieAttributes: crossSite ? { sameSite: 'none', secure: true } : undefined,
     },
   });
 }

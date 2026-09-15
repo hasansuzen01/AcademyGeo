@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "map:build": "node --experimental-strip-types scripts/build-world-map.ts"
+    "map:build": "node --experimental-strip-types scripts/build-world-map.ts",
+    "icons:build": "node --experimental-strip-types scripts/generate-icons.ts"
   },
   "dependencies": {
     "@tiptap/extension-image": "^3.31.3",

@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
+import { BrandMark } from '@/components/brand-mark';
 import { Link } from '@/i18n/navigation';
 import { fetchFooterLinks, fetchSiteSeo } from '@/lib/content-api';
 
@@ -20,9 +21,12 @@ export async function SiteFooter({ locale }: { locale: string }) {
     <footer className="mt-20 border-t-2 border-line bg-paper">
       <div className="page-shell flex flex-col gap-6 px-5 py-10">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="font-display text-lg font-900 tracking-tight">{site.siteName}</p>
-            <p className="mt-1 max-w-md text-sm text-muted">{t('tagline')}</p>
+          <div className="flex items-center gap-3">
+            <BrandMark className="size-10" />
+            <div>
+              <p className="font-display text-lg font-900 tracking-tight">{site.siteName}</p>
+              <p className="mt-1 max-w-md text-sm text-muted">{t('tagline')}</p>
+            </div>
           </div>
 
           <nav aria-label={t('linksLabel')} className="flex flex-wrap gap-x-5 gap-y-2 text-sm">

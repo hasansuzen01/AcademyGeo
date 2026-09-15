@@ -114,6 +114,7 @@
     "title": "İlerlemeni korumak için giriş yap",
     "body": "Tekrar planın, serin ve istatistiklerin hesabına bağlı. Tek giriş yöntemi Google.",
     "google": "Google ile devam et",
+    "failed": "Giriş tamamlanamadı. Tekrar dene.",
     "signedInAs": "{name} olarak giriş yapıldı",
     "guardTitle": "Çalışmak için giriş yap",
     "guardBody": "Seanslar oyuncuya özel planlandığı için AcademyGeo kim olduğunu bilmek zorunda."

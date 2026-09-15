@@ -17,6 +17,9 @@ export function GoogleSignInButton() {
     await signIn.social({
       provider: 'google',
       callbackURL: `${appUrl}/${locale}/play`,
+      // Without this a failed sign-in lands on the API's bare address, which
+      // has nothing to show and no way back.
+      errorCallbackURL: `${appUrl}/${locale}/sign-in`,
     });
   }
 
