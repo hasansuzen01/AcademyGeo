@@ -67,8 +67,16 @@ export function ModeHub({ collections }: { collections: Collection[] }) {
 
   useLoad(load, Boolean(session?.user?.id));
 
-  const heroCover = collections.find((collection) => collection.cover)?.cover ?? null;
-  const shown = collections.slice(0, COLLECTIONS_SHOWN);
+  // Collections with a photograph go first in the strip, and the practice card
+  // takes a photograph the strip is not already showing, so the page never
+  // draws the same road twice.
+  const pictured = collections.filter((collection) => collection.cover);
+  const shown = [...pictured, ...collections.filter((collection) => !collection.cover)].slice(
+    0,
+    COLLECTIONS_SHOWN,
+  );
+  const heroCover =
+    (pictured.find((collection) => !shown.includes(collection)) ?? pictured[0])?.cover ?? null;
   const nameOf = (collection: Collection) =>
     locale === 'tr' ? collection.nameTr : collection.nameEn;
 
