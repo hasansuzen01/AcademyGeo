@@ -1,6 +1,6 @@
 'use client';
 
-import { Minus, Plus, RotateCcw } from 'lucide-react';
+import { ChevronRight, Minus, Plus, RotateCcw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
@@ -13,6 +13,30 @@ import {
   wholeMap,
   zoomAt,
 } from '@/lib/map-viewport';
+import { type TooltipPlacement, tooltipPlacement } from '@/lib/map-tooltip';
+
+/** The country under the pointer, read off the data attributes of its shape. */
+interface CountryTip {
+  name: string;
+  detail: string;
+  flag: string;
+  open: boolean;
+  /** Position within the frame, in CSS pixels. */
+  x: number;
+  y: number;
+  placement: TooltipPlacement;
+}
+
+const ALIGN: Record<TooltipPlacement['align'], string> = {
+  start: 'translate-x-4',
+  center: '-translate-x-1/2',
+  end: '-translate-x-[calc(100%+16px)]',
+};
+
+const SIDE: Record<TooltipPlacement['side'], string> = {
+  above: '-translate-y-[calc(100%+14px)]',
+  below: 'translate-y-5',
+};
 
 /** How much one notch of the wheel, or one press of a button, zooms. */
 const WHEEL_STEP = 1.18;
@@ -51,8 +75,25 @@ export function MapViewport({
   // that follows knows whether it was one.
   const dragged = useRef(false);
   const [dragging, setDragging] = useState(false);
+  const frame = useRef<HTMLDivElement>(null);
+  const [tip, setTip] = useState<CountryTip | null>(null);
 
   const zoomed = view.width < world.width;
+
+  /** Labels whichever country the target belongs to, at a screen point. */
+  function showTip(target: EventTarget, clientX: number, clientY: number) {
+    const rect = frame.current?.getBoundingClientRect();
+    const country = target instanceof Element ? target.closest<SVGElement>('[data-country]') : null;
+    if (!rect || !country) {
+      setTip(null);
+      return;
+    }
+
+    const point = { x: clientX - rect.left, y: clientY - rect.top };
+    const { name = '', detail = '', flag = '', open } = country.dataset;
+
+    setTip({ name, detail, flag, open: open === 'true', ...point, placement: tooltipPlacement(point, rect) });
+  }
 
   useEffect(() => {
     latest.current = view;
@@ -125,7 +166,7 @@ export function MapViewport({
   }
 
   return (
-    <div className="relative">
+    <div ref={frame} className="relative">
       <svg
         ref={svg}
         viewBox={`${view.x} ${view.y} ${view.width} ${view.height}`}
@@ -142,6 +183,11 @@ export function MapViewport({
           dragged.current = false;
         }}
         onPointerMove={(event) => {
+          // A finger has no hover, so a label would only ever trail a drag.
+          if (event.pointerType !== 'touch' && !dragged.current) {
+            showTip(event.target, event.clientX, event.clientY);
+          }
+
           const start = origin.current;
           const previous = last.current;
           if (!start || !previous) return;
@@ -156,6 +202,7 @@ export function MapViewport({
             if (!startedDragging(start, point)) return;
             dragged.current = true;
             setDragging(true);
+            setTip(null);
             event.currentTarget.setPointerCapture(event.pointerId);
           }
 
@@ -169,6 +216,13 @@ export function MapViewport({
         }}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
+        onPointerLeave={() => setTip(null)}
+        onFocus={(event) => {
+          // Tabbing onto a country labels it too, pinned to the shape's middle.
+          const box = event.target.getBoundingClientRect();
+          showTip(event.target, box.left + box.width / 2, box.top + box.height / 2);
+        }}
+        onBlur={() => setTip(null)}
         onClickCapture={(event) => {
           // A drag that ended over a country is not a click on it.
           if (dragged.current) event.preventDefault();
@@ -177,6 +231,8 @@ export function MapViewport({
       >
         {children}
       </svg>
+
+      {tip && <CountryLabel tip={tip} />}
 
       <div className="absolute top-2 right-2 flex flex-col gap-1">
         <ZoomButton label={t('zoomIn')} onClick={() => step(BUTTON_STEP)}>
@@ -191,6 +247,46 @@ export function MapViewport({
           </ZoomButton>
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * The floating name card. It is decoration for sighted pointer users: the link
+ * underneath already carries the same words as its accessible name.
+ */
+function CountryLabel({ tip }: { tip: CountryTip }) {
+  return (
+    <div
+      aria-hidden
+      style={{ left: tip.x, top: tip.y }}
+      className={cn(
+        'pointer-events-none absolute z-10 flex max-w-72 items-center gap-2.5 rounded-2xl border-2 border-b-4 border-line bg-paper py-2 pr-3.5 pl-2.5 whitespace-nowrap shadow-[0_12px_28px_-14px_rgb(23_40_45/0.45)]',
+        ALIGN[tip.placement.align],
+        SIDE[tip.placement.side],
+      )}
+    >
+      <span
+        className={cn(
+          'grid size-9 shrink-0 place-items-center rounded-xl text-xl leading-none',
+          tip.open ? 'bg-go-wash' : 'bg-canvas',
+        )}
+      >
+        {tip.flag || '🌍'}
+      </span>
+
+      <span className="min-w-0">
+        <span className="block truncate font-display text-sm font-900 text-ink">{tip.name}</span>
+        <span
+          className={cn(
+            'mt-0.5 flex items-center gap-0.5 text-xs font-800',
+            tip.open ? 'text-go-deep' : 'text-muted',
+          )}
+        >
+          {tip.detail}
+          {tip.open && <ChevronRight className="size-3.5" aria-hidden />}
+        </span>
+      </span>
     </div>
   );
 }

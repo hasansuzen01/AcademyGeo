@@ -13,8 +13,9 @@ import { WORLD, buildMapCountries } from '@/lib/world-map';
  * of SVG paths, so the page draws a map without fetching one and without a
  * geometry library in the bundle.
  *
- * It renders on the server and ships no JavaScript at all. Hover is a class,
- * the name is a native <title>, and a country you can open is a real link, so
+ * It renders on the server and ships no JavaScript of its own. Hover is a
+ * class, the name and clue count ride along as data attributes for the label
+ * the viewport draws, and a country you can open is a real link, so
  * it can be middle-clicked, opened in a new tab, and used with the keyboard
  * without any of that being written by hand. Countries the deck does not cover
  * are still drawn, because a map with holes in it reads as broken rather than
@@ -38,10 +39,20 @@ export async function WorldMap({ countries }: { countries: AtlasCountry[] }) {
             />
           );
 
+          const detail = country.open
+            ? t('clueCount', { count: country.clueCount })
+            : t('mapNoClues');
+          const label = {
+            'data-country': country.code,
+            'data-name': country.name,
+            'data-detail': detail,
+            'data-flag': country.flag ?? undefined,
+            'data-open': country.open,
+          };
+
           if (!country.open) {
             return (
-              <g key={country.code}>
-                <title>{`${country.name} — ${t('mapNoClues')}`}</title>
+              <g key={country.code} {...label}>
                 {shape}
               </g>
             );
@@ -50,13 +61,14 @@ export async function WorldMap({ countries }: { countries: AtlasCountry[] }) {
           return (
             <a
               key={country.code}
+              {...label}
               href={getPathname({
                 href: `/atlas/${country.code.toLowerCase()}`,
                 locale,
               })}
+              aria-label={`${country.name} — ${detail}`}
               className="group cursor-pointer"
             >
-              <title>{`${country.name} — ${t('clueCount', { count: country.clueCount })}`}</title>
               {shape}
             </a>
           );

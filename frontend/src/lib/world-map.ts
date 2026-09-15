@@ -17,6 +17,8 @@ export interface MapCountry extends MapShape {
   /** The name in the language of the page. */
   name: string;
   clueCount: number;
+  /** The deck's flag, and nothing for a country outside the game. */
+  flag: string | null;
   /** Whether the country has a page worth opening. */
   open: boolean;
 }
@@ -26,6 +28,7 @@ interface DeckCountry {
   nameEn: string;
   nameTr: string;
   clueCount: number;
+  flagEmoji?: string | null;
 }
 
 export const WORLD = shapesData as { width: number; height: number; shapes: MapShape[] };
@@ -56,6 +59,7 @@ export function buildMapCountries(
       ...shape,
       name: turkish ? named.nameTr : named.nameEn,
       clueCount,
+      flag: known?.flagEmoji ?? null,
       // Every country in the game has a page of verified facts, so it is worth
       // opening before its first clue picture is published. The rest of the
       // world stays flat.

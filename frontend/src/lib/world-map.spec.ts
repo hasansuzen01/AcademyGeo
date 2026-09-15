@@ -9,11 +9,18 @@ const SHAPES: MapShape[] = [
 ];
 
 const IN_DECK = [
-  { code: 'TR', nameEn: 'Turkey', nameTr: 'Türkiye', clueCount: 3 },
+  { code: 'TR', nameEn: 'Turkey', nameTr: 'Türkiye', clueCount: 3, flagEmoji: '🇹🇷' },
   { code: 'DE', nameEn: 'Germany', nameTr: 'Almanya', clueCount: 0 },
 ];
 
 describe('buildMapCountries', () => {
+  it('carries the deck flag for the label, and none for a country outside the game', () => {
+    const shown = buildMapCountries(SHAPES, IN_DECK, 'tr');
+
+    expect(shown.find((c) => c.code === 'TR')?.flag).toBe('🇹🇷');
+    expect(shown.find((c) => c.code === 'AF')?.flag).toBeNull();
+  });
+
   it('makes a country with clues something you can open', () => {
     const turkey = buildMapCountries(SHAPES, IN_DECK, 'tr').find((c) => c.code === 'TR');
 

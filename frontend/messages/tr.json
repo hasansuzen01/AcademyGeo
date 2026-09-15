@@ -852,9 +852,9 @@
       "LEFT": "Solda",
       "RIGHT": "Sağda"
     },
-    "mapLabel": "Dünya haritası. İpucu olan ülkeler açılabilir.",
+    "mapLabel": "Dünya haritası. Oyundaki ülkeler açılabilir.",
     "mapHint": "Haritadan bir ülke seç ya da aşağıdan ara. Haritanın üstünde tekerlek yakınlaştırır, sürüklemek gezdirir.",
-    "mapNoClues": "henüz yazılmış bir şey yok",
+    "mapNoClues": "oyunda yok",
     "listTitle": "Ya da listeden ara",
     "zoomIn": "Yakınlaştır",
     "zoomOut": "Uzaklaştır",
