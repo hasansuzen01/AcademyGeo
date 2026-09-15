@@ -21,10 +21,12 @@ describe('buildMapCountries', () => {
     expect(turkey?.open).toBe(true);
   });
 
-  it('shows a country with no clues, but does not pretend it leads anywhere', () => {
+  // A country in the game already has a page of facts, so it opens before its
+  // first clue picture is published.
+  it('opens a country in the game even before it has clues', () => {
     const germany = buildMapCountries(SHAPES, IN_DECK, 'tr').find((c) => c.code === 'DE');
 
-    expect(germany?.open).toBe(false);
+    expect(germany?.open).toBe(true);
     expect(germany?.clueCount).toBe(0);
   });
 

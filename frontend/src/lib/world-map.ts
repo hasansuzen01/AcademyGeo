@@ -56,7 +56,10 @@ export function buildMapCountries(
       ...shape,
       name: turkish ? named.nameTr : named.nameEn,
       clueCount,
-      open: clueCount > 0,
+      // Every country in the game has a page of verified facts, so it is worth
+      // opening before its first clue picture is published. The rest of the
+      // world stays flat.
+      open: known !== undefined,
     };
   });
 }
