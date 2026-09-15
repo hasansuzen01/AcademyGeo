@@ -40,16 +40,24 @@ export function CollectionCover({
         </span>
       )}
 
-      <span
-        className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent"
-        aria-hidden
-      />
+      {/* The shade is only there to lift white type off a photograph. */}
+      {collection.cover && (
+        <span
+          className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent"
+          aria-hidden
+        />
+      )}
 
       <span className="absolute top-3 right-3 rounded-full bg-paper/95 px-2.5 py-1 text-[0.6875rem] font-800 text-ink">
         {count}
       </span>
 
-      <span className="absolute inset-x-4 bottom-3 font-display text-xl font-900 tracking-tight text-paper">
+      <span
+        className={cn(
+          'absolute inset-x-4 bottom-3 font-display text-xl font-900 tracking-tight',
+          collection.cover ? 'text-paper' : 'text-ink',
+        )}
+      >
         {name}
       </span>
     </span>
