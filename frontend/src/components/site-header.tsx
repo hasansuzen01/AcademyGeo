@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import type { Me } from '@/lib/admin-api';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { fetchDashboard } from '@/lib/api';
 import { signOut } from '@/lib/auth-client';
 import { cn } from '@/lib/cn';
@@ -25,6 +25,7 @@ import { SoundToggle } from './sound-toggle';
 export function SiteHeader({ viewer }: { viewer: Me | null }) {
   const t = useTranslations('nav');
   const brand = useTranslations('brand');
+  const router = useRouter();
   const pathname = usePathname();
   const [streak, setStreak] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -97,7 +98,19 @@ export function SiteHeader({ viewer }: { viewer: Me | null }) {
             <button
               type="button"
               aria-label={t('signOut')}
-              onClick={() => void signOut()}
+              // The bar was drawn on the server for the signed-in viewer, and
+              // navigating alone keeps that layout, so it has to be refreshed
+              // or it goes on showing them as signed in after the session is gone.
+              onClick={() =>
+                void signOut({
+                  fetchOptions: {
+                    onSuccess: () => {
+                      router.push('/');
+                      router.refresh();
+                    },
+                  },
+                })
+              }
               className="rounded-xl p-2 text-muted transition-colors hover:bg-canvas hover:text-ink"
             >
               <LogOut className="size-4" aria-hidden />

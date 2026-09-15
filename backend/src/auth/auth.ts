@@ -24,6 +24,11 @@ export function createAuth(prisma: PrismaService, config: ConfigService) {
     secret: required(config, 'BETTER_AUTH_SECRET'),
     database: prismaAdapter(prisma, { provider: 'postgresql' }),
     trustedOrigins: webUrl.split(',').map((origin) => origin.trim()),
+    // A sign-in that fails before its own error address is known, such as the
+    // browser's back button replaying a callback whose state was already
+    // spent, would otherwise end on the API's bare root with nothing to press.
+    // The web app's sign-in page explains it and offers the button again.
+    onAPIError: { errorURL: `${webUrl.split(',')[0].trim().replace(/\/+$/, '')}/sign-in` },
     emailAndPassword: { enabled: false },
     socialProviders: {
       google: {

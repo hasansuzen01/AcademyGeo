@@ -1,7 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { redirect } from 'next/navigation';
 
 import { BrandMark } from '@/components/brand-mark';
 import { GoogleSignInButton } from '@/components/google-sign-in-button';
+import { fetchViewer } from '@/lib/server-api';
 
 export default async function SignInPage({
   params,
@@ -10,7 +12,16 @@ export default async function SignInPage({
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ error?: string }>;
 }) {
-  const [{ locale }, { error }] = await Promise.all([params, searchParams]);
+  const [{ locale }, { error }, viewer] = await Promise.all([
+    params,
+    searchParams,
+    fetchViewer(),
+  ]);
+  // Someone already signed in has nothing to do here. It matters most right
+  // after a sign-in: a replayed callback can land on this page with an error
+  // for a session that in fact went through.
+  if (viewer) redirect(`/${locale}/play`);
+
   setRequestLocale(locale);
   const t = await getTranslations('auth');
 
