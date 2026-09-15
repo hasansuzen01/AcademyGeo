@@ -5,9 +5,9 @@
  * English and Turkish sets cover the same ground without being sentence-for-
  * sentence copies of each other.
  *
- * Seeded so a fresh install is not an empty feed. Re-seeding rewrites these
- * posts in place, so a post an admin has rewritten will be overwritten: change
- * it here too, or seed once and write in the panel from then on.
+ * Seeded so a fresh install is not an empty feed. Seeded once and never
+ * updated, so a post rewritten in the panel stays rewritten, and changing the
+ * text here only reaches a fresh database.
  */
 
 export interface BlogPostSeed {

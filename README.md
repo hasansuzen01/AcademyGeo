@@ -93,10 +93,12 @@ bollards, road lines, left-hand traffic, script, and the cards experienced
 players still lose rounds to. Each one can be studied untimed, raced against
 the clock, or played with three lives.
 
-Membership is a rule rather than a list of slugs, written in
-`backend/prisma/decks.ts`, so a collection picks up new cards as admins add
-them instead of quietly going stale. Admins can also build one by hand in
-`/admin/decks`, which is where an event deck with a closing date belongs.
+Membership of the shipped collections is a rule rather than a list of slugs,
+written in `backend/prisma/decks.ts`, and it fills each one the first time it
+is created. From then on a collection belongs to the panel: cards published
+later are added to it in `/admin/decks`, and a redeploy never rewrites its
+name, its contents or whether it is live. Admins can also build one by hand
+there, which is where an event deck with a closing date belongs.
 
 ## Sound
 
@@ -193,9 +195,12 @@ difficulty and the explanation a player sees after answering. All an admin has
 to add is the photograph, in `/admin/metas`, where the list can be filtered
 down to exactly the cards still waiting.
 
-Re-seeding never touches a card's picture or whether it is live. Both belong to
-whoever runs the site once the card exists, so a re-seed cannot undo an upload
-or take a published card back down.
+Re-seeding never touches a card that already exists: not its text, its
+difficulty, its picture or whether it is live. All of it belongs to whoever
+runs the site once the card exists, so a re-seed cannot undo an edit or an
+upload, or take a published card back down. The same holds for countries: a
+fact corrected in `/admin/countries` stays corrected. Editing the seed files
+only changes a fresh database.
 
 ## Real pictures
 

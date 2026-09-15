@@ -3,12 +3,12 @@
  *
  * A deck is a themed run through part of the catalogue: everything a player
  * needs to tell one kind of clue apart, in one sitting. Membership is written
- * as a rule rather than a list of slugs, so a deck picks up new cards as
- * admins add them instead of quietly going stale.
+ * as a rule rather than a list of slugs, and the rule fills the deck
+ * once, when it is first created.
  *
- * Re-seeding rewrites these decks in place. A deck an admin has hand-edited in
- * the panel will be overwritten, so change it here too, or seed once and edit
- * in the panel from then on.
+ * Seeded once and never updated. After that the deck belongs to the panel:
+ * cards published later are added to it in /admin/decks, and changing a rule
+ * here has no effect on a deck that already exists.
  */
 import type { MetaCategory } from './catalogue.ts';
 

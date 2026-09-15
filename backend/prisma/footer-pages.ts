@@ -2,9 +2,9 @@
  * The standing pages the footer links to.
  *
  * Seeded rather than hard-coded into the app so an admin can edit the wording
- * without a deploy. Re-seeding updates them in place, which means a page an
- * admin has rewritten will be overwritten: change the text here too, or seed
- * once and edit in the panel from then on.
+ * without a deploy. Seeded once and never updated, so a page rewritten in the
+ * panel stays rewritten, and changing the text here only reaches a fresh
+ * database.
  *
  * AcademyGeo is a personal, non-commercial study aid. The wording says so
  * plainly, including that it is not connected to GeoGuessr, whose name belongs

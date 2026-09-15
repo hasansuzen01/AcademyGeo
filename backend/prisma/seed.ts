@@ -24,10 +24,12 @@ async function main(): Promise<void> {
     // fills it in from the admin panel.
     const data = { ...country, ...COUNTRY_FACTS[country.code] };
 
+    // Created once and then left alone: the seed runs on every deploy, and a
+    // fact corrected in /admin/countries must not revert on the next restart.
     await prisma.country.upsert({
       where: { code: country.code },
       create: data,
-      update: data,
+      update: {},
     });
   }
 
@@ -66,37 +68,49 @@ async function main(): Promise<void> {
 }
 
 /**
- * Writes one card. The slug is its stable identity, so re-seeding updates the
- * existing row instead of duplicating everyone's review history.
+ * Creates one card if its slug is new. The slug is its stable identity, so
+ * re-seeding never duplicates a card or anyone's review history.
  *
- * The picture and whether the card is live are only set when the card is
- * first created. Both belong to whoever is running the site from then on, and
- * re-seeding must not undo an upload or take a published card back down.
+ * Nothing on an existing card is written: its text, country, difficulty,
+ * picture and whether it is live all belong to whoever runs the site once it
+ * exists, and a redeploy must not undo an edit made in /admin/metas. A
+ * correction to a card already live is made in the panel, not here.
  */
 async function upsertCard(card: CardSeed, imageUrl: string): Promise<void> {
-  const text = {
-    countryCode: card.countryCode,
-    category: card.category,
-    titleEn: card.titleEn,
-    titleTr: card.titleTr,
-    descriptionEn: card.descriptionEn,
-    descriptionTr: card.descriptionTr,
-    difficulty: card.difficulty,
-  };
-
   await prisma.meta.upsert({
     where: { slug: card.slug },
-    create: { ...text, slug: card.slug, imageUrl, isPublished: imageUrl !== '' },
-    update: text,
+    create: {
+      slug: card.slug,
+      countryCode: card.countryCode,
+      category: card.category,
+      titleEn: card.titleEn,
+      titleTr: card.titleTr,
+      descriptionEn: card.descriptionEn,
+      descriptionTr: card.descriptionTr,
+      difficulty: card.difficulty,
+      imageUrl,
+      isPublished: imageUrl !== '',
+    },
+    update: {},
   });
 }
 
 /**
- * Collections are described by a rule rather than a list of slugs, so a deck
- * picks up new cards as they are added instead of quietly going stale.
+ * Collections are described by a rule rather than a list of slugs, and the
+ * rule fills a deck the first time it is created.
+ *
+ * An existing deck is skipped entirely. Its name, description, whether it is
+ * live and which cards it holds can all be edited in /admin/decks, and a
+ * redeploy must not replace any of that with the shipped version.
  */
 async function seedDecks(): Promise<void> {
   for (const seed of DECKS) {
+    const exists = await prisma.deck.findUnique({
+      where: { slug: seed.slug },
+      select: { id: true },
+    });
+    if (exists) continue;
+
     const metas = await prisma.meta.findMany({
       where: {
         isPublished: true,
@@ -108,26 +122,18 @@ async function seedDecks(): Promise<void> {
       orderBy: [{ difficulty: 'asc' }, { slug: 'asc' }],
     });
 
-    const data = {
-      slug: seed.slug,
-      nameEn: seed.nameEn,
-      nameTr: seed.nameTr,
-      descriptionEn: seed.descriptionEn,
-      descriptionTr: seed.descriptionTr,
-      isPublished: metas.length > 0,
-    };
-
-    const deck = await prisma.deck.upsert({
-      where: { slug: seed.slug },
-      create: data,
-      update: data,
-    });
-
-    // The rule decides membership, so the old membership is replaced rather
-    // than added to; otherwise a card that no longer matches would linger.
-    await prisma.deckMeta.deleteMany({ where: { deckId: deck.id } });
-    await prisma.deckMeta.createMany({
-      data: metas.map((meta, position) => ({ deckId: deck.id, metaId: meta.id, position })),
+    await prisma.deck.create({
+      data: {
+        slug: seed.slug,
+        nameEn: seed.nameEn,
+        nameTr: seed.nameTr,
+        descriptionEn: seed.descriptionEn,
+        descriptionTr: seed.descriptionTr,
+        isPublished: metas.length > 0,
+        metas: {
+          create: metas.map((meta, position) => ({ metaId: meta.id, position })),
+        },
+      },
     });
   }
 }
