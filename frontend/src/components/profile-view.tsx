@@ -1,20 +1,25 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { ImageField } from '@/components/admin/image-field';
 import { Badge, Button, Field, Input, Panel } from '@/components/admin/ui';
 import { SignInPrompt } from '@/components/sign-in-prompt';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { type Profile, fetchProfile, updateProfile } from '@/lib/admin-api';
-import { useSession } from '@/lib/auth-client';
+import { deleteUser, signIn, useSession } from '@/lib/auth-client';
+import { type DeleteAccountProblem, deleteAccountProblem } from '@/lib/delete-account';
 import { useStorageReady } from '@/lib/use-storage-ready';
 
 export function ProfileView() {
   const t = useTranslations('profile');
   const errors = useTranslations('errors');
+  const locale = useLocale();
+  const router = useRouter();
   const { data: session, isPending } = useSession();
+  const [deleting, setDeleting] = useState(false);
+  const [deleteProblem, setDeleteProblem] = useState<DeleteAccountProblem | null>(null);
   const userId = session?.user?.id;
 
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -59,6 +64,35 @@ export function ProfileView() {
     } finally {
       setSaving(false);
     }
+  }
+
+  async function removeAccount() {
+    if (!window.confirm(t('deleteConfirm'))) return;
+
+    setDeleting(true);
+    setDeleteProblem(null);
+
+    const { error: failure } = await deleteUser({});
+    if (failure) {
+      setDeleteProblem(deleteAccountProblem(failure.code));
+      setDeleting(false);
+      return;
+    }
+
+    // The cookies are already gone. Refreshing makes the server-rendered header
+    // read the session again, so it stops showing the deleted account.
+    router.replace('/');
+    router.refresh();
+  }
+
+  async function signInAgain() {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin;
+
+    await signIn.social({
+      provider: 'google',
+      callbackURL: `${appUrl}/${locale}/profile`,
+      errorCallbackURL: `${appUrl}/${locale}/sign-in`,
+    });
   }
 
   return (
@@ -125,6 +159,34 @@ export function ProfileView() {
               </Link>
             </div>
           )}
+        </Panel>
+
+        <Panel title={t('deleteTitle')}>
+          <div className="space-y-3 px-5 py-5 text-sm">
+            <p className="text-muted">{t('deleteBody')}</p>
+
+            {deleteProblem === 'reauth' && (
+              <div className="space-y-2">
+                <p className="text-stop-deep">{t('deleteReauth')}</p>
+                <Button type="button" variant="ghost" onClick={() => void signInAgain()}>
+                  {t('deleteSignInAgain')}
+                </Button>
+              </div>
+            )}
+            {deleteProblem === 'last-admin' && (
+              <p className="text-stop-deep">{t('deleteLastAdmin')}</p>
+            )}
+            {deleteProblem === 'generic' && <p className="text-stop-deep">{t('deleteFailed')}</p>}
+
+            <Button
+              type="button"
+              variant="danger"
+              disabled={deleting}
+              onClick={() => void removeAccount()}
+            >
+              {deleting ? t('deleting') : t('deleteAction')}
+            </Button>
+          </div>
         </Panel>
       </div>
     </div>

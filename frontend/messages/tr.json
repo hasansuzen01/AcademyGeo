@@ -155,7 +155,16 @@
     "openAdmin": "Yönetim paneline git",
     "save": "Değişiklikleri kaydet",
     "saving": "Kaydediliyor",
-    "saved": "Kaydedildi."
+    "saved": "Kaydedildi.",
+    "deleteTitle": "Hesabı sil",
+    "deleteBody": "Hesabını ve içinde biriken her şeyi siler: cevapların, tekrar planın, puanlı turların, rozetlerin ve yüklediğin fotoğraf. Bu işlem geri alınamaz.",
+    "deleteConfirm": "Hesabın kalıcı olarak silinsin mi? Cevapların, turların ve rozetlerin gider ve geri getirilemez.",
+    "deleteAction": "Hesabımı sil",
+    "deleting": "Siliniyor",
+    "deleteReauth": "Güvenliğin için hesap silmek son 24 saat içinde yapılmış bir giriş gerektirir. Yeniden giriş yap, sonra silme düğmesine tekrar bas.",
+    "deleteSignInAgain": "Google ile yeniden giriş yap",
+    "deleteLastAdmin": "Kalan tek yönetici sensin. Bu hesabı silmeden önce başka birini yönetici yap.",
+    "deleteFailed": "Hesap silinemedi. Biraz sonra tekrar dene."
   },
   "admin": {
     "title": "Yönetim",

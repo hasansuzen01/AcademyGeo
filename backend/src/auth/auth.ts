@@ -1,16 +1,19 @@
 import { ConfigService } from '@nestjs/config';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { APIError } from 'better-auth/api';
 
 import type { PrismaService } from '../prisma/prisma.service.js';
+import type { R2Service } from '../storage/r2.service.js';
 import { USER_ADDITIONAL_FIELDS, parseAdminEmails, resolveInitialRole } from './admin-bootstrap.js';
 import { needsCrossSiteCookie } from './cross-site.js';
+import { ownedAvatarKey, selfDeleteBlocker } from './self-delete.js';
 
 export type Auth = ReturnType<typeof createAuth>;
 
 export const AUTH_BASE_PATH = '/api/auth';
 
-export function createAuth(prisma: PrismaService, config: ConfigService) {
+export function createAuth(prisma: PrismaService, config: ConfigService, storage: R2Service) {
   const webUrl = config.get<string>('WEB_URL') ?? 'http://localhost:3000';
   const cookieDomain = config.get<string>('AUTH_COOKIE_DOMAIN');
   const adminEmails = parseAdminEmails(config.get<string>('ADMIN_EMAILS'));
@@ -38,7 +41,49 @@ export function createAuth(prisma: PrismaService, config: ConfigService) {
     },
     // Without this the role column is invisible to the adapter and the hook
     // below writes into nothing.
-    user: { additionalFields: USER_ADDITIONAL_FIELDS },
+    user: {
+      additionalFields: USER_ADDITIONAL_FIELDS,
+      // Players delete their own account from the profile page. Better Auth
+      // removes the row, the sessions and the cookies, and asks for a sign-in
+      // from the last day first; the database cascade takes the answers, runs
+      // and badges with the row.
+      deleteUser: {
+        enabled: true,
+        beforeDelete: async (user) => {
+          const [account, activeAdmins] = await Promise.all([
+            prisma.user.findUnique({
+              where: { id: user.id },
+              select: { role: true, status: true },
+            }),
+            prisma.user.count({ where: { role: 'ADMIN', status: 'ACTIVE' } }),
+          ]);
+
+          if (account && selfDeleteBlocker(account, activeAdmins)) {
+            throw new APIError('BAD_REQUEST', {
+              code: 'LAST_ADMIN',
+              message: 'This is the only admin left. Promote someone else first.',
+            });
+          }
+        },
+        afterDelete: async (user) => {
+          const avatar = ownedAvatarKey(
+            user.image,
+            storage.isConfigured ? storage.publicUrl('') : null,
+          );
+          if (avatar) await storage.remove(avatar).catch(() => undefined);
+
+          // No name or email: the person asked for their data to go.
+          await prisma.auditLog.create({
+            data: {
+              action: 'delete',
+              entity: 'user',
+              entityId: user.id,
+              summary: 'An account was deleted by its owner',
+            },
+          });
+        },
+      },
+    },
     databaseHooks: {
       user: {
         create: {

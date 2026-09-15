@@ -155,7 +155,16 @@
     "openAdmin": "Open the admin panel",
     "save": "Save changes",
     "saving": "Saving",
-    "saved": "Saved."
+    "saved": "Saved.",
+    "deleteTitle": "Delete account",
+    "deleteBody": "Deletes your account and everything built up in it: your answers, review schedule, scored runs, badges and any picture you uploaded. This cannot be undone.",
+    "deleteConfirm": "Delete your account for good? Your answers, runs and badges will be gone and cannot be brought back.",
+    "deleteAction": "Delete my account",
+    "deleting": "Deleting",
+    "deleteReauth": "For your safety, deleting an account needs a sign-in from the last 24 hours. Sign in again, then press delete once more.",
+    "deleteSignInAgain": "Sign in again with Google",
+    "deleteLastAdmin": "You are the only admin left. Make someone else an admin before deleting this account.",
+    "deleteFailed": "The account could not be deleted. Try again in a moment."
   },
   "admin": {
     "title": "Admin",
