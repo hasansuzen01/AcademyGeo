@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
-import type { QueueCard } from '@/lib/api';
+import type { AnswerResult, QueueCard } from '@/lib/api';
 import { imageFitClass } from '@/lib/card-image';
 import { choiceForKey } from '@/lib/choice-keys';
 import { cn } from '@/lib/cn';
@@ -14,22 +14,14 @@ import { playEffect } from '@/lib/sound';
 import { useElementHeight } from '@/lib/use-element-height';
 import { Link } from '@/i18n/navigation';
 
+import { PhotoCredit } from './photo-credit';
 import { RoadTimer } from './road-timer';
 
 /** Two answers means a duel, which is laid out as a stand-off rather than a list. */
 const DUEL_CHOICES = 2;
 
 /** What every mode knows about an answer once it has been graded. */
-export interface CardResult {
-  correct: boolean;
-  country: { code: string; nameEn: string; nameTr: string };
-  explanation: {
-    titleEn: string;
-    titleTr: string;
-    descriptionEn: string;
-    descriptionTr: string;
-  };
-}
+export type CardResult = Pick<AnswerResult, 'correct' | 'country' | 'explanation' | 'credit'>;
 
 interface FlashcardProps {
   card: QueueCard;
@@ -261,6 +253,7 @@ export function Flashcard({
                     ? result.explanation.descriptionTr
                     : result.explanation.descriptionEn}
                 </p>
+                <PhotoCredit credit={result.credit} label={t('photoCredit')} className="mt-1" />
                 {footnote && <div className="mt-2 text-xs font-800 text-muted">{footnote}</div>}
 
                 {/* Two sentences is where the lesson used to stop. This is

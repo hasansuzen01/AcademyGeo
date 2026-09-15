@@ -7,6 +7,8 @@ import { imageFitClass } from '@/lib/card-image';
 import { GuideIcon } from '@/lib/guide-icons';
 import { fetchCountryGuides } from '@/lib/guides-api';
 
+import { PhotoCredit } from './photo-credit';
+
 /**
  * One country, read the way a player works through a scene: the facts that
  * settle it in a glance first, then the clue pictures grouped from the car in
@@ -17,6 +19,7 @@ export async function CountryPage({ country }: { country: AtlasCountryDetail }) 
   const categories = await getTranslations('categories');
   const regions = await getTranslations('regions');
   const guideText = await getTranslations('guides');
+  const play = await getTranslations('play');
   const locale = await getLocale();
   const guides = await fetchCountryGuides(country.code);
 
@@ -102,6 +105,11 @@ export async function CountryPage({ country }: { country: AtlasCountryDetail }) 
                     <p className="mt-1 text-sm leading-relaxed text-muted">
                       {locale === 'tr' ? clue.descriptionTr : clue.descriptionEn}
                     </p>
+                    <PhotoCredit
+                      credit={clue.credit}
+                      label={play('photoCredit')}
+                      className="mt-2"
+                    />
                   </div>
                 </li>
               ))}

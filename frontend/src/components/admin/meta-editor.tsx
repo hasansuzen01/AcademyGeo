@@ -34,6 +34,9 @@ const BLANK: MetaInput = {
   imageUrl: '',
   imageKey: null,
   imageSource: 'ILLUSTRATION',
+  imageAuthor: null,
+  imageLicense: null,
+  imageSourceUrl: null,
   difficulty: 2,
   isPublished: false,
 };
@@ -79,6 +82,9 @@ export function MetaEditor({ metaId }: { metaId?: string }) {
           imageUrl: meta.imageUrl,
           imageKey: meta.imageKey,
           imageSource: meta.imageSource,
+          imageAuthor: meta.imageAuthor,
+          imageLicense: meta.imageLicense,
+          imageSourceUrl: meta.imageSourceUrl,
           difficulty: meta.difficulty,
           isPublished: meta.isPublished,
         });
@@ -215,6 +221,30 @@ export function MetaEditor({ metaId }: { metaId?: string }) {
                   <option value="PHOTO">{t('imageSourcePhoto')}</option>
                   <option value="ILLUSTRATION">{t('imageSourceIllustration')}</option>
                 </Select>
+              </Field>
+
+              {/* Empty fields go out as null: the API reads an empty string as
+                  a value, and an empty address is not a valid one. */}
+              <Field label={t('imageAuthor')} hint={t('imageAuthorHint')}>
+                <Input
+                  value={form.imageAuthor ?? ''}
+                  onChange={(event) => set('imageAuthor', event.target.value || null)}
+                />
+              </Field>
+              <Field label={t('imageLicense')} hint={t('imageLicenseHint')}>
+                <Input
+                  value={form.imageLicense ?? ''}
+                  placeholder="CC BY-SA 4.0"
+                  onChange={(event) => set('imageLicense', event.target.value || null)}
+                />
+              </Field>
+              <Field label={t('imageSourceUrl')} hint={t('imageSourceUrlHint')}>
+                <Input
+                  type="url"
+                  value={form.imageSourceUrl ?? ''}
+                  placeholder="https://commons.wikimedia.org/wiki/File:…"
+                  onChange={(event) => set('imageSourceUrl', event.target.value || null)}
+                />
               </Field>
             </div>
           </Panel>

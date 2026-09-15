@@ -6,8 +6,12 @@ export interface RobotsSettings {
   sitemapEnabled: boolean;
 }
 
-/** Surfaces that should never appear in search results. */
-const DISALLOWED = ['/admin', '/api', '/sign-in'];
+/**
+ * Surfaces that should never appear in search results. Pages sit under a
+ * locale, so the /*\/ forms are the ones that match them. The web app keeps a
+ * copy of this list as its fallback, in frontend/src/app/robots.ts.
+ */
+const DISALLOWED = ['/admin', '/api', '/sign-in', '/*/admin', '/*/sign-in'];
 
 const BLOCK_EVERYTHING = `User-agent: *
 Disallow: /

@@ -2,6 +2,9 @@ import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
 import { fetchCollections } from '@/lib/decks-api';
+import { sectionMetadata } from '@/lib/page-metadata';
+
+export const generateMetadata = sectionMetadata('/collections', 'collections');
 
 export default async function CollectionsPage({
   params,

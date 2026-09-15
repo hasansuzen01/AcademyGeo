@@ -1,4 +1,5 @@
 import type { ImageSource } from './card-image';
+import type { ImageCredit } from './photo-credit';
 
 import { SERVER_API_URL } from './api-base';
 
@@ -26,6 +27,7 @@ export interface AtlasClue {
   descriptionTr: string;
   imageUrl: string;
   imageSource: ImageSource;
+  credit: ImageCredit | null;
   difficulty: number;
 }
 

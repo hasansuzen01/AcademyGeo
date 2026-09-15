@@ -1,7 +1,11 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { PlaySession } from '@/components/play-session';
 import { META_CATEGORIES, type MetaCategory } from '@/lib/admin-api';
+import { NOT_FOR_SEARCH } from '@/lib/metadata';
+
+export const metadata: Metadata = NOT_FOR_SEARCH;
 
 /** The query arrives from a link, so it is checked rather than trusted. */
 function readCategory(value: string | undefined): MetaCategory | undefined {

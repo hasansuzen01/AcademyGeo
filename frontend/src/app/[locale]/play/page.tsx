@@ -1,6 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ModeHub } from '@/components/mode-hub';
+import { sectionMetadata } from '@/lib/page-metadata';
+
+export const generateMetadata = sectionMetadata('/play', 'games.hub');
 
 export default async function PlayPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

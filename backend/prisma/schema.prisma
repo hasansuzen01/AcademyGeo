@@ -192,6 +192,11 @@ model Meta {
   /// R2 object key when the picture was uploaded rather than generated.
   imageKey      String?
   imageSource   ImageSource  @default(ILLUSTRATION)
+  /// Photo credit: who took it, its licence, and the page it came from. Never
+  /// sent with a question (see src/metas/image-credit.ts).
+  imageAuthor    String?
+  imageLicense   String?
+  imageSourceUrl String?
   /// Unpublished metas stay out of practice sessions.
   isPublished   Boolean      @default(true)
   /// 1 = obvious at a glance, 5 = only recognisable to experienced players.

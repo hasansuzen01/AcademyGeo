@@ -87,7 +87,8 @@
     "coveredTitle": "Picture gone",
     "coveredBody": "Answer from what you saw.",
     "versus": "VS",
-    "readMore": "Read about {country}"
+    "readMore": "Read about {country}",
+    "photoCredit": "Photo"
   },
   "dashboard": {
     "title": "Progress",
@@ -255,7 +256,13 @@
       "imageSource": "Picture type",
       "imageSourceHint": "A photograph fills the card. A diagram is letterboxed so no detail is cropped away.",
       "imageSourcePhoto": "Real photograph",
-      "imageSourceIllustration": "Diagram (stand-in)"
+      "imageSourceIllustration": "Diagram (stand-in)",
+      "imageAuthor": "Photographer",
+      "imageAuthorHint": "As the source credits them. Leave it empty only for a picture the project made itself.",
+      "imageLicense": "Licence",
+      "imageLicenseHint": "For example CC BY-SA 4.0, CC BY 4.0 or CC0. Never a non-commercial (NC) or no-derivatives (ND) licence.",
+      "imageSourceUrl": "Source page",
+      "imageSourceUrlHint": "The page the photograph came from, such as its Wikimedia Commons file page. Players only see the credit after they have answered."
     },
     "decks": {
       "lede": "Themed sets of cards. Give one a date window to run it as an event.",
@@ -708,6 +715,8 @@
     "hub": {
       "title": "How do you want to practise?",
       "subtitle": "Five ways into the same deck. Practice keeps you honest over months; the scored runs tell you where you are today.",
+      "metaTitle": "Practise GeoGuessr clues: game modes",
+      "metaDescription": "Untimed spaced repetition practice, plus scored modes: a daily challenge, rush, survival, duel, flash and a run built from your weak spots.",
       "collectionsTitle": "Collections",
       "collectionsBody": "Bollards, plates, road lines, and the cards that still catch people out."
     },
@@ -781,6 +790,8 @@
   "leaderboard": {
     "title": "Leaderboard",
     "subtitle": "One row per player, their best run in the mode.",
+    "metaTitle": "AcademyGeo leaderboard",
+    "metaDescription": "The site-wide ranking by experience, and each player's best run in every scored mode, over all time or the past week.",
     "loading": "Reading the board…",
     "empty": "Nobody has finished a run in this mode yet. Be the first.",
     "correctOf": "{correct}/{total} correct",
@@ -808,6 +819,10 @@
   "atlas": {
     "title": "Atlas",
     "subtitle": "Every country in the deck, with the clues that give it away and the facts that confirm it.",
+    "metaTitle": "GeoGuessr country atlas",
+    "metaDescription": "Driving side, domain, dialling code, currency, languages and Street View coverage for each country, beside the clue pictures that give it away.",
+    "countryMetaTitle": "{country} in GeoGuessr: clues and facts",
+    "countryMetaDescription": "Driving side, languages, domain, dialling code and the roadside clues that identify {country} in GeoGuessr.",
     "searchPlaceholder": "Search a country",
     "allRegions": "Everywhere",
     "noMatches": "No country matches that.",
@@ -916,6 +931,8 @@
   "collections": {
     "title": "Collections",
     "subtitle": "Themed runs through part of the catalogue. Study one, race it, or play it with three lives.",
+    "metaTitle": "GeoGuessr practice collections",
+    "metaDescription": "Themed card sets for number plates, bollards, road lines, left-hand traffic and script. Study one untimed, race the clock, or play with three lives.",
     "empty": "No collections have been published yet.",
     "cardCount": "{count} cards",
     "practise": "Practise",

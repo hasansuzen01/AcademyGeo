@@ -16,8 +16,12 @@ export interface MetadataSite {
 
 export interface MetadataInput {
   site: MetadataSite;
-  /** The path this page is served at, starting with the locale. */
-  path: string;
+  /**
+   * The path this page is served at, starting with the locale. Left out by a
+   * layout: its tags are inherited by every page beneath it, and an address
+   * there would call each of those pages a copy of the layout's own.
+   */
+  path?: string;
   title?: string;
   description?: string;
   keywords?: string;
@@ -64,21 +68,27 @@ export function buildMetadata({
   // Same path in the other language, so a reader landing from search can be
   // offered the version they can actually read. Only languages the page is
   // really written in: an address that 404s is worse than no alternate.
-  const languages = Object.fromEntries(
-    available.map((locale) => [locale, `${root}${swapLocale(path, locale)}`]),
-  );
+  const alternates =
+    path === undefined
+      ? undefined
+      : {
+          canonical: canonical || `${root}${path}`,
+          languages: Object.fromEntries(
+            available.map((locale) => [locale, `${root}${swapLocale(path, locale)}`]),
+          ),
+        };
 
   return {
     title: resolvedTitle,
     description: resolvedDescription,
     keywords: keywords || site.defaultKeywords || undefined,
-    alternates: { canonical: canonical || `${root}${path}`, languages },
+    ...(alternates ? { alternates } : {}),
     robots: rule,
     openGraph: {
       title: resolvedTitle,
       description: resolvedDescription,
       siteName: site.siteName,
-      url: `${root}${path}`,
+      ...(path === undefined ? {} : { url: `${root}${path}` }),
       type,
       ...(publishedTime ? { publishedTime } : {}),
       ...(picture ? { images: [picture] } : {}),
@@ -92,6 +102,12 @@ export function buildMetadata({
     },
   };
 }
+
+/**
+ * For pages that only make sense to the person signed in: progress, the
+ * account, a run in play. There is nothing on them for a search result.
+ */
+export const NOT_FOR_SEARCH: Metadata = { robots: { index: false, follow: true } };
 
 /** "index,follow" and friends, as Next wants them. */
 function parseRobots(value: string): { index: boolean; follow: boolean } {

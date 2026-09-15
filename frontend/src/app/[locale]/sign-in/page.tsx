@@ -1,9 +1,13 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 
 import { BrandMark } from '@/components/brand-mark';
 import { GoogleSignInButton } from '@/components/google-sign-in-button';
+import { NOT_FOR_SEARCH } from '@/lib/metadata';
 import { fetchViewer } from '@/lib/server-api';
+
+export const metadata: Metadata = NOT_FOR_SEARCH;
 
 export default async function SignInPage({
   params,

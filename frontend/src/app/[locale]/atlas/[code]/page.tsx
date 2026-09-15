@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
 import { CountryPage } from '@/components/country-page';
 import { fetchAtlasCountries, fetchAtlasCountry } from '@/lib/atlas-api';
+import { fetchSiteSeo } from '@/lib/content-api';
+import { buildMetadata } from '@/lib/metadata';
 
 /**
  * The countries worth building ahead of time.
@@ -24,13 +26,24 @@ export async function generateMetadata({
   params: Promise<{ locale: string; code: string }>;
 }): Promise<Metadata> {
   const { locale, code } = await params;
-  const country = await fetchAtlasCountry(code);
+  const [country, site, t] = await Promise.all([
+    fetchAtlasCountry(code),
+    fetchSiteSeo(),
+    getTranslations({ locale, namespace: 'atlas' }),
+  ]);
   if (!country) return {};
 
   const name = locale === 'tr' ? country.nameTr : country.nameEn;
   const summary = locale === 'tr' ? country.summaryTr : country.summaryEn;
 
-  return { title: name, description: summary || undefined };
+  // The path is spelled the way the sitemap lists it, lower case, so the
+  // canonical link and the sitemap name the same address.
+  return buildMetadata({
+    site,
+    path: `/${locale}/atlas/${country.code.toLowerCase()}`,
+    title: t('countryMetaTitle', { country: name }),
+    description: summary || t('countryMetaDescription', { country: name }),
+  });
 }
 
 export default async function AtlasCountryPage({

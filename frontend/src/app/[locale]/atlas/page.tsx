@@ -3,6 +3,9 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AtlasBrowser } from '@/components/atlas-browser';
 import { WorldMap } from '@/components/world-map';
 import { fetchAtlasCountries } from '@/lib/atlas-api';
+import { sectionMetadata } from '@/lib/page-metadata';
+
+export const generateMetadata = sectionMetadata('/atlas', 'atlas');
 
 export default async function AtlasPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

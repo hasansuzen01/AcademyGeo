@@ -17,6 +17,15 @@ describe('buildRobotsTxt', () => {
     expect(text).toContain('Disallow: /api');
   });
 
+  // Every page sits under a locale, so the panel is served at /en/admin and
+  // /tr/admin. A rule for /admin alone matches neither of them.
+  it('keeps crawlers away from the panel and sign-in under every locale', () => {
+    const text = buildRobotsTxt(settings, 'production');
+
+    expect(text).toContain('Disallow: /*/admin');
+    expect(text).toContain('Disallow: /*/sign-in');
+  });
+
   it('points crawlers at the sitemap', () => {
     expect(buildRobotsTxt(settings, 'production')).toContain(
       'Sitemap: https://academygeo.com/sitemap.xml',

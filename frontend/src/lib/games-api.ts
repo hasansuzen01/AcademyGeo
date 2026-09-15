@@ -1,4 +1,5 @@
 import { type QueueCard, apiFetch } from './api';
+import type { ImageCredit } from './photo-credit';
 
 /** Practice is played through /review; these are the scored runs. */
 export const SCORED_MODES = [
@@ -36,6 +37,7 @@ export interface RunView {
 export interface GradedAnswer {
   correct: boolean;
   country: { code: string; nameEn: string; nameTr: string };
+  credit: ImageCredit | null;
   explanation: {
     titleEn: string;
     titleTr: string;

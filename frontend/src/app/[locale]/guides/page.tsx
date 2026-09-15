@@ -1,30 +1,11 @@
-import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { GuideTopicGrid } from '@/components/guide-topic-grid';
 import { Link } from '@/i18n/navigation';
-import { fetchSiteSeo } from '@/lib/content-api';
 import { fetchGuideTopics } from '@/lib/guides-api';
-import { buildMetadata } from '@/lib/metadata';
+import { sectionMetadata } from '@/lib/page-metadata';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const [site, t] = await Promise.all([
-    fetchSiteSeo(),
-    getTranslations({ locale, namespace: 'guides' }),
-  ]);
-
-  return buildMetadata({
-    site,
-    path: `/${locale}/guides`,
-    title: t('metaTitle'),
-    description: t('metaDescription'),
-  });
-}
+export const generateMetadata = sectionMetadata('/guides', 'guides');
 
 /**
  * The library index.

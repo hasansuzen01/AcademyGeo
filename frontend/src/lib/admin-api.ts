@@ -79,6 +79,10 @@ export interface AdminMeta {
   imageUrl: string;
   imageKey: string | null;
   imageSource: ImageSource;
+  /** Who took the photograph, its licence and where it came from. */
+  imageAuthor: string | null;
+  imageLicense: string | null;
+  imageSourceUrl: string | null;
   difficulty: number;
   isPublished: boolean;
   createdAt: string;
@@ -559,7 +563,10 @@ export interface SeoSettings {
 
 export const fetchSeoSettings = () => apiFetch<SeoSettings>('/admin/seo');
 
-export const updateSeoSettings = (body: Partial<SeoSettings>) =>
+/** What the editor sends back: the settings, without the row's timestamp. */
+export type SeoSettingsInput = Omit<SeoSettings, 'updatedAt'>;
+
+export const updateSeoSettings = (body: SeoSettingsInput) =>
   apiFetch<SeoSettings>('/admin/seo', { method: 'PUT', body: JSON.stringify(body) });
 
 // -- Guides ------------------------------------------------------------------

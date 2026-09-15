@@ -102,3 +102,23 @@ describe('buildMetadata', () => {
     expect(meta.alternates?.canonical).toBe('https://academygeo.com/en');
   });
 });
+
+describe('buildMetadata without a path', () => {
+  // A layout's tags are inherited by every page beneath it that says nothing
+  // of its own. An address in them would tell search engines that each of
+  // those pages is a copy of the home page, and they would drop out.
+  it('names no address, so no page inherits the wrong one', () => {
+    const meta = buildMetadata({ site });
+
+    expect(meta.alternates).toBeUndefined();
+    expect(meta.openGraph).not.toHaveProperty('url');
+  });
+
+  it('still describes the site', () => {
+    const meta = buildMetadata({ site });
+
+    expect(meta.title).toBe('Learn the clues');
+    expect(meta.description).toBe('Practice the static clues in a round.');
+    expect(meta.openGraph?.siteName).toBe('AcademyGeo');
+  });
+});

@@ -1,8 +1,12 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
 import { GameRunner } from '@/components/game-runner';
 import { SCORED_MODES, type ScoredMode } from '@/lib/games-api';
+import { NOT_FOR_SEARCH } from '@/lib/metadata';
+
+export const metadata: Metadata = NOT_FOR_SEARCH;
 
 /** /play/rush and friends. The URL is lower case; the API mode is not. */
 const BY_SLUG: Record<string, ScoredMode> = Object.fromEntries(

@@ -87,6 +87,7 @@ export class ReviewService {
       correct: answer.correct,
       country: answer.country,
       explanation: answer.explanation,
+      credit: answer.credit,
       nextDueAt: answer.nextDueAt,
       intervalDays: answer.intervalDays,
     };

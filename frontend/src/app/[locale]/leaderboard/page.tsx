@@ -1,6 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { LeaderboardView } from '@/components/leaderboard-view';
+import { sectionMetadata } from '@/lib/page-metadata';
+
+export const generateMetadata = sectionMetadata('/leaderboard', 'leaderboard');
 
 export default async function LeaderboardPage({
   params,

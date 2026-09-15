@@ -25,17 +25,13 @@ const nunito = Nunito({
 /**
  * Head tags for every page under a locale, from the settings an admin edits.
  * A page with its own metadata replaces these rather than adding to them.
+ * No path is given, so no address is set: each page names its own.
  */
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata(): Promise<Metadata> {
   const site = await fetchSiteSeo();
 
   return {
-    ...buildMetadata({ site, path: `/${locale}` }),
+    ...buildMetadata({ site }),
     verification: {
       ...(site.googleSiteVerification ? { google: site.googleSiteVerification } : {}),
       ...(site.bingSiteVerification

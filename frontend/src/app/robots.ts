@@ -11,7 +11,8 @@ import { SERVER_API_URL } from '@/lib/api-base';
  */
 export const dynamic = 'force-dynamic';
 
-const FALLBACK_DISALLOW = ['/admin', '/api', '/sign-in'];
+// A copy of the API's list in backend/src/content/robots.ts, used when it is down.
+const FALLBACK_DISALLOW = ['/admin', '/api', '/sign-in', '/*/admin', '/*/sign-in'];
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const text = await fetchRobotsText();

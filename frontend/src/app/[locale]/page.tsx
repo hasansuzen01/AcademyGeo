@@ -1,9 +1,24 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Image from 'next/image';
 
 import { LandingDemo } from '@/components/landing-demo';
+import { PhotoCredit } from '@/components/photo-credit';
 import { Link } from '@/i18n/navigation';
+import { fetchSiteSeo } from '@/lib/content-api';
+import { buildMetadata } from '@/lib/metadata';
 import { fetchCatalogueSummary, fetchShowcase } from '@/lib/server-api';
+
+/** The home page is the one page the site-wide title and description are for. */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return buildMetadata({ site: await fetchSiteSeo(), path: `/${locale}` });
+}
 
 /** The scored modes, in the order the hub lists them. */
 const MODES = ['DAILY', 'RUSH', 'SURVIVAL', 'DRILL'] as const;
@@ -11,9 +26,10 @@ const MODES = ['DAILY', 'RUSH', 'SURVIVAL', 'DRILL'] as const;
 export default async function LandingPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, games, summary, showcase] = await Promise.all([
+  const [t, games, play, summary, showcase] = await Promise.all([
     getTranslations('landing'),
     getTranslations('games'),
+    getTranslations('play'),
     fetchCatalogueSummary(),
     fetchShowcase(),
   ]);
@@ -104,15 +120,22 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
 
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {showcase.map((card) => (
-            <div key={card.id} className="card relative aspect-[8/5] overflow-hidden bg-paper">
-              <Image
-                src={card.imageUrl}
-                alt=""
-                fill
-                sizes="(max-width: 640px) 50vw, 240px"
-                className="object-contain p-2"
+            <figure key={card.id} className="min-w-0">
+              <div className="card relative aspect-[8/5] overflow-hidden bg-paper">
+                <Image
+                  src={card.imageUrl}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 50vw, 240px"
+                  className="object-contain p-2"
+                />
+              </div>
+              <PhotoCredit
+                credit={card.credit}
+                label={play('photoCredit')}
+                className="mt-1.5 truncate"
               />
-            </div>
+            </figure>
           ))}
         </div>
 

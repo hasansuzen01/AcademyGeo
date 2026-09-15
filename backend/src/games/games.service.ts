@@ -6,6 +6,7 @@ import { toUtcDay } from '../common/utc-day.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ProgressService } from '../progress/progress.service.js';
 import { AnswersService } from '../review/answers.service.js';
+import type { ImageCredit } from '../metas/image-credit.js';
 import { type CardView, toCardView } from '../review/card-view.js';
 import { pickDailyMetaIds } from './daily.js';
 import type { ScoredMode, StartRunDto } from './dto.js';
@@ -25,6 +26,7 @@ const WEAKNESS_SAMPLE = 60;
 export interface GradedAnswer {
   correct: boolean;
   country: { code: string; nameEn: string; nameTr: string };
+  credit: ImageCredit | null;
   explanation: {
     titleEn: string;
     titleTr: string;
@@ -191,6 +193,7 @@ export class GamesService {
         correct: recorded.correct,
         country: recorded.country,
         explanation: recorded.explanation,
+        credit: recorded.credit,
         points: next.score - run.score,
         xpGained: xp.gained,
         unlocked,

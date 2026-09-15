@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
+import { CREDIT_COLUMNS, withCredit } from '../metas/image-credit.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { groupClues } from './group-clues.js';
 
@@ -53,6 +54,7 @@ export class AtlasService {
             descriptionTr: true,
             imageUrl: true,
             imageSource: true,
+            ...CREDIT_COLUMNS,
             difficulty: true,
           },
         },
@@ -62,12 +64,15 @@ export class AtlasService {
 
     const { metas, ...facts } = country;
 
+    // The atlas already names the country, so the credit gives nothing away here.
+    const clues = metas.map(withCredit);
+
     return {
       ...facts,
       languages: splitList(country.languages),
       cameraGens: splitList(country.cameraGens),
-      clueCount: metas.length,
-      groups: groupClues(metas),
+      clueCount: clues.length,
+      groups: groupClues(clues),
     };
   }
 }

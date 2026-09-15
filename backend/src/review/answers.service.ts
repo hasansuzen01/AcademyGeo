@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { startOfUtcDay } from '../common/utc-day.js';
+import { type ImageCredit, imageCredit } from '../metas/image-credit.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { RedisService } from '../redis/redis.service.js';
 import { statsCacheKey } from '../stats/stats.cache.js';
@@ -16,6 +17,7 @@ export interface RecordedAnswer {
     descriptionEn: string;
     descriptionTr: string;
   };
+  credit: ImageCredit | null;
   nextDueAt: string;
   intervalDays: number;
 }
@@ -116,6 +118,7 @@ export class AnswersService {
         descriptionEn: meta.descriptionEn,
         descriptionTr: meta.descriptionTr,
       },
+      credit: imageCredit(meta),
       nextDueAt: next.dueAt.toISOString(),
       intervalDays: next.intervalDays,
     };

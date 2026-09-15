@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service.js';
+import { CREDIT_COLUMNS, withCredit } from './image-credit.js';
 
 @Injectable()
 export class MetasService {
@@ -18,15 +19,18 @@ export class MetasService {
   /**
    * A few card pictures for the landing page. Only the picture: the country
    * stays server-side like everywhere else, and the filenames are opaque, so
-   * the strip cannot be read as an answer key either.
+   * the strip cannot be read as an answer key either. Each photograph carries
+   * its credit, since none of them is being asked about here.
    */
-  getShowcase(take: number) {
-    return this.prisma.meta.findMany({
+  async getShowcase(take: number) {
+    const cards = await this.prisma.meta.findMany({
       where: { isPublished: true },
-      select: { id: true, imageUrl: true, imageSource: true },
+      select: { id: true, imageUrl: true, imageSource: true, ...CREDIT_COLUMNS },
       orderBy: { slug: 'asc' },
       take,
     });
+
+    return cards.map(withCredit);
   }
 
   /** Deck size for the landing page, so the numbers there are never stale. */

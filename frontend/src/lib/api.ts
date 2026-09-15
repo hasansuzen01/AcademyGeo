@@ -1,4 +1,5 @@
 import type { ImageSource } from './card-image';
+import type { ImageCredit } from './photo-credit';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -64,6 +65,7 @@ export interface AnswerResult {
     descriptionEn: string;
     descriptionTr: string;
   };
+  credit: ImageCredit | null;
   nextDueAt: string;
   intervalDays: number;
 }

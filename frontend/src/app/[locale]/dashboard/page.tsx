@@ -1,7 +1,11 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { DashboardView } from '@/components/dashboard-view';
 import { ProgressPanel } from '@/components/progress-panel';
+import { NOT_FOR_SEARCH } from '@/lib/metadata';
+
+export const metadata: Metadata = NOT_FOR_SEARCH;
 
 export default async function DashboardPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

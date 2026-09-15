@@ -1,8 +1,12 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ProfileView } from '@/components/profile-view';
 import { ProgressPanel } from '@/components/progress-panel';
 import { RunHistory } from '@/components/run-history';
+import { NOT_FOR_SEARCH } from '@/lib/metadata';
+
+export const metadata: Metadata = NOT_FOR_SEARCH;
 
 export default async function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

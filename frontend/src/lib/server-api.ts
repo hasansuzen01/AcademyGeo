@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 
 import type { Me } from './admin-api';
+import type { ImageCredit } from './photo-credit';
 
 // Server-side calls can take an internal hostname when the API sits on the
 // same Docker network; the browser value is the fallback.
@@ -52,6 +53,7 @@ export interface ShowcaseCard {
   id: string;
   imageUrl: string;
   imageSource: string;
+  credit: ImageCredit | null;
 }
 
 /** Card pictures for the landing strip. An empty strip beats a broken one. */

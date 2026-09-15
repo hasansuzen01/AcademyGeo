@@ -87,7 +87,8 @@
     "coveredTitle": "Görsel kapandı",
     "coveredBody": "Gördüğün kadarıyla cevapla.",
     "versus": "VS",
-    "readMore": "{country} hakkında oku"
+    "readMore": "{country} hakkında oku",
+    "photoCredit": "Fotoğraf"
   },
   "dashboard": {
     "title": "İlerleme",
@@ -255,7 +256,13 @@
       "imageSource": "Görsel türü",
       "imageSourceHint": "Fotoğraf kartı doldurur. Çizim, hiçbir ayrıntı kırpılmasın diye kenarları boşluklu gösterilir.",
       "imageSourcePhoto": "Gerçek fotoğraf",
-      "imageSourceIllustration": "Çizim (geçici)"
+      "imageSourceIllustration": "Çizim (geçici)",
+      "imageAuthor": "Fotoğrafçı",
+      "imageAuthorHint": "Kaynakta nasıl anılıyorsa öyle. Yalnızca projenin kendi hazırladığı görsellerde boş bırak.",
+      "imageLicense": "Lisans",
+      "imageLicenseHint": "Örneğin CC BY-SA 4.0, CC BY 4.0 ya da CC0. Ticari olmayan (NC) ya da türetme yasaklı (ND) lisanslar asla.",
+      "imageSourceUrl": "Kaynak sayfası",
+      "imageSourceUrlHint": "Fotoğrafın alındığı sayfa, örneğin Wikimedia Commons dosya sayfası. Oyuncular atfı yalnızca cevapladıktan sonra görür."
     },
     "decks": {
       "lede": "Temalı kart setleri. Tarih aralığı verirsen etkinlik gibi çalışır.",
@@ -708,6 +715,8 @@
     "hub": {
       "title": "Bugün nasıl çalışmak istersin?",
       "subtitle": "Aynı desteye beş ayrı giriş. Pratik seni aylar boyunca dürüst tutar; puanlı turlar bugün nerede olduğunu söyler.",
+      "metaTitle": "GeoGuessr ipuçlarını çalış: oyun modları",
+      "metaDescription": "Aralıklı tekrarla süresiz pratik ve puanlı modlar: günün meydan okuması, hız turu, hayatta kalma, düello, şimşek ve zayıf noktalarından kurulan tur.",
       "collectionsTitle": "Koleksiyonlar",
       "collectionsBody": "Dubalar, plakalar, yol çizgileri ve hâlâ insanları yakalayan kartlar."
     },
@@ -781,6 +790,8 @@
   "leaderboard": {
     "title": "Sıralama",
     "subtitle": "Her oyuncu için tek satır: o moddaki en iyi turu.",
+    "metaTitle": "AcademyGeo sıralaması",
+    "metaDescription": "Deneyime göre site geneli sıralama ve her puanlı modda oyuncu başına en iyi tur; tüm zamanlar ya da son bir hafta.",
     "loading": "Sıralama okunuyor…",
     "empty": "Bu modda henüz kimse tur bitirmedi. İlk sen ol.",
     "correctOf": "{total} kartta {correct} doğru",
@@ -808,6 +819,10 @@
   "atlas": {
     "title": "Atlas",
     "subtitle": "Destedeki her ülke, onu ele veren ipuçları ve doğrulayan bilgilerle.",
+    "metaTitle": "GeoGuessr ülke atlası",
+    "metaDescription": "Her ülke için trafik yönü, alan adı, telefon kodu, para birimi, diller ve Street View kapsaması; yanında ülkeyi ele veren ipucu görselleri.",
+    "countryMetaTitle": "GeoGuessr’da {country}: ipuçları ve bilgiler",
+    "countryMetaDescription": "{country} için trafik yönü, diller, alan adı, telefon kodu ve GeoGuessr’da ülkeyi tanıtan yol kenarı ipuçları.",
     "searchPlaceholder": "Ülke ara",
     "allRegions": "Her yer",
     "noMatches": "Eşleşen ülke yok.",
@@ -916,6 +931,8 @@
   "collections": {
     "title": "Koleksiyonlar",
     "subtitle": "Kataloğun bir bölümünde temalı turlar. Çalış, süreye karşı yarış ya da üç canla oyna.",
+    "metaTitle": "GeoGuessr çalışma koleksiyonları",
+    "metaDescription": "Plakalar, dubalar, yol çizgileri, soldan akan trafik ve alfabe için temalı kart setleri. Süresiz çalış, süreye karşı yarış ya da üç canla oyna.",
     "empty": "Henüz yayımlanmış koleksiyon yok.",
     "cardCount": "{count} kart",
     "practise": "Çalış",

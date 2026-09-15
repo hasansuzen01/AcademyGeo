@@ -131,6 +131,27 @@ export class UpsertMetaDto {
   @IsIn(IMAGE_SOURCES)
   imageSource?: ImageSource;
 
+  /** Who took the photograph. Left out for the project's own diagrams. */
+  @IsOptional()
+  @IsString()
+  @Length(1, 200)
+  imageAuthor?: string | null;
+
+  /** The licence it is used under, e.g. "CC BY-SA 4.0". */
+  @IsOptional()
+  @IsString()
+  @Length(1, 80)
+  imageLicense?: string | null;
+
+  /**
+   * The page the photograph came from, so its licence can be checked. Room for
+   * a long file name whose accented letters arrive percent-encoded.
+   */
+  @IsOptional()
+  @IsUrl({ protocols: ['https', 'http'], require_protocol: true })
+  @Length(1, 2000)
+  imageSourceUrl?: string | null;
+
   @IsInt()
   @Min(1)
   @Max(5)

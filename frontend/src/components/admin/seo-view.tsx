@@ -3,7 +3,8 @@
 import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 
-import { type SeoSettings, fetchSeoSettings, updateSeoSettings } from '@/lib/admin-api';
+import { type SeoSettingsInput, fetchSeoSettings, updateSeoSettings } from '@/lib/admin-api';
+import { toSeoForm } from '@/lib/seo-form';
 import { useLoad } from '@/lib/use-load';
 
 import { Button, Field, Input, Panel, Select, Textarea } from './ui';
@@ -13,14 +14,14 @@ export function SeoView() {
   const t = useTranslations('admin.seo');
   const errors = useTranslations('errors');
 
-  const [form, setForm] = useState<SeoSettings | null>(null);
+  const [form, setForm] = useState<SeoSettingsInput | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
-      setForm(await fetchSeoSettings());
+      setForm(toSeoForm(await fetchSeoSettings()));
     } catch {
       setError(errors('generic'));
     }
@@ -28,7 +29,7 @@ export function SeoView() {
 
   useLoad(load);
 
-  function set<K extends keyof SeoSettings>(key: K, value: SeoSettings[K]) {
+  function set<K extends keyof SeoSettingsInput>(key: K, value: SeoSettingsInput[K]) {
     setSaved(false);
     setForm((current) => (current ? { ...current, [key]: value } : current));
   }
@@ -39,7 +40,7 @@ export function SeoView() {
     setSaving(true);
     setError(null);
     try {
-      setForm(await updateSeoSettings(form));
+      setForm(toSeoForm(await updateSeoSettings(form)));
       setSaved(true);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : errors('generic'));
@@ -56,7 +57,7 @@ export function SeoView() {
     );
   }
 
-  const text = (key: keyof SeoSettings) => (form[key] as string | null) ?? '';
+  const text = (key: keyof SeoSettingsInput) => (form[key] as string | null) ?? '';
 
   return (
     <div className="space-y-6">

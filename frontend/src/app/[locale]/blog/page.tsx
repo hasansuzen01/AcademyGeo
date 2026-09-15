@@ -1,29 +1,11 @@
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
-import { fetchPosts, fetchSiteSeo } from '@/lib/content-api';
-import { buildMetadata } from '@/lib/metadata';
+import { fetchPosts } from '@/lib/content-api';
+import { sectionMetadata } from '@/lib/page-metadata';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const [site, t] = await Promise.all([
-    fetchSiteSeo(),
-    getTranslations({ locale, namespace: 'blog' }),
-  ]);
-
-  return buildMetadata({
-    site,
-    path: `/${locale}/blog`,
-    title: t('metaTitle'),
-    description: t('metaDescription'),
-  });
-}
+export const generateMetadata = sectionMetadata('/blog', 'blog');
 
 export default async function BlogIndex({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
