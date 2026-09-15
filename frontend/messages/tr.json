@@ -134,7 +134,8 @@
     "AFRICA": "Afrika",
     "NORTH_AMERICA": "Kuzey Amerika",
     "SOUTH_AMERICA": "Güney Amerika",
-    "OCEANIA": "Okyanusya"
+    "OCEANIA": "Okyanusya",
+    "ANTARCTICA": "Antarktika"
   },
   "profile": {
     "title": "Hesabın",

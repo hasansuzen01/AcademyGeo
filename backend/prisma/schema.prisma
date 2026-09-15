@@ -119,6 +119,7 @@ enum Region {
   NORTH_AMERICA
   SOUTH_AMERICA
   OCEANIA
+  ANTARCTICA
 }
 
 /// Whether the card shows a real photograph or a seeded diagram standing in

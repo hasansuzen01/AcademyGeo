@@ -15,6 +15,7 @@ const REGIONS = [
   'NORTH_AMERICA',
   'SOUTH_AMERICA',
   'OCEANIA',
+  'ANTARCTICA',
 ] as const;
 
 /**

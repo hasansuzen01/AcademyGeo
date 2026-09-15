@@ -4,7 +4,14 @@
  * never drift apart.
  */
 
-export type Region = 'EUROPE' | 'ASIA' | 'AFRICA' | 'NORTH_AMERICA' | 'SOUTH_AMERICA' | 'OCEANIA';
+export type Region =
+  | 'EUROPE'
+  | 'ASIA'
+  | 'AFRICA'
+  | 'NORTH_AMERICA'
+  | 'SOUTH_AMERICA'
+  | 'OCEANIA'
+  | 'ANTARCTICA';
 
 export type MetaCategory =
   | 'PLATE'

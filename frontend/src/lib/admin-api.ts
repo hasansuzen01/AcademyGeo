@@ -13,7 +13,14 @@ export type MetaCategory =
   | 'VEHICLE'
   | 'INFRASTRUCTURE';
 
-export type Region = 'EUROPE' | 'ASIA' | 'AFRICA' | 'NORTH_AMERICA' | 'SOUTH_AMERICA' | 'OCEANIA';
+export type Region =
+  | 'EUROPE'
+  | 'ASIA'
+  | 'AFRICA'
+  | 'NORTH_AMERICA'
+  | 'SOUTH_AMERICA'
+  | 'OCEANIA'
+  | 'ANTARCTICA';
 
 export const META_CATEGORIES: MetaCategory[] = [
   'PLATE',
@@ -34,6 +41,7 @@ export const REGIONS: Region[] = [
   'NORTH_AMERICA',
   'SOUTH_AMERICA',
   'OCEANIA',
+  'ANTARCTICA',
 ];
 
 export interface Me {
