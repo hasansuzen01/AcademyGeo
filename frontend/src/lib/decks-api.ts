@@ -1,4 +1,5 @@
 import { SERVER_API_URL } from './api-base';
+import type { ImageCredit } from './photo-credit';
 
 export interface Collection {
   slug: string;
@@ -10,6 +11,8 @@ export interface Collection {
   /** Set when the collection is an event with a closing date. */
   endsAt: string | null;
   cardCount: number;
+  /** The uploaded cover, or the photo of the first published card, with its credit. */
+  cover: { url: string; credit: ImageCredit | null } | null;
 }
 
 /**

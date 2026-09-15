@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ModeHub } from '@/components/mode-hub';
+import { fetchCollections } from '@/lib/decks-api';
 import { sectionMetadata } from '@/lib/page-metadata';
 
 export const generateMetadata = sectionMetadata('/play', 'games.hub');
@@ -8,7 +9,7 @@ export const generateMetadata = sectionMetadata('/play', 'games.hub');
 export default async function PlayPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('games');
+  const [t, collections] = await Promise.all([getTranslations('games'), fetchCollections()]);
 
   return (
     <div className="page-shell px-5 py-12">
@@ -19,7 +20,7 @@ export default async function PlayPage({ params }: { params: Promise<{ locale: s
         <p className="mt-2 text-sm text-muted">{t('hub.subtitle')}</p>
       </header>
 
-      <ModeHub />
+      <ModeHub collections={collections} />
     </div>
   );
 }

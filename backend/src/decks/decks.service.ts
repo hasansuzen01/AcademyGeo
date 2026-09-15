@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
+import { CREDIT_COLUMNS } from '../metas/image-credit.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { deckCover } from './deck-cover.js';
 
 /**
  * Collections as a player sees them. A deck is a themed run through part of
@@ -31,9 +33,25 @@ export class DecksService {
         coverImageUrl: true,
         endsAt: true,
         _count: { select: { metas: true } },
+        // Enough of the cards to borrow a cover from when none was uploaded.
+        metas: {
+          orderBy: { position: 'asc' },
+          select: {
+            meta: {
+              select: { imageUrl: true, imageSource: true, isPublished: true, ...CREDIT_COLUMNS },
+            },
+          },
+        },
       },
     });
 
-    return decks.map(({ _count, ...deck }) => ({ ...deck, cardCount: _count.metas }));
+    return decks.map(({ _count, metas, ...deck }) => ({
+      ...deck,
+      cardCount: _count.metas,
+      cover: deckCover(
+        deck.coverImageUrl,
+        metas.map((entry) => entry.meta),
+      ),
+    }));
   }
 }
