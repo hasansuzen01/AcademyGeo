@@ -68,3 +68,26 @@ export async function fetchShowcase(): Promise<ShowcaseCard[]> {
     return [];
   }
 }
+
+export interface DemoCard {
+  id: string;
+  imageUrl: string;
+  titleEn: string;
+  titleTr: string;
+  answer: string;
+  choices: Array<{ code: string; nameEn: string; nameTr: string }>;
+  credit: ImageCredit | null;
+}
+
+/** Real cards for the landing page's live demo. None hides the demo. */
+export async function fetchDemoCards(): Promise<DemoCard[]> {
+  try {
+    const response = await fetch(`${API_URL}/api/metas/demo`, {
+      next: { revalidate: 3600 },
+    });
+
+    return response.ok ? ((await response.json()) as DemoCard[]) : [];
+  } catch {
+    return [];
+  }
+}

@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import type { AnswerResult, QueueCard } from '@/lib/api';
-import { imageFitClass } from '@/lib/card-image';
 import { choiceForKey } from '@/lib/choice-keys';
 import { cn } from '@/lib/cn';
 import { playEffect } from '@/lib/sound';
@@ -113,7 +112,7 @@ export function Flashcard({
                   alt=""
                   fill
                   sizes="(max-width: 768px) 100vw, 640px"
-                  className={imageFitClass(card.imageSource, card.category)}
+                  className="object-contain"
                   priority={index === 0}
                 />
               </motion.div>

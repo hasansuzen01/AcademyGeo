@@ -34,7 +34,6 @@ export function toCardView(
   countries: Country[],
   options: CardViewOptions = {},
 ): CardView {
-  const byCode = new Map(countries.map((country) => [country.code, country]));
   // buildChoices shuffles what it picks. A list handed in has not been.
   const codes = options.choiceCodes
     ? shuffle(options.choiceCodes)
@@ -47,9 +46,19 @@ export function toCardView(
     imageSource: meta.imageSource,
     difficulty: meta.difficulty,
     revealMs: options.revealMs ?? null,
-    choices: codes.flatMap((code) => {
-      const country = byCode.get(code);
-      return country ? [{ code: country.code, nameEn: country.nameEn, nameTr: country.nameTr }] : [];
-    }),
+    choices: namedChoices(codes, countries),
   };
+}
+
+/** The answer buttons for these codes, named in both languages. Unknown codes are dropped. */
+export function namedChoices(
+  codes: string[],
+  countries: Array<Pick<Country, 'code' | 'nameEn' | 'nameTr'>>,
+): CardView['choices'] {
+  const byCode = new Map(countries.map((country) => [country.code, country]));
+
+  return codes.flatMap((code) => {
+    const country = byCode.get(code);
+    return country ? [{ code: country.code, nameEn: country.nameEn, nameTr: country.nameTr }] : [];
+  });
 }

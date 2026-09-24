@@ -3,7 +3,6 @@ import Image from 'next/image';
 
 import { Link } from '@/i18n/navigation';
 import type { AtlasCountryDetail } from '@/lib/atlas-api';
-import { imageFitClass } from '@/lib/card-image';
 import { GuideIcon } from '@/lib/guide-icons';
 import { fetchCountryGuides } from '@/lib/guides-api';
 
@@ -94,7 +93,7 @@ export async function CountryPage({ country }: { country: AtlasCountryDetail }) 
                       alt={locale === 'tr' ? clue.titleTr : clue.titleEn}
                       fill
                       sizes="(max-width: 640px) 100vw, 380px"
-                      className={imageFitClass(clue.imageSource, clue.category)}
+                      className="object-contain"
                     />
                   </div>
 

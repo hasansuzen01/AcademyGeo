@@ -5,7 +5,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { PhotoCredit } from '@/components/photo-credit';
 import { Link } from '@/i18n/navigation';
-import { imageFitClass } from '@/lib/card-image';
 import { fetchSiteSeo } from '@/lib/content-api';
 import { GuideIcon } from '@/lib/guide-icons';
 import { fetchGuideTopic } from '@/lib/guides-api';
@@ -100,7 +99,10 @@ export default async function GuideTopicPage({ params }: RouteParams) {
       {/* Reading is only half of it. A heading tied to a clue type sends the
           reader straight into the cards that ask about it. */}
       {topic.category && (
-        <Link href={`/play/practice?category=${topic.category}&from=guides/${topic.slug}`} className="btn btn-go mt-6">
+        <Link
+          href={`/play/practice?category=${topic.category}&from=guides/${topic.slug}`}
+          className="btn btn-go mt-6"
+        >
           {t('practice')}
         </Link>
       )}
@@ -156,9 +158,7 @@ export default async function GuideTopicPage({ params }: RouteParams) {
       {topic.examples.length > 0 && (
         <section className="mt-12">
           <h2 className="font-display text-2xl font-900 tracking-tight">{t('examplesTitle')}</h2>
-          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted">
-            {t('examplesIntro')}
-          </p>
+          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted">{t('examplesIntro')}</p>
 
           <ul className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {topic.examples.map((example, index) => (
@@ -173,7 +173,7 @@ export default async function GuideTopicPage({ params }: RouteParams) {
                     alt={example.title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 400px"
-                    className={imageFitClass('PHOTO', topic.category ?? undefined)}
+                    className="object-contain"
                   />
                 </div>
 
@@ -189,7 +189,11 @@ export default async function GuideTopicPage({ params }: RouteParams) {
                     {example.title}
                   </h3>
                   <p className="mt-1 text-sm leading-relaxed text-muted">{example.description}</p>
-                  <PhotoCredit credit={example.credit} label={play('photoCredit')} className="mt-3" />
+                  <PhotoCredit
+                    credit={example.credit}
+                    label={play('photoCredit')}
+                    className="mt-3"
+                  />
                 </div>
               </li>
             ))}

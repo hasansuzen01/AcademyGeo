@@ -7,9 +7,12 @@
 
 /** Deals the cards for one UTC day, in a stable order. */
 export function pickDailyMetaIds(metaIds: string[], day: string, count: number): string[] {
-  const random = seededRandom(hashString(day));
+  return shuffle([...metaIds].sort(), dayRandom(day)).slice(0, count);
+}
 
-  return shuffle([...metaIds].sort(), random).slice(0, count);
+/** A random stream that is the same all through one UTC day, such as 2026-09-24. */
+export function dayRandom(day: string): () => number {
+  return seededRandom(hashString(day));
 }
 
 function shuffle<T>(items: T[], random: () => number): T[] {

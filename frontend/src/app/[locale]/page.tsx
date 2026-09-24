@@ -7,7 +7,7 @@ import { PhotoCredit } from '@/components/photo-credit';
 import { Link } from '@/i18n/navigation';
 import { fetchSiteSeo } from '@/lib/content-api';
 import { buildMetadata } from '@/lib/metadata';
-import { fetchCatalogueSummary, fetchShowcase } from '@/lib/server-api';
+import { fetchCatalogueSummary, fetchDemoCards, fetchShowcase } from '@/lib/server-api';
 
 /** The home page is the one page the site-wide title and description are for. */
 export async function generateMetadata({
@@ -26,12 +26,13 @@ const MODES = ['DAILY', 'RUSH', 'SURVIVAL', 'DRILL'] as const;
 export default async function LandingPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, games, play, summary, showcase] = await Promise.all([
+  const [t, games, play, summary, showcase, demoCards] = await Promise.all([
     getTranslations('landing'),
     getTranslations('games'),
     getTranslations('play'),
     fetchCatalogueSummary(),
     fetchShowcase(),
+    fetchDemoCards(),
   ]);
 
   const steps = [
@@ -48,7 +49,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <section className="page-shell grid gap-12 px-5 pt-14 pb-16 lg:grid-cols-[1.05fr_auto] lg:items-center lg:pt-20">
+      <section className="page-shell grid gap-12 px-5 pt-14 pb-16 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-center lg:pt-20">
         <div className="rise-in">
           <span className="inline-flex items-center rounded-full bg-paint/25 px-3 py-1 text-xs font-900 tracking-wide text-paint-deep uppercase">
             {t('eyebrow')}
@@ -80,8 +81,11 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
           </dl>
         </div>
 
-        <div className="rise-in flex justify-center lg:justify-end" style={{ animationDelay: '120ms' }}>
-          <LandingDemo />
+        <div
+          className="rise-in flex justify-center lg:justify-end"
+          style={{ animationDelay: '120ms' }}
+        >
+          <LandingDemo cards={demoCards} />
         </div>
       </section>
 

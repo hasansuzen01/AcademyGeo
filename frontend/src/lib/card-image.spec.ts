@@ -1,35 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { imageFitClass, imageSourceAfterPicture, needsRealPhoto } from './card-image';
-
-describe('imageFitClass', () => {
-  // A photograph of a street should fill the card the way it fills a game
-  // screen. Letterboxing one leaves grey bars and makes the card look like a
-  // diagram rather than a place.
-  it('fills the frame with a photograph', () => {
-    expect(imageFitClass('PHOTO')).toBe('object-cover');
-  });
-
-  // Diagrams are drawn to their own edges, so cropping one can remove the very
-  // detail the card is asking about.
-  it('letterboxes a diagram so nothing is cropped away', () => {
-    expect(imageFitClass('ILLUSTRATION')).toBe('object-contain');
-  });
-
-  it('letterboxes anything it does not recognise, which never crops', () => {
-    expect(imageFitClass(undefined)).toBe('object-contain');
-  });
-
-  // A number plate is about three times wider than it is tall. Filling the card
-  // with one cuts off the characters, which are the whole point of the card.
-  it('shows the whole plate when a plate is photographed', () => {
-    expect(imageFitClass('PHOTO', 'PLATE')).toBe('object-contain');
-  });
-
-  it('still fills the frame with photographs of other clues', () => {
-    expect(imageFitClass('PHOTO', 'ROAD_LINE')).toBe('object-cover');
-  });
-});
+import { imageSourceAfterPicture, needsRealPhoto } from './card-image';
 
 describe('needsRealPhoto', () => {
   it('flags a card still showing a stand-in diagram', () => {
