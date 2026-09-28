@@ -179,7 +179,7 @@ async function seedSiteSeo(): Promise<void> {
       'Practise the static clues that decide a GeoGuessr round: number plates, bollards, road markings, signage, vegetation and architecture.',
     defaultMetaTitle: 'AcademyGeo — practice for reading a location',
     defaultMetaDescription:
-      'Spaced repetition, scored runs and a country atlas for the clues that decide a round. Free, and open in the browser.',
+      'Practise the clues that decide a GeoGuessr round with real street photos: plates, bollards, road lines and signs. Scored runs and a country atlas. Free.',
     defaultKeywords:
       'geoguessr, geoguessr practice, geoguessr meta, number plates, bollards, road lines, country identification',
   };

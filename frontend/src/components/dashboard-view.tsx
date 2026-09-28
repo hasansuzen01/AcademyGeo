@@ -59,12 +59,8 @@ export function DashboardView() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <WinRateTile stats={stats} />
         <Tile label={t('streak')} value={stats.streak} hint={t('streakHint')} />
-        <Tile label={t('due')} value={stats.dueNow} hint={t('dueHint')} />
-        <Tile
-          label={t('learned')}
-          value={`${stats.learnedMetas}/${stats.trackedMetas}`}
-          hint={t('learnedHint')}
-        />
+        <Tile label={t('seen')} value={stats.trackedMetas} hint={t('seenHint')} />
+        <Tile label={t('learned')} value={stats.learnedMetas} hint={t('learnedHint')} />
       </div>
 
       <section className="card-raised px-5 py-5">

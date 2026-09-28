@@ -72,32 +72,36 @@ export const BLOG_POSTS: BlogPostSeed[] = [
     keywords: 'bollard, europe, geoguessr, meta',
     metaTitle: 'A field guide to European bollards',
     metaDescription:
-      'Roadside bollards are the most reliable clue in Europe. Shape, cap and reflector colour narrow a guess to one country in about a second.',
+      "Roadside bollards are one of the most reliable clues in Europe. The top, the body and the reflector colour on each side can narrow a guess to a single country.",
     daysAgo: 14,
-    content: `<p>A bollard is a short post at the edge of the road with a reflector on it. It exists to show the driver where the road ends in the dark. It is also, for our purposes, a national identity card planted every fifty metres.</p>
+    content: `<p>A bollard is a short post at the edge of the road with a reflector on it. It exists to show the driver where the road ends in the dark. It is also, for our purposes, a national identity card planted along the verge; in Germany there is one roughly every fifty metres.</p>
 
 <h2>Why they are so reliable</h2>
-<p>Road furniture is specified by a national standard and then installed by the hundred thousand. Once a country has picked a shape, replacing it means replacing every post on every road, so the design outlives governments. That is what makes bollards better than the things players usually reach for first: the buildings change, the cars change, the bollards do not.</p>
+<p>Road furniture is specified by a national standard and then installed by the hundred thousand. Once a country has picked a design, replacing it means replacing every post on every road, so it changes far more slowly than most of what a player sees. The buildings change, the cars change, the bollards mostly stay.</p>
 
 <h2>What to look at, in order</h2>
 <ol>
-<li><strong>The top.</strong> Flat, angled, rounded, or a separate cap in another colour.</li>
-<li><strong>The reflector.</strong> Colour, shape, and whether the two sides differ.</li>
-<li><strong>The body.</strong> Width, whether it tapers, and whether there is a black band.</li>
+<li><strong>The top.</strong> Flat, slanted, pointed, or a black section in a different colour from the body.</li>
+<li><strong>The reflector.</strong> Colour, shape, and whether the front and the back differ.</li>
+<li><strong>The body.</strong> Round or wedge-shaped, and whether it carries a black band or strip.</li>
 </ol>
 
 <h2>The ones worth learning first</h2>
 <ul>
-<li><strong>Norway.</strong> A squared-off head with an orange reflector. Once you have seen it you will not confuse it with Sweden again.</li>
-<li><strong>Sweden.</strong> Narrower, with the reflector set into the post rather than sitting on it.</li>
-<li><strong>Finland.</strong> Often paired with the snow poles that stay up all year, which is itself a clue.</li>
-<li><strong>Poland.</strong> Grey concrete with a black band, unmistakable once known.</li>
-<li><strong>Greece.</strong> Thin, white, with a shape that reads as almost delicate next to its neighbours.</li>
-<li><strong>Spain and Italy.</strong> Both tall and thin, and the pair worth drilling against each other rather than in isolation.</li>
+<li><strong>Germany.</strong> A black-and-white post with a rectangular white reflector on the front and two small round ones on the back.</li>
+<li><strong>Czechia.</strong> Two orange reflectors on the front and a single white one on the back.</li>
+<li><strong>Austria.</strong> White with a black top and a red reflector, often a dark red.</li>
+<li><strong>Italy.</strong> White with a black top, a red reflector on the front and a white one on the back.</li>
+<li><strong>Greece.</strong> A wedge-shaped post with an almost square reflector, red on the front and white on the back.</li>
+<li><strong>Spain.</strong> A rectangular yellow-orange reflector on the front and two small white dots on the back.</li>
+<li><strong>France.</strong> The same reflector on the front and the back. The usual post is round and white, with a pointed top and a reflective band all the way round.</li>
+<li><strong>The Netherlands.</strong> A plain white post with a red reflector.</li>
+<li><strong>Sweden.</strong> Black and white, with a rectangular reflector on the front and two small round ones on the back. The front reflector is usually grey, and orange next to junctions.</li>
+<li><strong>Finland.</strong> Long and black and white, usually with a diagonal black strip, a white rectangular reflector on the front and two small round ones on the back.</li>
 </ul>
 
 <h2>How to practise them</h2>
-<p>Do not learn bollards one country at a time. Learn them in the pairs you actually confuse: Norway against Sweden, Spain against Italy, Poland against Czechia. A card you can only answer when it appears alone is a card you have not learned.</p>`,
+<p>Do not learn bollards one country at a time. Learn them in the pairs you actually confuse: Sweden against Finland, Italy against Austria, Germany against Czechia. A card you can only answer when it appears alone is a card you have not learned.</p>`,
   },
   {
     locale: 'en',
@@ -201,32 +205,36 @@ export const BLOG_POSTS: BlogPostSeed[] = [
     keywords: 'duba, avrupa, geoguessr, meta',
     metaTitle: 'Avrupa dubalarına saha rehberi',
     metaDescription:
-      "Yol kenarı dubaları Avrupa'nın en güvenilir ipucudur. Biçim, başlık ve reflektör rengi tahmini yaklaşık bir saniyede tek ülkeye indirir.",
+      "Yol kenarı dubaları Avrupa'nın en güvenilir ipuçlarındandır. Üst kısım, gövde ve iki yüzdeki reflektör rengi tahmini tek bir ülkeye indirebilir.",
     daysAgo: 13,
-    content: `<p>Duba, yolun kenarında duran, üstünde reflektör olan kısa bir direktir. Karanlıkta sürücüye yolun nerede bittiğini göstermek için vardır. Bizim açımızdan ise her elli metrede bir dikilmiş bir kimlik kartıdır.</p>
+    content: `<p>Duba, yolun kenarında duran, üstünde reflektör olan kısa bir direktir. Karanlıkta sürücüye yolun nerede bittiğini göstermek için vardır. Bizim açımızdan ise yol kenarına dikilmiş bir kimlik kartıdır; Almanya'da yaklaşık her elli metrede bir tane bulunur.</p>
 
 <h2>Neden bu kadar güvenilirler</h2>
-<p>Yol donanımı ulusal bir standartla belirlenir ve yüz binlerce adet kurulur. Bir ülke bir biçim seçtikten sonra onu değiştirmek, her yoldaki her direği değiştirmek demektir; bu yüzden tasarım hükûmetlerden uzun yaşar. Dubaları oyuncuların önce baktığı şeylerden daha iyi yapan da bu: binalar değişir, arabalar değişir, dubalar değişmez.</p>
+<p>Yol donanımı ulusal bir standartla belirlenir ve yüz binlerce adet kurulur. Bir ülke bir tasarım seçtikten sonra onu değiştirmek, her yoldaki her direği değiştirmek demektir; bu yüzden tasarım, oyuncunun gördüğü çoğu şeyden çok daha yavaş değişir. Binalar değişir, arabalar değişir, dubalar çoğunlukla yerinde kalır.</p>
 
 <h2>Neye, hangi sırayla bakmalı</h2>
 <ol>
-<li><strong>Üst kısım.</strong> Düz, eğik, yuvarlak ya da başka renkte ayrı bir başlık.</li>
-<li><strong>Reflektör.</strong> Rengi, biçimi ve iki yüzün farklı olup olmadığı.</li>
-<li><strong>Gövde.</strong> Genişliği, incelip incelmediği ve siyah bant olup olmadığı.</li>
+<li><strong>Üst kısım.</strong> Düz, eğik, sivri ya da gövdeden farklı renkte siyah bir bölüm.</li>
+<li><strong>Reflektör.</strong> Rengi, biçimi ve ön yüzle arka yüzün farklı olup olmadığı.</li>
+<li><strong>Gövde.</strong> Yuvarlak mı kama biçimli mi, üzerinde siyah bir bant ya da şerit var mı.</li>
 </ol>
 
 <h2>Önce öğrenilmeye değenler</h2>
 <ul>
-<li><strong>Norveç.</strong> Düz kesilmiş baş, turuncu reflektör. Bir kez gördükten sonra İsveç'le karıştırmazsın.</li>
-<li><strong>İsveç.</strong> Daha dar, reflektör direğin üstünde değil içine gömülü.</li>
-<li><strong>Finlandiya.</strong> Genelde yıl boyu duran kar direkleriyle birlikte görünür, ki bu da kendi başına bir ipucudur.</li>
-<li><strong>Polonya.</strong> Siyah bantlı gri beton; bilindikten sonra şaşmaz.</li>
-<li><strong>Yunanistan.</strong> İnce, beyaz, komşularının yanında neredeyse zarif duran bir biçim.</li>
-<li><strong>İspanya ve İtalya.</strong> İkisi de uzun ve ince; tek tek değil, birbirine karşı çalışılması gereken çift.</li>
+<li><strong>Almanya.</strong> Siyah-beyaz bir direk; önde dikdörtgen beyaz bir reflektör, arkada iki küçük yuvarlak reflektör.</li>
+<li><strong>Çekya.</strong> Önde iki turuncu reflektör, arkada tek bir beyaz reflektör.</li>
+<li><strong>Avusturya.</strong> Beyaz gövde, siyah üst kısım ve çoğu zaman koyu kırmızı bir reflektör.</li>
+<li><strong>İtalya.</strong> Beyaz gövde, siyah üst kısım; önde kırmızı, arkada beyaz reflektör.</li>
+<li><strong>Yunanistan.</strong> Neredeyse kare reflektörlü, kama biçimli bir direk; reflektör önde kırmızı, arkada beyaz.</li>
+<li><strong>İspanya.</strong> Önde dikdörtgen sarı-turuncu bir reflektör, arkada iki küçük beyaz nokta.</li>
+<li><strong>Fransa.</strong> Önde ve arkada aynı reflektör. Olağan direk yuvarlak ve beyazdır, sivri bir tepesi ve çepeçevre dolanan bir reflektör bandı vardır.</li>
+<li><strong>Hollanda.</strong> Kırmızı reflektörlü sade, beyaz bir direk.</li>
+<li><strong>İsveç.</strong> Siyah-beyaz; önde dikdörtgen bir reflektör, arkada iki küçük yuvarlak reflektör. Öndeki reflektör genelde gri, kavşakların yanında turuncudur.</li>
+<li><strong>Finlandiya.</strong> Uzun, siyah-beyaz, genelde çapraz siyah bir şeritli; önde beyaz dikdörtgen bir reflektör, arkada iki küçük yuvarlak reflektör.</li>
 </ul>
 
 <h2>Nasıl çalışmalı</h2>
-<p>Dubaları ülke ülke öğrenme. Gerçekten karıştırdığın çiftler hâlinde öğren: Norveç'e karşı İsveç, İspanya'ya karşı İtalya, Polonya'ya karşı Çekya. Yalnız başına çıktığında bilebildiğin kart, öğrenmediğin karttır.</p>`,
+<p>Dubaları ülke ülke öğrenme. Gerçekten karıştırdığın çiftler hâlinde öğren: İsveç'e karşı Finlandiya, İtalya'ya karşı Avusturya, Almanya'ya karşı Çekya. Yalnız başına çıktığında bilebildiğin kart, öğrenmediğin karttır.</p>`,
   },
   {
     locale: 'tr',

@@ -75,7 +75,6 @@ export interface DashboardStats {
   correctReviews: number;
   winRate: number;
   streak: number;
-  dueNow: number;
   learnedMetas: number;
   trackedMetas: number;
   confusions: Array<{ actual: string; guessed: string; count: number }>;

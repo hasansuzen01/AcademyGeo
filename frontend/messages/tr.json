@@ -25,7 +25,7 @@
     "eyebrow": "Statik ipucu antrenmanı",
     "title": "Her ülke yolunu farklı boyar.",
     "titleAccent": "Sen de okumayı öğren.",
-    "lede": "AcademyGeo yerinden kımıldamayan ipuçlarını çalıştırır: plaka renkleri, duba başları, orta çizgiler, tabelalardaki yazı. Bilemediğin kartlar öğrenene kadar geri gelir.",
+    "lede": "AcademyGeo yerinden kımıldamayan ipuçlarını çalıştırır: plaka renkleri, duba başları, orta çizgiler, tabelalardaki yazı. Her kart, kaynağı belirtilmiş gerçek bir sokak fotoğrafıdır.",
     "primaryCta": "Seansı başlat",
     "secondaryCta": "Nasıl çalıştığını gör",
     "demoLabel": "Canlı kart",
@@ -33,11 +33,11 @@
     "howTitle": "Bir seans nasıl işler",
     "steps": {
       "oneTitle": "Bir ipucu belirir",
-      "oneBody": "Tek bir statik ipucunun sade bir çizimi ve ekrana gelir gelmez başlayan bir saat.",
+      "oneBody": "Tek bir statik ipucunun gerçek bir fotoğrafı ve ekrana gelir gelmez başlayan bir saat.",
       "twoTitle": "Ülkeyi söylersin",
       "twoBody": "Aynı bölgeden seçilmiş dört aday; yani kıtaya değil, detaya bakmak zorundasın.",
-      "threeTitle": "Kart yeniden planlanır",
-      "threeBody": "Hızlı bilirsen kart haftalar sonrasına gider. Yanlış bilirsen on dakika içinde geri döner."
+      "threeTitle": "Nedenini görürsün",
+      "threeBody": "Cevapla birlikte ipucu açıklanır, böylece bir dahaki sefere neye bakacağını bilirsin. Her seans on iki kart, istediğin an yeni bir deste."
     },
     "catalogueTitle": "Destede neler var",
     "catalogueBody": "Her kıtadan plakalar, dubalar, yol çizgileri, tabela yazıları, bitki örtüsü ve mimari.",
@@ -49,7 +49,7 @@
     "demoWrong": "Pek değil",
     "atlasCta": "Atlası gez",
     "modesTitle": "Kendini sınamanın dört yolu",
-    "modesBody": "Pratik seni aylar boyunca dürüst tutar. Bunlar bugün nerede olduğunu söyler ve hepsi aynı tekrar programını besler."
+    "modesBody": "Pratiğin sınırı yok ve kartları hiç tükenmez. Bunlar puan tutar, bugün nerede olduğunu söyler."
   },
   "categories": {
     "PLATE": "Plakalar",
@@ -101,8 +101,8 @@
     "winRateHint": "{total} cevabın {correct} tanesi doğru",
     "streak": "Günlük seri",
     "streakHint": "En az bir kart çözdüğün ardışık günler",
-    "due": "Şimdi tekrar",
-    "dueHint": "Tekrarı bekleyen kartlar",
+    "seen": "Görülen kartlar",
+    "seenHint": "En az bir kez cevapladığın farklı kartlar",
     "learned": "Öğrenildi",
     "learnedHint": "Üst üste üç kez doğru bilinen kartlar",
     "confusionsTitle": "En çok karıştırılanlar",
@@ -117,12 +117,12 @@
   },
   "auth": {
     "title": "İlerlemeni korumak için giriş yap",
-    "body": "Tekrar planın, serin ve istatistiklerin hesabına bağlı. Tek giriş yöntemi Google.",
+    "body": "Cevapların, serin ve istatistiklerin hesabına bağlı. Tek giriş yöntemi Google.",
     "google": "Google ile devam et",
     "failed": "Giriş tamamlanamadı. Tekrar dene.",
     "signedInAs": "{name} olarak giriş yapıldı",
     "guardTitle": "Çalışmak için giriş yap",
-    "guardBody": "Seanslar oyuncuya özel planlandığı için AcademyGeo kim olduğunu bilmek zorunda."
+    "guardBody": "Cevapların ve ilerlemen oyuncuya özel kaydedildiği için AcademyGeo kim olduğunu bilmek zorunda."
   },
   "errors": {
     "generic": "Bir şeyler ters gitti. Tekrar dene.",
@@ -162,7 +162,7 @@
     "saving": "Kaydediliyor",
     "saved": "Kaydedildi.",
     "deleteTitle": "Hesabı sil",
-    "deleteBody": "Hesabını ve içinde biriken her şeyi siler: cevapların, tekrar planın, puanlı turların, rozetlerin ve yüklediğin fotoğraf. Bu işlem geri alınamaz.",
+    "deleteBody": "Hesabını ve içinde biriken her şeyi siler: cevapların, ilerlemen, puanlı turların, rozetlerin ve yüklediğin fotoğraf. Bu işlem geri alınamaz.",
     "deleteConfirm": "Hesabın kalıcı olarak silinsin mi? Cevapların, turların ve rozetlerin gider ve geri getirilemez.",
     "deleteAction": "Hesabımı sil",
     "deleting": "Siliniyor",

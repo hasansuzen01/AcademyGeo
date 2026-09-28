@@ -25,7 +25,7 @@
     "eyebrow": "Static clue training",
     "title": "Every country paints its roads differently.",
     "titleAccent": "Learn to read them.",
-    "lede": "AcademyGeo drills the clues that never move: plate colours, bollard heads, centre lines, script on signs. Cards you miss come back until they stick.",
+    "lede": "AcademyGeo drills the clues that never move: plate colours, bollard heads, centre lines, script on signs. Every card is a real street photo with its source credited.",
     "primaryCta": "Start a session",
     "secondaryCta": "See how it works",
     "demoLabel": "Live card",
@@ -33,11 +33,11 @@
     "howTitle": "How a session runs",
     "steps": {
       "oneTitle": "A clue appears",
-      "oneBody": "One photo-free illustration of a single static clue, and a clock that starts the moment it lands.",
+      "oneBody": "A real photo of a single static clue, and a clock that starts the moment it lands.",
       "twoTitle": "You call the country",
       "twoBody": "Four candidates, drawn from the same region so you have to read the detail rather than the continent.",
-      "threeTitle": "The card gets rescheduled",
-      "threeBody": "Answer fast and it moves weeks away. Answer wrong and it is back in ten minutes."
+      "threeTitle": "You see why",
+      "threeBody": "The reveal explains the clue, so you know what to look for next time. Twelve cards a session, and a fresh deal whenever you want one."
     },
     "catalogueTitle": "What is in the deck",
     "catalogueBody": "Plates, bollards, road lines, signage script, vegetation and architecture, drawn from every continent.",
@@ -49,7 +49,7 @@
     "demoWrong": "Not quite",
     "atlasCta": "Browse the atlas",
     "modesTitle": "Four ways to be tested",
-    "modesBody": "Practice keeps you honest over months. These tell you where you stand today, and they all feed the same schedule."
+    "modesBody": "Practice has no limit and never runs dry. These keep score, so they tell you where you stand today."
   },
   "categories": {
     "PLATE": "Plates",
@@ -101,8 +101,8 @@
     "winRateHint": "{correct} correct of {total} answers",
     "streak": "Day streak",
     "streakHint": "Consecutive days with at least one card",
-    "due": "Due now",
-    "dueHint": "Cards waiting for a review",
+    "seen": "Cards seen",
+    "seenHint": "Different cards you have answered at least once",
     "learned": "Learned",
     "learnedHint": "Cards answered correctly three times running",
     "confusionsTitle": "Most confused pairs",
@@ -117,12 +117,12 @@
   },
   "auth": {
     "title": "Sign in to keep your progress",
-    "body": "Your review schedule, streak and stats are tied to your account. Google is the only sign-in method.",
+    "body": "Your answers, streak and stats are tied to your account. Google is the only sign-in method.",
     "google": "Continue with Google",
     "failed": "Sign-in didn't go through. Try again.",
     "signedInAs": "Signed in as {name}",
     "guardTitle": "Sign in to practise",
-    "guardBody": "Sessions are scheduled per player, so AcademyGeo needs to know who you are."
+    "guardBody": "Your answers and progress are saved per player, so AcademyGeo needs to know who you are."
   },
   "errors": {
     "generic": "Something went wrong. Try again.",
@@ -162,7 +162,7 @@
     "saving": "Saving",
     "saved": "Saved.",
     "deleteTitle": "Delete account",
-    "deleteBody": "Deletes your account and everything built up in it: your answers, review schedule, scored runs, badges and any picture you uploaded. This cannot be undone.",
+    "deleteBody": "Deletes your account and everything built up in it: your answers, progress, scored runs, badges and any picture you uploaded. This cannot be undone.",
     "deleteConfirm": "Delete your account for good? Your answers, runs and badges will be gone and cannot be brought back.",
     "deleteAction": "Delete my account",
     "deleting": "Deleting",

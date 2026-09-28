@@ -26,7 +26,6 @@ export interface DashboardStats {
   correctReviews: number;
   winRate: number;
   streak: number;
-  dueNow: number;
   learnedMetas: number;
   trackedMetas: number;
   confusions: Array<{ actual: string; guessed: string; count: number }>;
@@ -49,7 +48,6 @@ export class StatsService {
 
     const [
       totals,
-      dueNow,
       learnedMetas,
       trackedMetas,
       activity,
@@ -61,9 +59,6 @@ export class StatsService {
         by: ['correct'],
         where: { userId },
         _count: { _all: true },
-      }),
-      this.prisma.reviewCard.count({
-        where: { userId, dueAt: { lte: new Date() } },
       }),
       this.prisma.reviewCard.count({
         where: { userId, repetitions: { gte: MATURE_REPETITIONS } },
@@ -114,7 +109,6 @@ export class StatsService {
         practiceDays.map((entry) => toUtcDay(entry.day)),
         new Date(),
       ),
-      dueNow,
       learnedMetas,
       trackedMetas,
       confusions,

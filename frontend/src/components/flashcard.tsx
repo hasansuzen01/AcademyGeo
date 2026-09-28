@@ -34,8 +34,8 @@ interface FlashcardProps {
   onGuess: (countryCode: string) => void;
   onNext: () => void;
   isLast: boolean;
-  /** The one line each mode adds under the explanation: when the card comes
-   *  back in practice, what the answer scored in a run. */
+  /** The one line a mode adds under the explanation, such as what the answer
+   *  scored in a run. */
   footnote?: React.ReactNode;
   /** Hidden while the clock, not the deck, decides when the run ends. */
   showCounter?: boolean;

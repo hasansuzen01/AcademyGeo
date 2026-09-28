@@ -33,11 +33,11 @@ export const FOOTER_PAGES: FooterPage[] = [
       'AcademyGeo is a personal, non-commercial project for practising the static clues that decide a GeoGuessr round: plates, bollards, road lines, signage and vegetation.',
     content: `<h2>What this is</h2>
 <p>AcademyGeo is a personal project. It exists so players can practise the static clues that decide a round: number plates, bollards, road markings, the script on signs, roadside vegetation and building styles.</p>
-<p>Those clues are learnable. They are just hard to learn while playing, because a round gives you one look and then moves on. Here each clue is a card you can sit with, and the ones you miss come back until they stick.</p>
+<p>Those clues are learnable. They are just hard to learn while playing, because a round gives you one look and then moves on. Here each clue is a real street photo you can sit with, and every answer comes with the reason it points to that country.</p>
 
 <h2>How the practice works</h2>
-<p>Every card is a single clue with one correct country. You answer, you find out immediately, and the card is scheduled to return based on how you did. A card you got wrong comes back in ten minutes. A card you knew instantly moves further out each time you see it.</p>
-<p>The schedule is a variant of SM-2. Instead of asking you to rate your own recall, it reads your answer time: under two and a half seconds counts as instant, under eight as steady, slower as hesitant.</p>
+<p>Every card is a real, freely licensed photograph of a single clue with one correct country, and the photographer is credited on the card. You choose from four countries drawn from the same region, so the continent alone never gives it away, and you find out straight away why the answer is right.</p>
+<p>A practice session deals twelve random cards from the collection, clue type or whole deck you picked. Nothing is held back for a later date, so you can deal again at once. When you want a score, the scored modes keep one, and the weak-spots run leans on the countries you miss most.</p>
 
 <h2>Who made it</h2>
 <p>One person, for their own practice, shared in case it is useful to anyone else. There is no company behind it, nothing is sold, and there are no advertisements.</p>
@@ -56,11 +56,11 @@ export const FOOTER_PAGES: FooterPage[] = [
       'AcademyGeo, bir GeoGuessr turunu belirleyen statik ipuçlarını çalışmak için kurulmuş kişisel ve ticari olmayan bir projedir: plakalar, dubalar, yol çizgileri, tabelalar ve bitki örtüsü.',
     content: `<h2>Bu nedir</h2>
 <p>AcademyGeo kişisel bir projedir. Bir turu belirleyen statik ipuçlarını çalışabilmek için var: plakalar, dubalar, yol çizgileri, tabelalardaki yazı, yol kenarı bitki örtüsü ve yapı biçimleri.</p>
-<p>Bu ipuçları öğrenilebilir. Oyunun içinde öğrenmesi zordur, çünkü tur size tek bir bakış verip geçer. Burada her ipucu üzerinde durabileceğiniz bir kart, bilemedikleriniz de öğrenene kadar geri gelir.</p>
+<p>Bu ipuçları öğrenilebilir. Oyunun içinde öğrenmesi zordur, çünkü tur size tek bir bakış verip geçer. Burada her ipucu üzerinde durabileceğiniz gerçek bir sokak fotoğrafıdır ve her cevap, o ülkeyi neden gösterdiğiyle birlikte gelir.</p>
 
 <h2>Çalışma nasıl işliyor</h2>
-<p>Her kart tek bir ipucu ve tek bir doğru ülke taşır. Cevaplarsınız, sonucu anında görürsünüz ve kart performansınıza göre yeniden planlanır. Yanlış bildiğiniz kart on dakika sonra döner. Anında bildiğiniz kart her görüşünüzde biraz daha uzağa gider.</p>
-<p>Plan SM-2 algoritmasının bir türevidir. Kendinizi puanlamanızı istemek yerine cevap sürenizi okur: iki buçuk saniyenin altı anında, sekiz saniyenin altı istikrarlı, daha yavaşı tereddütlü sayılır.</p>
+<p>Her kart tek bir ipucunun serbest lisanslı, gerçek bir fotoğrafıdır; tek bir doğru ülkesi vardır ve fotoğrafçısı kartta belirtilir. Aynı bölgeden seçilmiş dört ülke arasından seçim yaparsınız, yani kıta tek başına cevabı vermez; doğru cevabın nedenini de hemen görürsünüz.</p>
+<p>Bir pratik seansı, seçtiğiniz koleksiyondan, ipucu türünden ya da tüm desteden rastgele on iki kart dağıtır. Hiçbir kart sonraya saklanmaz, istediğiniz an yeniden dağıtabilirsiniz. Puan görmek istediğinizde puanlı modlar devreye girer; zayıf noktalar turu en çok kaçırdığınız ülkelere ağırlık verir.</p>
 
 <h2>Kim yaptı</h2>
 <p>Tek kişi, kendi çalışması için yaptı ve başkasına da yararı olur diye paylaştı. Arkasında bir şirket yok, hiçbir şey satılmıyor, reklam da yok.</p>
@@ -79,10 +79,10 @@ export const FOOTER_PAGES: FooterPage[] = [
       'What AcademyGeo stores about you: a Google account name and address, your practice history, and nothing else. No advertising, no data sold.',
     content: `<h2>What is stored</h2>
 <p>Signing in with Google gives AcademyGeo three things: your name, your email address and your profile picture. That is what Google shares for a basic sign-in, and it is all that is kept.</p>
-<p>Alongside that, practising stores your answers: which card, which country you chose, whether it was right, and how long you took. That history is what the review schedule and the statistics on your dashboard are built from.</p>
+<p>Alongside that, practising stores your answers: which card, which country you chose, whether it was right, and how long you took. That history is what the statistics on your dashboard and the weak-spots run are built from.</p>
 
 <h2>Why it is stored</h2>
-<p>Your email identifies your account across sign-ins. Your answers make the spaced repetition work: without them every session would start from nothing.</p>
+<p>Your email identifies your account across sign-ins. Your answers are what your progress is measured from: without them the dashboard would stay empty and the weak-spots run would have nothing to aim at.</p>
 
 <h2>What is not done with it</h2>
 <p>Nothing is sold, rented or shared. There is no advertising. Your email is not added to a mailing list, because there is no mailing list.</p>
@@ -92,7 +92,7 @@ export const FOOTER_PAGES: FooterPage[] = [
 <p>If the site owner has switched on Google Analytics, the cookie notice will say so and analytics will also see your visits.</p>
 
 <h2>How long</h2>
-<p>Until you ask for it to go. Delete your account and the answers, schedule and streaks go with it.</p>
+<p>Until you ask for it to go. Delete your account and the answers, progress and streaks go with it.</p>
 
 <h2>Having your data removed</h2>
 <p>Write to the address on the contact page and ask. There is no form and no waiting period beyond the time it takes to read the message.</p>
@@ -111,10 +111,10 @@ export const FOOTER_PAGES: FooterPage[] = [
       'AcademyGeo hakkınızda ne saklıyor: Google hesabınızdan gelen ad ve e-posta, bir de çalışma geçmişiniz. Reklam yok, veri satışı yok.',
     content: `<h2>Ne saklanıyor</h2>
 <p>Google ile giriş yaptığınızda AcademyGeo üç şey alır: adınız, e-posta adresiniz ve profil fotoğrafınız. Google temel bir giriş için bunları paylaşır, saklanan da yalnızca bunlardır.</p>
-<p>Bunun yanında çalışmanız cevaplarınızı kaydeder: hangi kart, hangi ülkeyi seçtiniz, doğru muydu ve ne kadar sürdü. Tekrar planı ve panonuzdaki istatistikler bu geçmiş üzerine kurulur.</p>
+<p>Bunun yanında çalışmanız cevaplarınızı kaydeder: hangi kart, hangi ülkeyi seçtiniz, doğru muydu ve ne kadar sürdü. Panonuzdaki istatistikler ve zayıf noktalar turu bu geçmiş üzerine kurulur.</p>
 
 <h2>Neden saklanıyor</h2>
-<p>E-postanız hesabınızı girişler arasında tanır. Cevaplarınız aralıklı tekrarın çalışmasını sağlar; onlar olmadan her oturum sıfırdan başlardı.</p>
+<p>E-postanız hesabınızı girişler arasında tanır. İlerlemeniz cevaplarınızdan ölçülür; onlar olmadan pano boş kalır, zayıf noktalar turu da neyi hedefleyeceğini bilemezdi.</p>
 
 <h2>Ne yapılmıyor</h2>
 <p>Hiçbir şey satılmaz, kiralanmaz, paylaşılmaz. Reklam yoktur. E-postanız bir bülten listesine eklenmez, çünkü bülten listesi yoktur.</p>
@@ -124,7 +124,7 @@ export const FOOTER_PAGES: FooterPage[] = [
 <p>Site sahibi Google Analytics'i açtıysa çerez bildirimi bunu söyler ve ziyaretlerinizi analitik de görür.</p>
 
 <h2>Ne kadar süreyle</h2>
-<p>Silinmesini isteyene kadar. Hesabınızı sildirdiğinizde cevaplar, plan ve seriler de onunla gider.</p>
+<p>Silinmesini isteyene kadar. Hesabınızı sildirdiğinizde cevaplar, ilerleme ve seriler de onunla gider.</p>
 
 <h2>Verinizi sildirmek</h2>
 <p>İletişim sayfasındaki adrese yazıp isteyin. Form yok, mesajın okunma süresinden başka bekleme de yok.</p>

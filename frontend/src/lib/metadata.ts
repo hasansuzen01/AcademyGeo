@@ -63,7 +63,9 @@ export function buildMetadata({
   const resolvedTitle = title || site.defaultMetaTitle || site.siteName;
   const resolvedDescription = description || site.defaultMetaDescription || undefined;
   const rule = parseRobots(robots || site.defaultRobotsMeta);
-  const picture = image ?? site.defaultOgImageUrl;
+  // A link shared without a picture shows up as a bare line of text, so the
+  // image in /public stands in until the panel names a better one.
+  const picture = image || site.defaultOgImageUrl || `${root}/og-default.png`;
 
   // Same path in the other language, so a reader landing from search can be
   // offered the version they can actually read. Only languages the page is
@@ -91,14 +93,14 @@ export function buildMetadata({
       ...(path === undefined ? {} : { url: `${root}${path}` }),
       type,
       ...(publishedTime ? { publishedTime } : {}),
-      ...(picture ? { images: [picture] } : {}),
+      images: [picture],
     },
     twitter: {
-      card: picture ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       title: resolvedTitle,
       description: resolvedDescription,
       ...(site.twitterSite ? { site: site.twitterSite } : {}),
-      ...(picture ? { images: [picture] } : {}),
+      images: [picture],
     },
   };
 }

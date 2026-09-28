@@ -87,10 +87,11 @@ describe('buildMetadata', () => {
     ]);
   });
 
-  it('leaves the picture out entirely when neither is set', () => {
+  it('shares the picture that ships with the site when neither is set', () => {
     const meta = buildMetadata({ site: { ...site, defaultOgImageUrl: null }, path: '/en' });
 
-    expect(meta.openGraph?.images).toBeUndefined();
+    expect(meta.openGraph?.images).toEqual(['https://academygeo.com/og-default.png']);
+    expect(meta.twitter).toMatchObject({ card: 'summary_large_image' });
   });
 
   it('does not double the slash when the site address ends in one', () => {
