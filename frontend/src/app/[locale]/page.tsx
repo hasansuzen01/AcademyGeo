@@ -9,15 +9,29 @@ import { fetchSiteSeo } from '@/lib/content-api';
 import { buildMetadata } from '@/lib/metadata';
 import { fetchCatalogueSummary, fetchDemoCards, fetchShowcase } from '@/lib/server-api';
 
-/** The home page is the one page the site-wide title and description are for. */
+/**
+ * The home page is the one page the site-wide title and description are for.
+ * Those are written in English in the panel, so the Turkish home page takes
+ * its own from the messages rather than showing English in a Turkish search.
+ */
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const site = await fetchSiteSeo();
 
-  return buildMetadata({ site: await fetchSiteSeo(), path: `/${locale}` });
+  if (locale === 'en') return buildMetadata({ site, path: '/en' });
+
+  const t = await getTranslations({ locale, namespace: 'landing' });
+
+  return buildMetadata({
+    site,
+    path: `/${locale}`,
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  });
 }
 
 /** The scored modes, in the order the hub lists them. */

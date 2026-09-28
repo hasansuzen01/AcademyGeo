@@ -64,8 +64,12 @@ export function buildMetadata({
   const resolvedDescription = description || site.defaultMetaDescription || undefined;
   const rule = parseRobots(robots || site.defaultRobotsMeta);
   // A link shared without a picture shows up as a bare line of text, so the
-  // image in /public stands in until the panel names a better one.
-  const picture = image || site.defaultOgImageUrl || `${root}/og-default.png`;
+  // image in /public, in the page's language, stands in until the panel names
+  // a better one.
+  const picture =
+    image ||
+    site.defaultOgImageUrl ||
+    `${root}/og-default${path?.startsWith('/tr') ? '-tr' : ''}.png`;
 
   // Same path in the other language, so a reader landing from search can be
   // offered the version they can actually read. Only languages the page is

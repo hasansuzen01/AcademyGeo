@@ -49,7 +49,9 @@
     "demoWrong": "Pek değil",
     "atlasCta": "Atlası gez",
     "modesTitle": "Kendini sınamanın dört yolu",
-    "modesBody": "Pratiğin sınırı yok ve kartları hiç tükenmez. Bunlar puan tutar, bugün nerede olduğunu söyler."
+    "modesBody": "Pratiğin sınırı yok ve kartları hiç tükenmez. Bunlar puan tutar, bugün nerede olduğunu söyler.",
+    "metaTitle": "AcademyGeo — GeoGuessr ipuçlarını gerçek fotoğraflarla çalış",
+    "metaDescription": "Bir GeoGuessr turunu belirleyen ipuçlarını gerçek sokak fotoğraflarıyla çalış: plakalar, dubalar, yol çizgileri, tabelalar. Puanlı modlar, ülke atlası. Ücretsiz."
   },
   "categories": {
     "PLATE": "Plakalar",

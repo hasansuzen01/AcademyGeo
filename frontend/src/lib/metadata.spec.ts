@@ -94,6 +94,12 @@ describe('buildMetadata', () => {
     expect(meta.twitter).toMatchObject({ card: 'summary_large_image' });
   });
 
+  it('shares the Turkish picture on a Turkish page', () => {
+    const meta = buildMetadata({ site: { ...site, defaultOgImageUrl: null }, path: '/tr/atlas' });
+
+    expect(meta.openGraph?.images).toEqual(['https://academygeo.com/og-default-tr.png']);
+  });
+
   it('does not double the slash when the site address ends in one', () => {
     const meta = buildMetadata({
       site: { ...site, siteUrl: 'https://academygeo.com/' },
