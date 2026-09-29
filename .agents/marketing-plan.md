@@ -56,10 +56,16 @@
   3. **"Sayaç bitmeden tahmin et":** puanlı bir tur kaydı, durdur, cevabı ve ipucunu göster.
   4. **"Bu ülke herkesi kandırıyor":** tek yanıltıcı ipucu.
   5. **"Türkiye'de neredeyiz?":** Türkçe seri. Türkiye haritalı GeoGuessr videoları 68K–1M arası izleniyor.
-- **Tempo:**
-  - Haftada 3 video (Pzt, Çar, Cmt).
-  - İlk hafta öncesinde 5 videoluk stok.
+- **Tempo (kurucu kararı, 2026-09-29):**
+  - **İki günde bir video**, akşam 19:00–21:00 (TR saati).
+  - Aynı video TikTok, Reels ve Shorts'a gider: Türkçe sürüm Reels ve TikTok'a, İngilizce sürüm Shorts'a.
+  - **Aynı format üst üste gelmez.** Dönüşüm: 3 ipucu → A mı B mi → tek ipucu / "herkesi kandırıyor" → Türkiye'ye özel → başa dön.
   - Başarıyı izlenmeye değil, videodan siteye gelen ziyarete ve kayda göre ölç.
+- **Üretim:**
+  - Claude videoları `marketing/shorts/make-video.mjs` ile üretir: kart fotoğrafları, kırpılmadan ve kaynağıyla.
+  - Her video için açıklama, hashtag ve YouTube başlığı (TR/EN) da hazırlanır.
+  - Kurucu uygulamadan müzik ekleyip yükler.
+  - Her videodaki bilgi kartın kendi (doğrulanmış) metninden gelir; fotoğraflara tek tek bakılır.
 
 ## 5. Tanıtım siteleri ve lansman haftası
 
@@ -113,13 +119,37 @@
 
 ## 8. Takvim
 
-| Hafta | Aşama | İşler |
+*Güncellendi 2026-09-29. ✅ yapıldı, ⏳ sırada.*
+
+| Tarih | Aşama | İşler |
 |---|---|---|
-| 1–2 | Engelleri kaldır | Giriş duvarı kararı ve kodu · hesapları aç · Reddit'te yorumla katkıya başla · Discord'lara katıl, kuralları oku · 5 video stoğu · tanıtım sitelerine başvur · kanal başına UTM linkleri |
-| 3 | Türkçe sessiz açılış | GeoGuessr Türkiye, Ekşi, DonanımHaber · geri bildirimle düzelt · ilk 3 video |
-| 4 | Dünya tanıtımı | §5'teki lansman haftası |
-| 5–8 | Hız | Haftada 3 video · Oğuzhan ve Ahmet Yusuf'a yaz · Türkçe blog yazıları · Steam rehberi · X'te günlük meydan okuma |
-| 9–12 | Birikim | Organik iyi gittiyse Reddit reklamı testi ($5–10/gün, 10 gün) · küçük üretici sponsorlukları · en iyi çalışan formatı ikiye katla · kendi Discord'umuz (yeterli kitle varsa) |
+| 29 Eyl – 4 Eki | Temel | ✅ Bağış + destekçiler sayfası · ✅ girişsiz Pratik · ✅ hesaplar ve biyografiler (X, TikTok, Instagram, YouTube) · ✅ ilk video (Yunanistan) · ⏳ tanıtım sitelerine başvurular (AlternativeTo, SaaSHub, Uneed → 20 Eki, Microlaunch, Indie Hackers) · ⏳ Reddit'te yorumla katkıya başla · ⏳ Discord'lara katıl, kuralları oku |
+| 5 – 11 Eki | Türkçe sessiz açılış | GeoGuessr Türkiye yöneticisine mesaj · Ekşi entry'si · DonanımHaber "Site Tanıtımları" · geri bildirimle düzelt |
+| 12 – 18 Eki | Lansman hazırlığı | Product Hunt sayfası (4–6 görsel, demo videosu, ilk yorum) · Show HN ve r/geoguessr metinleri · mod'lara önceden mesaj |
+| 19 – 25 Eki | **Dünya tanıtımı** | Pzt 19 Peerlist · **Sal 20 Product Hunt** (10:01 TR) · Çar 21 Show HN · Per 22 r/geoguessr · Cum 23 Webrazzi + Product Hunt Turkey · hafta sonu Plonk It / LearnableMeta Discord'ları, Steam rehberi |
+| 26 Eki – 22 Kas | Hız | Oğuzhan Sarıgöl ve Ahmet Yusuf Kartal'a yaz · Türkçe blog yazıları (arama motoru) · X'te günlük meydan okuma · ilk analitik değerlendirme (12 Eki ve 26 Eki) |
+| 23 Kas – 20 Ara | Birikim | İşe yarayan formatı artır · küçük üretici iş birlikleri · bağış gelirse Reddit reklamı testi · yeterli kitle varsa kendi Discord'umuz |
+
+**Video takvimi (iki günde bir, ilk 6):**
+
+| Tarih | Format | Konu (içerik kontrolü üretimde yapılır) |
+|---|---|---|
+| 29 Eyl | 3 ipucu | Yunanistan ✅ |
+| 1 Eki | A mı B mi | Türkiye mi Yunanistan mı? |
+| 3 Eki | Tek ipucu | "Bunu görürsen Rusya'dasın": Ы harfi |
+| 5 Eki | 3 ipucu | Tayland veya İrlanda |
+| 7 Eki | A mı B mi | Ukrayna mı Rusya mı? |
+| 9 Eki | Herkesi kandırıyor | Yanıltıcı tek ipucu (seçilecek) |
+
+## İş bölümü
+
+- **Claude:**
+  - Araştırma, plan, bütün metinler (gönderi, başvuru, mesaj taslakları), videolar ve görseller, sitedeki değişiklikler.
+  - Haftalık durum özeti ve analitik yorumu.
+- **Kurucu:**
+  - Hesap gerektiren her şey: paylaşmak, müzik eklemek, başvuruları göndermek, ödemeler, mesajlar.
+  - Onaylar.
+- **Kural:** Claude hiçbir yerde kurucu adına paylaşım yapmaz veya kimseyle iletişime geçmez.
 
 ## 9. Bütçe (kurucu onayı: şimdilik $20–30)
 
