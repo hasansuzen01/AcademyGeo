@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ApiError, apiFetch } from './api';
+import { ApiError, apiFetch, gradeGuess } from './api';
 
 // 204 is only legal with a null body, which is exactly what it means.
 function answerWith(body: string | null, init?: ResponseInit) {
@@ -45,5 +45,36 @@ describe('apiFetch', () => {
     answerWith('', { status: 500 });
 
     await expect(apiFetch('/games/active')).rejects.toBeInstanceOf(ApiError);
+  });
+});
+
+describe('gradeGuess', () => {
+  const guess = { metaId: 'meta-1', guessedCountryCode: 'NO', responseMs: 2300 };
+
+  function lastRequest() {
+    const call = vi.mocked(fetch).mock.calls.at(-1)!;
+    return { url: String(call[0]), body: JSON.parse(String(call[1]?.body)) };
+  }
+
+  // A player's answer is remembered: it reschedules the card and feeds the
+  // dashboard, so it goes to the route that needs an account.
+  it('records the answer of someone signed in', async () => {
+    answerWith(JSON.stringify({ correct: true }));
+
+    await gradeGuess(guess, true);
+
+    expect(lastRequest().url).toMatch(/\/api\/review\/answer$/);
+    expect(lastRequest().body).toEqual(guess);
+  });
+
+  // A visitor only wants the verdict. The API refuses fields it does not
+  // expect, so the response time stays behind.
+  it('only checks the answer of a visitor, without the response time', async () => {
+    answerWith(JSON.stringify({ correct: false }));
+
+    await gradeGuess(guess, false);
+
+    expect(lastRequest().url).toMatch(/\/api\/review\/check$/);
+    expect(lastRequest().body).toEqual({ metaId: 'meta-1', guessedCountryCode: 'NO' });
   });
 });

@@ -6,15 +6,15 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 
 import { Link } from '@/i18n/navigation';
-import { type AnswerResult, type QueueCard, fetchQueue, submitAnswer } from '@/lib/api';
+import { type CheckedAnswer, type QueueCard, fetchQueue, gradeGuess } from '@/lib/api';
 import { useSession } from '@/lib/auth-client';
 import type { ReturnPlace } from '@/lib/return-place';
 import { playEffect } from '@/lib/sound';
 import { useLoad } from '@/lib/use-load';
 
 import { Flashcard } from './flashcard';
+import { GoogleSignInButton } from './google-sign-in-button';
 import { SessionProgress } from './session-progress';
-import { SignInPrompt } from './sign-in-prompt';
 
 type Phase = 'loading' | 'playing' | 'empty' | 'done' | 'error';
 
@@ -39,7 +39,7 @@ export function PlaySession({
   const [startedAt, setStartedAt] = useState(() => Date.now());
   const [answeredAt, setAnsweredAt] = useState<number | null>(null);
   const [guessedCode, setGuessedCode] = useState<string | null>(null);
-  const [result, setResult] = useState<AnswerResult | null>(null);
+  const [result, setResult] = useState<CheckedAnswer | null>(null);
   const [pending, setPending] = useState(false);
   const [score, setScore] = useState(0);
 
@@ -61,7 +61,9 @@ export function PlaySession({
     }
   }, [category, deckSlug]);
 
-  useLoad(load, !sessionPending && Boolean(userId));
+  // Practice is open to visitors: someone arriving from a link sees a card
+  // before being asked for an account. Only their answers go unrecorded.
+  useLoad(load, !sessionPending);
 
   /** Re-runs a finished or failed session, showing the spinner while it loads. */
   function restart() {
@@ -79,11 +81,10 @@ export function PlaySession({
     setAnsweredAt(answered);
 
     try {
-      const answer = await submitAnswer({
-        metaId: card.metaId,
-        guessedCountryCode: countryCode,
-        responseMs: answered - startedAt,
-      });
+      const answer = await gradeGuess(
+        { metaId: card.metaId, guessedCountryCode: countryCode, responseMs: answered - startedAt },
+        Boolean(userId),
+      );
       setResult(answer);
       playEffect(answer.correct ? 'correct' : 'wrong');
       if (answer.correct) setScore((current) => current + 1);
@@ -110,7 +111,6 @@ export function PlaySession({
   }
 
   if (sessionPending) return <Shell>{t('loading')}</Shell>;
-  if (!userId) return <SignInPrompt />;
   if (phase === 'loading') return <Shell>{t('loading')}</Shell>;
 
   if (phase === 'error') {
@@ -168,9 +168,21 @@ export function PlaySession({
           <button type="button" onClick={() => restart()} className="btn btn-go">
             {t('summaryAgain')}
           </button>
-          <Link href="/dashboard" className="btn btn-quiet">
-            {t('summaryDashboard')}
-          </Link>
+          {userId ? (
+            <Link href="/dashboard" className="btn btn-quiet">
+              {t('summaryDashboard')}
+            </Link>
+          ) : (
+            // The moment a visitor has seen what practice is like is the
+            // moment to say what an account adds, and nothing earlier.
+            <div className="rounded-2xl bg-canvas px-5 py-5 text-left">
+              <p className="font-display text-base font-900">{t('guestSaveTitle')}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">{t('guestSaveBody')}</p>
+              <div className="mt-4">
+                <GoogleSignInButton />
+              </div>
+            </div>
+          )}
           <Link href={returnTo.href} className="btn btn-quiet">
             <ArrowLeft className="size-4" aria-hidden />
             {t(`back.${returnTo.label}`)}
@@ -187,6 +199,7 @@ export function PlaySession({
     <div>
       <div className="mx-auto mb-6 max-w-3xl">
         <SessionProgress done={index + (result ? 1 : 0)} total={cards.length} />
+        {!userId && <p className="mt-2 text-center text-xs text-muted">{t('guestNote')}</p>}
       </div>
 
       <Flashcard

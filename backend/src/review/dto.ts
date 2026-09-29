@@ -31,7 +31,8 @@ export class ReviewQueueQuery {
   limit?: number;
 }
 
-export class SubmitAnswerDto {
+/** A guess to grade without remembering it. */
+export class CheckAnswerDto {
   @IsString()
   @Length(1, 40)
   metaId!: string;
@@ -39,7 +40,9 @@ export class SubmitAnswerDto {
   @IsString()
   @Length(2, 2)
   guessedCountryCode!: string;
+}
 
+export class SubmitAnswerDto extends CheckAnswerDto {
   @IsInt()
   @Min(0)
   @Max(600_000)

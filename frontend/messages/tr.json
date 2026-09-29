@@ -95,7 +95,10 @@
     "coveredBody": "Gördüğün kadarıyla cevapla.",
     "versus": "VS",
     "readMore": "{country} hakkında oku",
-    "photoCredit": "Fotoğraf"
+    "photoCredit": "Fotoğraf",
+    "guestNote": "Misafir olarak oynuyorsun; cevapların kaydedilmiyor.",
+    "guestSaveTitle": "Bir sonraki turunu kaydet",
+    "guestSaveBody": "Giriş yaparsan cevapların kaydedilir: ilerlemeni, serini ve en çok karıştırdığın ülkeleri görürsün; puanlı modlar ve sıralama da açılır. Ücretsiz."
   },
   "dashboard": {
     "title": "İlerleme",

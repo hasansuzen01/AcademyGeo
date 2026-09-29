@@ -4,7 +4,7 @@ import type { MetaCategory, Region } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { AnswersService } from './answers.service.js';
 import { toCardView } from './card-view.js';
-import type { SubmitAnswerDto } from './dto.js';
+import type { CheckAnswerDto, SubmitAnswerDto } from './dto.js';
 import { dealPracticeCards } from './queue.js';
 
 const DEFAULT_SESSION_SIZE = 12;
@@ -59,6 +59,11 @@ export class ReviewService {
     });
 
     return { cards };
+  }
+
+  /** Grades a guess from someone who is not signed in. Nothing is recorded. */
+  checkAnswer(dto: CheckAnswerDto) {
+    return this.answers.check(dto.metaId, dto.guessedCountryCode);
   }
 
   /** Grades one answer, reschedules the card and records it for the dashboard. */

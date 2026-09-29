@@ -7,9 +7,9 @@ import { RedisService } from '../redis/redis.service.js';
 import { statsCacheKey } from '../stats/stats.cache.js';
 import { INITIAL_REVIEW_STATE, gradeAnswer, scheduleNextReview } from './srs.js';
 
-export interface RecordedAnswer {
+/** The verdict on one guess: right or wrong, and why. */
+export interface CheckedAnswer {
   correct: boolean;
-  difficulty: number;
   country: { code: string; nameEn: string; nameTr: string };
   explanation: {
     titleEn: string;
@@ -18,6 +18,10 @@ export interface RecordedAnswer {
     descriptionTr: string;
   };
   credit: ImageCredit | null;
+}
+
+export interface RecordedAnswer extends CheckedAnswer {
+  difficulty: number;
   nextDueAt: string;
   intervalDays: number;
 }
@@ -35,30 +39,27 @@ export class AnswersService {
     private readonly redis: RedisService,
   ) {}
 
+  /**
+   * Grades a guess for a visitor who has not signed in: the same verdict and
+   * explanation a player gets, with nothing written anywhere.
+   */
+  async check(metaId: string, guessedCountryCode: string): Promise<CheckedAnswer> {
+    return (await this.grade(metaId, guessedCountryCode)).verdict;
+  }
+
   async record(
     userId: string,
     metaId: string,
     guessedCountryCode: string,
     responseMs: number,
   ): Promise<RecordedAnswer> {
-    const meta = await this.prisma.meta.findUnique({
-      where: { id: metaId },
-      include: { country: true },
-    });
-    if (!meta) throw new NotFoundException('Meta not found');
-
-    const guessed = guessedCountryCode.toUpperCase();
-
-    // Only real countries are recorded. Without this a client could post any
-    // two letters and fill the confusion chart with codes nobody can read.
-    const known = await this.prisma.country.findUnique({ where: { code: guessed } });
-    if (!known) throw new BadRequestException('Unknown country code');
+    const { meta, guessed, verdict } = await this.grade(metaId, guessedCountryCode);
+    const { correct } = verdict;
 
     const card = await this.prisma.reviewCard.findUnique({
       where: { userId_metaId: { userId, metaId: meta.id } },
     });
 
-    const correct = meta.countryCode === guessed;
     const outcome = { correct, responseMs };
     const now = new Date();
     const next = scheduleNextReview(card ?? INITIAL_REVIEW_STATE, outcome, now);
@@ -105,8 +106,29 @@ export class AnswersService {
     await this.redis.invalidate(statsCacheKey(userId));
 
     return {
-      correct,
+      ...verdict,
       difficulty: meta.difficulty,
+      nextDueAt: next.dueAt.toISOString(),
+      intervalDays: next.intervalDays,
+    };
+  }
+
+  private async grade(metaId: string, guessedCountryCode: string) {
+    const meta = await this.prisma.meta.findUnique({
+      where: { id: metaId },
+      include: { country: true },
+    });
+    if (!meta) throw new NotFoundException('Meta not found');
+
+    const guessed = guessedCountryCode.toUpperCase();
+
+    // Only real countries are graded. Without this a client could post any
+    // two letters and fill the confusion chart with codes nobody can read.
+    const known = await this.prisma.country.findUnique({ where: { code: guessed } });
+    if (!known) throw new BadRequestException('Unknown country code');
+
+    const verdict: CheckedAnswer = {
+      correct: meta.countryCode === guessed,
       country: {
         code: meta.country.code,
         nameEn: meta.country.nameEn,
@@ -119,8 +141,8 @@ export class AnswersService {
         descriptionTr: meta.descriptionTr,
       },
       credit: imageCredit(meta),
-      nextDueAt: next.dueAt.toISOString(),
-      intervalDays: next.intervalDays,
     };
+
+    return { meta, guessed, verdict };
   }
 }

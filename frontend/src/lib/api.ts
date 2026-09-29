@@ -70,6 +70,26 @@ export interface AnswerResult {
   intervalDays: number;
 }
 
+/** The verdict alone, which is all a visitor who has not signed in gets. */
+export type CheckedAnswer = Pick<AnswerResult, 'correct' | 'country' | 'explanation' | 'credit'>;
+
+/**
+ * Grades a practice guess. A player's answer is recorded and reschedules the
+ * card; a visitor's is only checked, so practice can be tried before any
+ * account exists.
+ */
+export function gradeGuess(
+  guess: { metaId: string; guessedCountryCode: string; responseMs: number },
+  signedIn: boolean,
+): Promise<CheckedAnswer> {
+  if (signedIn) return submitAnswer(guess);
+
+  return apiFetch<CheckedAnswer>('/review/check', {
+    method: 'POST',
+    body: JSON.stringify({ metaId: guess.metaId, guessedCountryCode: guess.guessedCountryCode }),
+  });
+}
+
 export interface DashboardStats {
   totalReviews: number;
   correctReviews: number;

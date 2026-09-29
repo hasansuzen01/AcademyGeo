@@ -93,7 +93,10 @@
     "coveredBody": "Answer from what you saw.",
     "versus": "VS",
     "readMore": "Read about {country}",
-    "photoCredit": "Photo"
+    "photoCredit": "Photo",
+    "guestNote": "You are playing as a guest; your answers are not saved.",
+    "guestSaveTitle": "Save your next round",
+    "guestSaveBody": "Sign in and your answers are kept: you see your progress, your streak and the countries you mix up most, and the scored modes and the leaderboard open up. Free."
   },
   "dashboard": {
     "title": "Progress",
