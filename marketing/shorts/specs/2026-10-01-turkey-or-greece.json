@@ -1,0 +1,68 @@
+{
+  "name": "2026-10-01-turkey-or-greece",
+  "format": "which",
+  "countries": [
+    "TR",
+    "GR"
+  ],
+  "items": [
+    {
+      "country": "GR",
+      "clue": "gr-warning-sign",
+      "why": {
+        "en": "Yellow warning signs. Turkey's are white.",
+        "tr": "Sarı zeminli uyarı levhası. Türkiye'de zemin beyaz."
+      }
+    },
+    {
+      "country": "TR",
+      "clue": "tr-script",
+      "why": {
+        "en": "Dotless ı and dotted İ: Rakım, GERİŞ",
+        "tr": "Noktasız ı ve noktalı İ: Rakım, GERİŞ"
+      }
+    },
+    {
+      "country": "GR",
+      "clue": "gr-town-sign",
+      "why": {
+        "en": "White town sign with blue stripes, Greek letters",
+        "tr": "Mavi şeritli beyaz yerleşim tabelası, Grek harfleri"
+      }
+    },
+    {
+      "country": "TR",
+      "clue": "tr-dur-sign",
+      "why": {
+        "en": "The stop sign says DUR, not STOP",
+        "tr": "Dur tabelasında STOP değil DUR yazar"
+      }
+    }
+  ],
+  "copy": {
+    "en": {
+      "eyebrow": "GeoGuessr quiz",
+      "hook": "Turkey or <mark>Greece?</mark>",
+      "hookSub": "4 photos. How many can you get?",
+      "question": "Turkey<br>or Greece?",
+      "names": {
+        "TR": "Turkey",
+        "GR": "Greece"
+      },
+      "guess": "How many did you get?",
+      "guessSub": "Tell us in the comments 👇"
+    },
+    "tr": {
+      "eyebrow": "GeoGuessr quiz",
+      "hook": "Türkiye mi, <mark>Yunanistan mı?</mark>",
+      "hookSub": "4 fotoğraf. Kaçını bilirsin?",
+      "question": "Türkiye mi,<br>Yunanistan mı?",
+      "names": {
+        "TR": "Türkiye",
+        "GR": "Yunanistan"
+      },
+      "guess": "Kaçını bildin?",
+      "guessSub": "Yoruma yaz 👇"
+    }
+  }
+}

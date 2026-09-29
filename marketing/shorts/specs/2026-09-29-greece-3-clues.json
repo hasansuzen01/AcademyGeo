@@ -1,0 +1,44 @@
+{
+  "name": "2026-09-29-greece-3-clues",
+  "format": "three-clues",
+  "items": [
+    {
+      "country": "GR",
+      "clue": "gr-shrine",
+      "label": { "en": "Tiny churches on pillars by the road", "tr": "Yol kenarında sütun üstünde minik kiliseler" },
+      "recap": { "en": "Roadside mini churches", "tr": "Yol kenarında minik kiliseler" }
+    },
+    {
+      "country": "GR",
+      "clue": "gr-pole",
+      "label": { "en": "Dark brown wooden poles", "tr": "Koyu kahverengi ahşap direkler" },
+      "recap": { "en": "Dark brown wooden poles", "tr": "Koyu kahverengi ahşap direkler" }
+    },
+    {
+      "country": "GR",
+      "clue": "gr-yellow-line",
+      "label": { "en": "Solid yellow edge lines", "tr": "Düz sarı kenar çizgileri" },
+      "recap": { "en": "Yellow road lines", "tr": "Sarı yol çizgileri" }
+    }
+  ],
+  "copy": {
+    "en": {
+      "eyebrow": "GeoGuessr quiz",
+      "hook": "Guess the country from <mark>3 clues</mark>",
+      "hookSub": "How many do you need?",
+      "clue": "Clue {n} / 3",
+      "guess": "Your answer?",
+      "guessSub": "Comment before the reveal 👇",
+      "country": "Greece"
+    },
+    "tr": {
+      "eyebrow": "GeoGuessr quiz",
+      "hook": "<mark>3 ipucundan</mark> ülkeyi bul",
+      "hookSub": "Kaçıncı ipucunda bildin?",
+      "clue": "İpucu {n} / 3",
+      "guess": "Cevabın ne?",
+      "guessSub": "Açıklamadan önce yoruma yaz 👇",
+      "country": "Yunanistan"
+    }
+  }
+}
