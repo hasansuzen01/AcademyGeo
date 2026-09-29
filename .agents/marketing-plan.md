@@ -162,6 +162,22 @@
 | Araçlar | $0 (CapCut, Canva, OBS ücretsiz) | |
 | **Toplam** | **~$20** | |
 
+**Reklam (2026-09-29'da netleşti):**
+
+- **Kural:** önce organik, sonra ücretli. Reklam sadece organik olarak iyi gittiği görülmüş bir videoya konur. Deneme reklamı yapılmaz.
+- **~12 Ekim, ilk test (onayla, ~$10–15):**
+  - 6–7 video çıkmış olacak.
+  - Siteye en çok ziyaret getiren videoyu (UTM) seç.
+  - TikTok Promote ile ~$3/gün, 3–4 gün. Hedef: web sitesi ziyareti. Kitle: Türkiye + oyun/coğrafya ilgi alanları.
+- **Müzik kısıtı:**
+  - **TikTok:** Promote sadece Ticari Müzik Kütüphanesi (Commercial Music Library) sesleriyle çalışır. Genel kütüphanedeki popüler şarkılı video reklama çıkarılamaz. Bu yüzden TikTok yüklemelerinde ticari kütüphaneden ses seç, her video sonradan reklam yapılabilsin.
+  - **Instagram:** Lisanslı müzikli Reels doğrudan öne çıkarılamaz, ama öne çıkarırken sesi Meta'nın Sound Collection'ından değiştirmeye izin veriyor. Şimdiden bir şey yapmak gerekmiyor.
+- **19–25 Ekim, tanıtım haftası (bütçe olursa):** Reddit reklamı, r/geoguessr hedefli. En düşük $5/gün, 5 gün ≈ $25. Kitleye en uygun reklam bu.
+- **Yapılmayacak:**
+  - Google/YouTube reklamı: anlamlı sonuç için çok daha büyük bütçe gerekiyor.
+  - Genel Instagram reklamı: Türkiye'de günlük en düşük bütçe yaklaşık 50 TL, tek kaynak.
+- **Durdurma kuralı:** Her reklamın kendi UTM'i olur. 3 gün içinde siteye ziyaret getirmeyen reklam durdurulur.
+
 ## 10. Ölçüm
 
 - **Araçlar:**
