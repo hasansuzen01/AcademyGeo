@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { Logger } from '@nestjs/common';
 import type { ConfigService } from '@nestjs/config';
 import type { RedisService } from '../redis/redis.service.js';
 import { SupportersService } from './supporters.service.js';
@@ -76,5 +77,21 @@ describe('SupportersService', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('', { status: 403 })));
 
     expect(await setup().service.list()).toEqual([]);
+  });
+});
+
+describe('SupportersService start-up line', () => {
+  // The token is a secret: the log says whether there is one, never what.
+  it.each([
+    ['secret-token', 'token found'],
+    ['', 'No BMC_TOKEN set'],
+  ])('with %j says %j and nothing more', (token, expected) => {
+    const log = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => undefined);
+
+    setup(token).service.onModuleInit();
+
+    expect(log).toHaveBeenCalledWith(expect.stringContaining(expected));
+    expect(JSON.stringify(log.mock.calls)).not.toContain('secret-token');
+    log.mockRestore();
   });
 });

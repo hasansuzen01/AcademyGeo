@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { RedisService } from '../redis/redis.service.js';
@@ -27,7 +27,7 @@ interface BmcPage {
  * With no token set, or with the API refusing, the list is simply empty.
  */
 @Injectable()
-export class SupportersService {
+export class SupportersService implements OnModuleInit {
   private readonly logger = new Logger(SupportersService.name);
   private refreshing: Promise<PublicSupporter[]> | null = null;
 
@@ -35,6 +35,19 @@ export class SupportersService {
     private readonly config: ConfigService,
     private readonly redis: RedisService,
   ) {}
+
+  /**
+   * Says at start-up whether a token was found, never the token itself: an
+   * empty list is otherwise the same whether nobody has given yet or the
+   * token never reached the container.
+   */
+  onModuleInit() {
+    this.logger.log(
+      this.config.get<string>('BMC_TOKEN')
+        ? 'Buy Me a Coffee token found, the supporters list is on'
+        : 'No BMC_TOKEN set, the supporters list stays empty',
+    );
+  }
 
   async list(): Promise<PublicSupporter[]> {
     const token = this.config.get<string>('BMC_TOKEN');
@@ -55,6 +68,7 @@ export class SupportersService {
       .then(async (supporters) => {
         await this.redis.set(FRESH_KEY, supporters, FRESH_SECONDS);
         await this.redis.set(LAST_GOOD_KEY, supporters, LAST_GOOD_SECONDS);
+        this.logger.log(`Buy Me a Coffee: read ${supporters.length} public supporters`);
         return supporters;
       })
       .catch(async (error: unknown) => {
