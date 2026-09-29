@@ -12,10 +12,14 @@ import { DECKS } from './decks.ts';
 import { type CardSeed, DRAFT_CARDS } from './draft-cards.ts';
 import { FOOTER_PAGES } from './footer-pages.ts';
 import { GUIDE_TOPICS } from './guide-topics.ts';
+import { PRIVACY_SUPPORT_SECTIONS, withSupportSection } from './privacy-support.ts';
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
+
+/** The Buy Me a Coffee page that takes donations. */
+const SUPPORT_URL = 'https://buymeacoffee.com/academygeo';
 
 async function main(): Promise<void> {
   for (const country of COUNTRIES) {
@@ -52,6 +56,15 @@ async function main(): Promise<void> {
       create: page,
       update: {},
     });
+  }
+
+  // The one addition made to a page after it exists: the donations section,
+  // slotted into the live privacy page without touching the rest of it.
+  for (const section of PRIVACY_SUPPORT_SECTIONS) {
+    const where = { locale_slug: { locale: section.locale, slug: section.slug } };
+    const page = await prisma.page.findUnique({ where });
+    const content = page && withSupportSection(page.content, section);
+    if (content) await prisma.page.update({ where, data: { content } });
   }
 
   await seedGuideTopics();
@@ -189,10 +202,15 @@ async function seedSiteSeo(): Promise<void> {
     Object.entries(defaults).filter(([key]) => !existing?.[key as keyof typeof defaults]),
   );
 
+  // The support link is filled in once, unlike the blanks above: an admin
+  // who empties it has taken the support button down, and a redeploy must
+  // not put it back.
+  const supportUrl = existing && existing.supportUrl !== null ? {} : { supportUrl: SUPPORT_URL };
+
   await prisma.siteSeo.upsert({
     where: { id: 'site' },
-    create: { id: 'site', ...defaults },
-    update: blanks,
+    create: { id: 'site', ...defaults, ...supportUrl },
+    update: { ...blanks, ...supportUrl },
   });
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Flame, LogOut, Menu, X } from 'lucide-react';
+import { Coffee, Flame, LogOut, Menu, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -20,9 +20,16 @@ import { SoundToggle } from './sound-toggle';
  *
  * Who is signed in is resolved on the server and handed down, so the bar
  * draws right the first time instead of flashing a sign-in button at someone
- * who is already signed in.
+ * who is already signed in. With no donation page set up, the bar has no
+ * support button.
  */
-export function SiteHeader({ viewer }: { viewer: Me | null }) {
+export function SiteHeader({
+  viewer,
+  showSupport,
+}: {
+  viewer: Me | null;
+  showSupport: boolean;
+}) {
   const t = useTranslations('nav');
   const brand = useTranslations('brand');
   const router = useRouter();
@@ -91,6 +98,17 @@ export function SiteHeader({ viewer }: { viewer: Me | null }) {
             </span>
           )}
 
+          {showSupport && (
+            <Link
+              href="/support"
+              aria-label={t('support')}
+              title={t('support')}
+              className="hidden rounded-xl bg-paint/25 p-2 text-paint-deep transition-colors hover:bg-paint/40 sm:inline-flex"
+            >
+              <Coffee className="size-4" aria-hidden />
+            </Link>
+          )}
+
           <SoundToggle />
           <LocaleSwitch />
 
@@ -154,6 +172,18 @@ export function SiteHeader({ viewer }: { viewer: Me | null }) {
                 </Link>
               </li>
             ))}
+            {showSupport && (
+              <li>
+                <Link
+                  href="/support"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 rounded-xl px-3 py-3 text-base font-800 text-muted transition-colors hover:bg-canvas"
+                >
+                  <Coffee className="size-4 text-paint-deep" aria-hidden />
+                  {t('support')}
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       )}

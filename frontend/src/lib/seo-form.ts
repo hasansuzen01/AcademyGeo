@@ -27,5 +27,6 @@ export function toSeoForm(settings: SeoSettings): SeoSettingsInput {
     organisationName: settings.organisationName,
     organisationLogo: settings.organisationLogo,
     contactEmail: settings.contactEmail,
+    supportUrl: settings.supportUrl,
   };
 }

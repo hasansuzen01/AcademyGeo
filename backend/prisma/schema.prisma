@@ -515,6 +515,9 @@ model SiteSeo {
   organisationName String  @default("AcademyGeo")
   organisationLogo String?
   contactEmail     String?
+  /// The page that takes donations (Buy Me a Coffee). Empty hides the
+  /// support button everywhere.
+  supportUrl       String?
 
   updatedAt DateTime @updatedAt
 }

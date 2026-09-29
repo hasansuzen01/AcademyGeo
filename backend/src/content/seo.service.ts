@@ -75,6 +75,7 @@ export class SeoService {
       organisationName: settings.organisationName,
       organisationLogo: settings.organisationLogo,
       contactEmail: settings.contactEmail,
+      supportUrl: settings.supportUrl,
     };
   }
 

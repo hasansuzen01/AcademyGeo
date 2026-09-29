@@ -101,6 +101,13 @@ export function SeoView() {
                 onChange={(e) => set('contactEmail', e.target.value)}
               />
             </Field>
+            <Field label={t('supportUrl')} hint={t('supportUrlHint')}>
+              <Input
+                value={text('supportUrl')}
+                placeholder="https://buymeacoffee.com/academygeo"
+                onChange={(e) => set('supportUrl', e.target.value.trim())}
+              />
+            </Field>
           </div>
         </Panel>
 

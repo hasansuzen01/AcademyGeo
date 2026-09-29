@@ -19,7 +19,8 @@
     "soundOff": "Sesi kapat",
     "guides": "Rehber",
     "menu": "Menü",
-    "close": "Menüyü kapat"
+    "close": "Menüyü kapat",
+    "support": "Destek ol"
   },
   "landing": {
     "eyebrow": "Statik ipucu antrenmanı",
@@ -548,6 +549,8 @@
       "organisationName": "Kuruluş adı",
       "contactEmail": "İletişim adresi",
       "contactEmailHint": "Altbilgide ve yapılandırılmış veride görünür.",
+      "supportUrl": "Destek bağlantısı",
+      "supportUrlHint": "Buy Me a Coffee sayfasının https adresi. Boş bırakılırsa destek butonu hiçbir yerde görünmez.",
       "defaultMetaTitle": "Varsayılan başlık",
       "defaultMetaTitleHint": "Kendi başlığını vermeyen her sayfa bunu kullanır.",
       "defaultMetaDescription": "Varsayılan açıklama",
@@ -715,7 +718,9 @@
     "blog": "Blog",
     "disclaimer": "AcademyGeo bağımsız bir çalışma aracıdır. GeoGuessr AB ile bağı, ortaklığı ya da onayı yoktur.",
     "copyright": "© {year} {name}",
-    "guides": "Saha rehberi"
+    "guides": "Saha rehberi",
+    "supportBody": "AcademyGeo ücretsiz ve öyle kalması için desteğe ihtiyacı var. Sunucu masraflarına katkı olmak istersen bir kahve ısmarlayabilirsin.",
+    "supportCta": "Destek ol"
   },
   "blog": {
     "title": "Blog",
@@ -984,5 +989,21 @@
     "inTheAtlas": "Atlasta aç",
     "forCountry": "Bu ülkeyi oku",
     "fromGuide": "Saha rehberinden"
+  },
+  "support": {
+    "eyebrow": "Destek",
+    "title": "AcademyGeo'nun ücretsiz kalmasına yardım et",
+    "free": "AcademyGeo ücretsiz ve ücretsiz kalmaya devam edecek. Kartlar, rehberler, atlas ve puanlı modlar herkese açık; hiçbir özellik ücretli üyeliğin ya da bağışın arkasında değil.",
+    "costs": "Ama siteyi ayakta tutmanın bir bedeli var: sunucu, veritabanı, alan adı ve fotoğrafların saklandığı depolama her ay ödeniyor. AcademyGeo bir şirket değil, bir topluluk projesi; bu masrafları destekçilerimizle karşılıyoruz.",
+    "voluntary": "Destek tamamen isteğe bağlı. Destek olsan da olmasan da sitede her şey senin için aynı kalır.",
+    "cta": "Kahve ısmarla",
+    "ctaNote": "Ödeme Buy Me a Coffee üzerinden yapılır; kart bilgilerin bize hiç ulaşmaz.",
+    "supportersTitle": "Destekçiler",
+    "supportersIntro": "Kahve ısmarlayan herkese teşekkürler. Buy Me a Coffee'de desteğini herkese açık bırakanlar, adı ve mesajıyla burada görünür.",
+    "supportersEmpty": "Henüz destekçi yok. İlk kahveyi sen ısmarlamak ister misin?",
+    "anonymous": "Biri",
+    "coffees": "{count} kahve ısmarladı",
+    "metaTitle": "AcademyGeo'ya destek ol",
+    "metaDescription": "AcademyGeo ücretsiz bir topluluk projesi. Sunucu masraflarına katkı olup sitenin ücretsiz kalmasına yardım et, destekçilerin mesajlarını oku."
   }
 }

@@ -5,10 +5,12 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  IsUrl,
   Length,
   Matches,
   Max,
   Min,
+  ValidateIf,
 } from 'class-validator';
 
 const STATUSES = Object.values(ContentStatus);
@@ -258,4 +260,11 @@ export class UpdateSeoDto {
   @IsString()
   @Length(0, 200)
   contactEmail?: string;
+
+  /** Empty clears it; anything else has to be a whole https address. */
+  @IsOptional()
+  @ValidateIf((_, value) => value !== '')
+  @IsUrl({ protocols: ['https'], require_protocol: true })
+  @Length(0, 300)
+  supportUrl?: string;
 }

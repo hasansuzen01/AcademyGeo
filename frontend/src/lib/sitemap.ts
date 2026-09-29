@@ -37,6 +37,7 @@ const STATIC_PATHS: { path: string; priority: number }[] = [
   { path: '/guides', priority: 0.9 },
   { path: '/collections', priority: 0.7 },
   { path: '/blog', priority: 0.8 },
+  { path: '/support', priority: 0.4 },
 ];
 
 /** Every address the site wants indexed, in the shape Next serves. */

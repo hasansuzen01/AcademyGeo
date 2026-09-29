@@ -570,6 +570,7 @@ export interface SeoSettings {
   organisationName: string;
   organisationLogo: string | null;
   contactEmail: string | null;
+  supportUrl: string | null;
   updatedAt: string;
 }
 

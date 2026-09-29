@@ -24,6 +24,7 @@ const row = {
   organisationName: 'AcademyGeo',
   organisationLogo: null,
   contactEmail: null,
+  supportUrl: null,
   updatedAt: '2026-09-15T11:00:00.000Z',
 } as SeoSettings & { id: string };
 

@@ -1,8 +1,10 @@
+import { Coffee } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 import { BrandMark } from '@/components/brand-mark';
 import { Link } from '@/i18n/navigation';
 import { fetchFooterLinks, fetchSiteSeo } from '@/lib/content-api';
+import { supportHref } from '@/lib/support-link';
 
 /**
  * The standing pages and the disclaimer.
@@ -16,6 +18,7 @@ export async function SiteFooter({ locale }: { locale: string }) {
     fetchSiteSeo(),
     getTranslations({ locale, namespace: 'footer' }),
   ]);
+  const showSupport = supportHref(site.supportUrl) !== null;
 
   return (
     <footer className="mt-20 border-t-2 border-line bg-paper">
@@ -47,6 +50,18 @@ export async function SiteFooter({ locale }: { locale: string }) {
             ))}
           </nav>
         </div>
+
+        {/* The site runs on donations, so the ask is said plainly once,
+            where someone who has used the site ends up. */}
+        {showSupport && (
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-paint/15 px-5 py-4">
+            <p className="max-w-xl text-sm text-ink">{t('supportBody')}</p>
+            <Link href="/support" className="btn btn-paint shrink-0 px-4 py-2 text-sm">
+              <Coffee className="size-4" aria-hidden />
+              {t('supportCta')}
+            </Link>
+          </div>
+        )}
 
         <div className="border-t border-line pt-5 text-xs leading-relaxed text-muted">
           <p>{t('disclaimer')}</p>

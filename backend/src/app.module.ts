@@ -18,6 +18,7 @@ import { ProgressModule } from './progress/progress.module.js';
 import { ReviewModule } from './review/review.module.js';
 import { StatsModule } from './stats/stats.module.js';
 import { StorageModule } from './storage/storage.module.js';
+import { SupportersModule } from './supporters/supporters.module.js';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { StorageModule } from './storage/storage.module.js';
     StatsModule,
     ProfileModule,
     AdminModule,
+    SupportersModule,
   ],
   controllers: [MeController],
 })

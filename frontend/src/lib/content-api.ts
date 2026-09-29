@@ -44,6 +44,16 @@ export interface SitePage {
   updatedAt: string;
 }
 
+/** Someone who bought the site a coffee and chose to be shown. */
+export interface Supporter {
+  id: number;
+  /** Null when they left the name out: shown as "someone". */
+  name: string | null;
+  note: string | null;
+  coffees: number;
+  createdAt: string | null;
+}
+
 export interface SiteSeo {
   siteName: string;
   siteUrl: string;
@@ -62,6 +72,7 @@ export interface SiteSeo {
   organisationName: string;
   organisationLogo: string | null;
   contactEmail: string | null;
+  supportUrl: string | null;
 }
 
 const FALLBACK_SEO: SiteSeo = {
@@ -82,6 +93,7 @@ const FALLBACK_SEO: SiteSeo = {
   organisationName: 'AcademyGeo',
   organisationLogo: null,
   contactEmail: null,
+  supportUrl: null,
 };
 
 // Every read here answers null rather than throwing, so a page that cannot
@@ -102,6 +114,10 @@ export async function fetchFooterLinks(locale: string): Promise<FooterLink[]> {
 
 export async function fetchPage(locale: string, slug: string): Promise<SitePage | null> {
   return readPublic<SitePage>(`/pages/${locale}/${encodeURIComponent(slug)}`, 300);
+}
+
+export async function fetchSupporters(): Promise<Supporter[]> {
+  return (await readPublic<Supporter[]>('/supporters', 300)) ?? [];
 }
 
 export async function fetchSiteSeo(): Promise<SiteSeo> {

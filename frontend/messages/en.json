@@ -19,7 +19,8 @@
     "soundOff": "Turn sound off",
     "guides": "Guide",
     "menu": "Menu",
-    "close": "Close menu"
+    "close": "Close menu",
+    "support": "Support"
   },
   "landing": {
     "eyebrow": "Static clue training",
@@ -546,6 +547,8 @@
       "organisationName": "Organisation name",
       "contactEmail": "Contact address",
       "contactEmailHint": "Shown in the footer and in the structured data.",
+      "supportUrl": "Support link",
+      "supportUrlHint": "The https address of the Buy Me a Coffee page. Left empty, the support button shows nowhere.",
       "defaultMetaTitle": "Default title",
       "defaultMetaTitleHint": "Used by any page that does not set its own.",
       "defaultMetaDescription": "Default description",
@@ -713,7 +716,9 @@
     "blog": "Blog",
     "disclaimer": "AcademyGeo is an independent study aid. It is not affiliated with, endorsed by, or connected to GeoGuessr AB.",
     "copyright": "© {year} {name}",
-    "guides": "Field guide"
+    "guides": "Field guide",
+    "supportBody": "AcademyGeo is free, and staying that way takes support. If you would like to help with the server costs, you can buy it a coffee.",
+    "supportCta": "Support us"
   },
   "blog": {
     "title": "Blog",
@@ -982,5 +987,21 @@
     "inTheAtlas": "Open in the atlas",
     "forCountry": "Read about this country",
     "fromGuide": "From the field guide"
+  },
+  "support": {
+    "eyebrow": "Support",
+    "title": "Help keep AcademyGeo free",
+    "free": "AcademyGeo is free and will stay free. The cards, guides, atlas and scored modes are open to everyone; no feature sits behind a paid membership or a donation.",
+    "costs": "Keeping the site running still costs money: the server, the database, the domain and the storage that holds the photos are paid for every month. AcademyGeo is not a company but a community project, and its supporters cover those costs.",
+    "voluntary": "Support is entirely voluntary. Whether you give or not, everything on the site stays the same for you.",
+    "cta": "Buy us a coffee",
+    "ctaNote": "Payment goes through Buy Me a Coffee; your card details never reach us.",
+    "supportersTitle": "Supporters",
+    "supportersIntro": "Thank you to everyone who bought a coffee. Those who left their support public on Buy Me a Coffee appear here with their name and message.",
+    "supportersEmpty": "No supporters yet. Would you like to buy the first coffee?",
+    "anonymous": "Someone",
+    "coffees": "{count, plural, one {bought a coffee} other {bought # coffees}}",
+    "metaTitle": "Support AcademyGeo",
+    "metaDescription": "AcademyGeo is a free community project. Help with the server costs to keep it free, and read the messages its supporters left."
   }
 }
