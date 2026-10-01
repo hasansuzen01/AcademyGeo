@@ -130,16 +130,17 @@
 | 26 Eki – 22 Kas | Hız | Oğuzhan Sarıgöl ve Ahmet Yusuf Kartal'a yaz · Türkçe blog yazıları (arama motoru) · X'te günlük meydan okuma · ilk analitik değerlendirme (12 Eki ve 26 Eki) |
 | 23 Kas – 20 Ara | Birikim | İşe yarayan formatı artır · küçük üretici iş birlikleri · bağış gelirse Reddit reklamı testi · yeterli kitle varsa kendi Discord'umuz |
 
-**Video takvimi (iki günde bir, ilk 6):**
+**Video takvimi (iki günde bir; hazırlananlar AcademyGeo Workspace/paylasim içinde):**
 
-| Tarih | Format | Konu (içerik kontrolü üretimde yapılır) |
+| Tarih | Format | Konu |
 |---|---|---|
-| 29 Eyl | 3 ipucu | Yunanistan ✅ |
-| 1 Eki | A mı B mi | Türkiye mi Yunanistan mı? |
-| 3 Eki | Tek ipucu | "Bunu görürsen Rusya'dasın": Ы harfi |
-| 5 Eki | 3 ipucu | Tayland veya İrlanda |
-| 7 Eki | A mı B mi | Ukrayna mı Rusya mı? |
-| 9 Eki | Herkesi kandırıyor | Yanıltıcı tek ipucu (seçilecek) |
+| 29 Eyl | 3 ipucu (eski yöntem) | Yunanistan ✅ |
+| 1 Eki | A mı B mi | Türkiye mi Yunanistan mı? ✅ |
+| 3 Eki | 3 ipucu | İrlanda (hazır) |
+| 5 Eki | Hangi ülke? (4 şık) | Tayland, Kuzey Makedonya, ABD, Meksika (hazır) |
+| 7 Eki | A mı B mi | Ukrayna mı Rusya mı? (hazır) |
+
+*Not: "Ы görürsen Rusya" fikri bırakıldı. Ы Belarusça, Kazakça, Kırgızca ve Moğolcada da var; sadece Ukrayna–Rusya karşılaştırmasında kullanılıyor.*
 
 ## İş bölümü
 
