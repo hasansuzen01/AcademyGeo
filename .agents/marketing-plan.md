@@ -57,9 +57,9 @@
   4. **"Bu ülke herkesi kandırıyor":** tek yanıltıcı ipucu.
   5. **"Türkiye'de neredeyiz?":** Türkçe seri. Türkiye haritalı GeoGuessr videoları 68K–1M arası izleniyor.
 - **Tempo (kurucu kararı, 2026-09-29):**
-  - **İki günde bir video**, akşam 19:00–21:00 (TR saati).
-  - Aynı video TikTok, Reels ve Shorts'a gider: Türkçe sürüm Reels ve TikTok'a, İngilizce sürüm Shorts'a.
-  - **Aynı format üst üste gelmez.** Dönüşüm: 3 ipucu → A mı B mi → tek ipucu / "herkesi kandırıyor" → Türkiye'ye özel → başa dön.
+  - **Haftada 4 video** (kurucu kararı, 2026-10-05): Pazartesi, Çarşamba, Cuma ve Pazar. Saat testi sürüyor: Pzt 21:00, Çar 18:00, Cum 19:00, Paz 13:00.
+  - Her video tek dosya ve iki dilli (İngilizce ana metin, altında küçük Türkçesi); aynı dosya TikTok, Reels, Shorts ve X'e gider. Müziği kurucu uygulamada ekler.
+  - **Aynı format üst üste gelmez.** Dönüşüm: 3 ipucu → Hangi ülke (4 şık) → A mı B mi → Tuzak ("herkesi kandırıyor") → başa dön. Türkiye'ye özel seri, Türkiye içi kartlar olunca eklenir.
   - Başarıyı izlenmeye değil, videodan siteye gelen ziyarete ve kayda göre ölç.
 - **Üretim:**
   - Claude videoları `marketing/shorts/make-video.mjs` ile üretir: kart fotoğrafları, kırpılmadan ve kaynağıyla.
@@ -130,7 +130,7 @@
 | 26 Eki – 22 Kas | Hız | Oğuzhan Sarıgöl ve Ahmet Yusuf Kartal'a yaz · Türkçe blog yazıları (arama motoru) · X'te günlük meydan okuma · ilk analitik değerlendirme (12 Eki ve 26 Eki) |
 | 23 Kas – 20 Ara | Birikim | İşe yarayan formatı artır · küçük üretici iş birlikleri · bağış gelirse Reddit reklamı testi · yeterli kitle varsa kendi Discord'umuz |
 
-**Video takvimi (iki günde bir; hazırlananlar AcademyGeo Workspace/paylasim içinde):**
+**Video takvimi (haftada 4; hazırlananlar AcademyGeo Workspace/paylasim içinde):**
 
 | Tarih | Format | Konu |
 |---|---|---|
@@ -138,7 +138,13 @@
 | 1 Eki | A mı B mi | Türkiye mi Yunanistan mı? ✅ |
 | 3 Eki | 3 ipucu | İrlanda (hazır) |
 | 5 Eki | Hangi ülke? (4 şık) | Tayland, Kuzey Makedonya, ABD, Meksika (hazır) |
-| 7 Eki | A mı B mi | Ukrayna mı Rusya mı? (hazır) |
+| 7 Eki (Çar) | A mı B mi | Ukrayna mı Rusya mı? (hazır) |
+| 9 Eki (Cum) | Tuzak | Sarı orta çizgi = ABD mi? Norveç, Kanada, Brezilya; hiçbiri ABD değil (hazır, ilk iki dilli tek dosya) |
+| 11 Eki (Paz) | 3 ipucu | Portekiz: okaliptüs, badanalı ev, "Rua" çinileri (hazır) |
+| 12 Eki (Pzt) | Hangi ülke | Aday: Güney Afrika, Ürdün, Umman, Hong Kong |
+| 14 Eki (Çar) | A mı B mi | Aday: Avustralya mı Yeni Zelanda mı? (yol ver tabelası yazı rengi, sokak tabelası) |
+| 16 Eki (Cum) | Tuzak | Aday: soldan akan trafik = İngiltere mi? |
+| 18 Eki (Paz) | 3 ipucu | Aday: Güney Afrika veya Yeni Zelanda |
 
 *Not: "Ы görürsen Rusya" fikri bırakıldı. Ы Belarusça, Kazakça, Kırgızca ve Moğolcada da var; sadece Ukrayna–Rusya karşılaştırmasında kullanılıyor.*
 
