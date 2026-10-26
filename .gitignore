@@ -50,3 +50,22 @@ Thumbs.db
 
 # deployment
 .vercel
+
+# uploads and local data
+uploads/
+backups/
+*.dump
+*.sql.gz
+
+# keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# internal notes and AI tooling (kept locally, not published)
+.agents/
+.claude/
+skills-lock.json
+frontend/AGENTS.md
+frontend/CLAUDE.md
